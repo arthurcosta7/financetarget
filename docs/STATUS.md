@@ -2,9 +2,9 @@
 
 ## Resumo
 
-- Fase atual: **Fase 2 — fundação técnica**.
-- Estado: **aprovada em 27/08/2026; Fase 3 autorizada**.
-- Aplicação implementada: fundação técnica, sem funcionalidades financeiras.
+- Fase atual: **Fase 3 — identidade e onboarding**.
+- Estado: **concluída tecnicamente em 27/08/2026; aguardando aprovação**.
+- Aplicação implementada: identidade, sessões, onboarding financeiro mínimo e privacidade inicial.
 - Integrações reais: não.
 - Dados reais: não.
 - Deploy: não.
@@ -90,7 +90,39 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 2 satisfez o gate de setup reproduzível e integração frontend–API–banco testada e foi aprovada pelo usuário em 27/08/2026. A Fase 3 está autorizada. Goal Engine, Scenario Engine, integrações reais, pagamentos e deploy continuam fora do escopo.
+A Fase 3 demonstrou isolamento de dados e fluxos negativos e aguarda aprovação explícita. A Fase 4 não foi iniciada. Goal Engine, Scenario Engine, colaboração, integrações reais, pagamentos e deploy continuam fora do escopo.
+
+## Entregáveis da Fase 3
+
+| Entregável | Estado | Fonte |
+|---|---|---|
+| Identidade e sessões | Concluído | `identity/`, `SecurityConfiguration` |
+| Espaço pessoal | Concluído | `planningspace/`, migration `V2` |
+| Perfil financeiro mínimo | Concluído | `profile/` |
+| Consentimento e auditoria | Concluído | `consent_record`, `audit/` |
+| Exportação e desenho de exclusão | Concluído | `privacy/` |
+| Jornadas web | Concluído | `cadastro/`, `entrar/`, `app/onboarding/`, `app/conta/` |
+| Contrato e configuração | Concluído | OpenAPI 0.2, `.env.example`, properties |
+| Segurança do frontend | Concluído | `proxy.ts`, CSP com nonce |
+| Testes e inspeção visual | Concluído | `docs/testing/PHASE-3-RESULTS.md` |
+
+## Validações da Fase 3
+
+Executadas em 27/08/2026:
+
+- 9 testes de integração backend em PostgreSQL 17.11 efêmero;
+- 6 testes frontend, lint, TypeScript estrito e build de produção;
+- OpenAPI e tipos TypeScript regenerados;
+- uso único de verificação e recuperação;
+- rotação e detecção de reuso de refresh;
+- CSRF real, cookies HttpOnly/SameSite e autorização fechada;
+- isolamento do perfil e da exportação entre duas contas sintéticas;
+- idempotência da solicitação de exclusão;
+- inspeção visual em 1440 × 900 e 320 × 800 nos dois temas;
+- ausência de overflow horizontal e erros de console;
+- revisão de hardcodes, dinheiro exato e whitespace.
+
+Evidências detalhadas estão em `docs/testing/PHASE-3-RESULTS.md`.
 
 ## Validações da Fase 1
 
@@ -126,6 +158,7 @@ Evidências detalhadas estão em `docs/testing/PHASE-2-RESULTS.md`.
 
 ## Questões abertas
 
-1. CSP com nonce será fechada na Fase 3 junto do modelo de sessão.
-2. ESLint 9 é uma exceção temporária de compatibilidade; migrar quando os plugins usados pelo Next.js declararem suporte ao ESLint 10.
-3. Exclusão e saída de um dos membros de espaço compartilhado continuam aguardando validação antes de sua implementação.
+1. Aprovar ou revisar o ADR 0009 de tokens opacos e entrega simulada.
+2. Rate limit distribuído e fonte de senhas comprometidas precisam ser definidos antes do beta.
+3. ESLint 9 é uma exceção temporária de compatibilidade; migrar quando os plugins usados pelo Next.js declararem suporte ao ESLint 10.
+4. Exclusão e saída de um dos membros de espaço compartilhado continuam aguardando validação antes da remoção física.

@@ -6,6 +6,15 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Added
 
+- Plano executável e ADR proposto para a Fase 3 de identidade e onboarding.
+- Cadastro, verificação, login, cookies HttpOnly, CSRF, renovação rotativa, logout e recuperação de acesso.
+- Hash de senha Argon2id, rate limit inicial, auditoria modular e CSP com nonce por requisição.
+- Espaço pessoal provisionado pelo módulo de planejamento após verificação.
+- Perfil financeiro mínimo com dinheiro exato, capacidade estimada no backend e consentimentos versionados.
+- Exportação de dados próprios e solicitação idempotente de exclusão com reautenticação.
+- Jornadas responsivas de cadastro, acesso, recuperação, onboarding e conta nos dois temas.
+- Migration `V2`, contrato OpenAPI 0.2, tipos gerados e testes de isolamento e fluxos negativos.
+- Evidências técnicas e visuais da Fase 3.
 - Fundação documental da Fase 0.
 - Descoberta estratégica, tensões, JTBD e proposta de valor inicial.
 - Quatro personas comportamentais e escolha provisória da persona primária.
@@ -44,3 +53,5 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Baseline ajustada para TypeScript 5.9 e PostgreSQL 17.11 por compatibilidade declarada das ferramentas.
 - Fase 2 marcada como concluída e aguardando aprovação.
 - Fase 2 aprovada e Fase 3 autorizada em 27/08/2026.
+- Fase 3 concluída tecnicamente e mantida no gate de aprovação.
+- Persistência executável simplificada para Spring JDBC, preservando portas de aplicação e módulos.

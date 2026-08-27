@@ -1,55 +1,392 @@
 openapi: 3.1.0
 info:
   title: FinanceTarget API
-  version: 0.1.0
-  description: Contrato público inicial da fundação técnica.
+  version: 0.2.0
+  description: Contrato da identidade e do onboarding da Fase 3.
 servers:
   - url: /api/v1
 paths:
   /system/status:
     get:
       operationId: getSystemStatus
-      summary: Verifica a conexão entre API e banco
-      tags:
-        - System
+      tags: [System]
       responses:
         "200":
-          description: Fundação técnica disponível.
-          headers:
-            Cache-Control:
-              schema:
-                type: string
-              description: A resposta não deve ser armazenada.
+          description: Fundação disponível.
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/SystemStatus"
-        "500":
-          description: Falha interna sem exposição de detalhes sensíveis.
+              schema: { $ref: "#/components/schemas/SystemStatus" }
+  /auth/csrf:
+    get:
+      operationId: bootstrapCsrf
+      tags: [Identity]
+      responses:
+        "200":
+          description: Cookie e metadados CSRF.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CsrfResponse" }
+  /auth/registrations:
+    post:
+      operationId: registerAccount
+      tags: [Identity]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RegistrationRequest" }
+      responses:
+        "202":
+          description: Resposta neutra, inclusive para conta existente.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MessageResponse" }
+        "400": { $ref: "#/components/responses/Problem" }
+        "403": { $ref: "#/components/responses/Problem" }
+        "429": { $ref: "#/components/responses/Problem" }
+  /auth/verifications:
+    post:
+      operationId: verifyEmail
+      tags: [Identity]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/TokenRequest" }
+      responses:
+        "204": { description: Conta verificada e espaço pessoal criado. }
+        "400": { $ref: "#/components/responses/Problem" }
+  /auth/sessions:
+    post:
+      operationId: login
+      tags: [Identity]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LoginRequest" }
+      responses:
+        "204": { description: Cookies HttpOnly emitidos. }
+        "401": { $ref: "#/components/responses/Problem" }
+        "429": { $ref: "#/components/responses/Problem" }
+  /auth/sessions/refresh:
+    post:
+      operationId: refreshSession
+      tags: [Identity]
+      responses:
+        "204": { description: Tokens rotacionados. }
+        "401": { $ref: "#/components/responses/Problem" }
+  /auth/sessions/current:
+    delete:
+      operationId: logout
+      tags: [Identity]
+      responses:
+        "204": { description: Família revogada e cookies removidos. }
+        "401": { $ref: "#/components/responses/Problem" }
+  /auth/me:
+    get:
+      operationId: getCurrentAccount
+      tags: [Identity]
+      responses:
+        "200":
+          description: Conta autenticada.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountResponse" }
+        "401": { $ref: "#/components/responses/Problem" }
+    patch:
+      operationId: updateCurrentAccount
+      tags: [Identity]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateAccountRequest" }
+      responses:
+        "200":
+          description: Conta atualizada.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AccountResponse" }
+        "400": { $ref: "#/components/responses/Problem" }
+        "401": { $ref: "#/components/responses/Problem" }
+  /auth/password-recovery-requests:
+    post:
+      operationId: requestPasswordRecovery
+      tags: [Identity]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RecoveryRequest" }
+      responses:
+        "202":
+          description: Resposta neutra, inclusive para conta inexistente.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MessageResponse" }
+        "429": { $ref: "#/components/responses/Problem" }
+  /auth/password-recoveries:
+    post:
+      operationId: resetPassword
+      tags: [Identity]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ResetPasswordRequest" }
+      responses:
+        "204": { description: Senha alterada e sessões revogadas. }
+        "400": { $ref: "#/components/responses/Problem" }
+  /onboarding/requirements:
+    get:
+      operationId: getOnboardingRequirements
+      tags: [Onboarding]
+      responses:
+        "200":
+          description: Versões configuradas dos documentos aplicáveis.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/OnboardingRequirements" }
+        "401": { $ref: "#/components/responses/Problem" }
+  /onboarding/financial-profile:
+    get:
+      operationId: getFinancialProfile
+      tags: [Onboarding]
+      responses:
+        "200":
+          description: Perfil financeiro pessoal.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FinancialProfile" }
+        "401": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+    put:
+      operationId: saveFinancialProfile
+      tags: [Onboarding]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SaveFinancialProfileRequest" }
+      responses:
+        "200":
+          description: Perfil e estimativa calculada no backend.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FinancialProfile" }
+        "400": { $ref: "#/components/responses/Problem" }
+        "401": { $ref: "#/components/responses/Problem" }
+  /privacy/exports:
+    post:
+      operationId: exportOwnData
+      tags: [Privacy]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReauthenticationRequest" }
+      responses:
+        "200":
+          description: Dados próprios, sem credenciais ou tokens.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PersonalDataExport" }
+        "401": { $ref: "#/components/responses/Problem" }
+  /privacy/deletion-requests:
+    post:
+      operationId: requestDeletion
+      tags: [Privacy]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReauthenticationRequest" }
+      responses:
+        "202":
+          description: Solicitação registrada, sem exclusão física nesta fase.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DataSubjectRequest" }
+        "401": { $ref: "#/components/responses/Problem" }
+  /privacy/deletion-requests/current:
+    get:
+      operationId: getDeletionRequest
+      tags: [Privacy]
+      responses:
+        "200":
+          description: Solicitação mais recente.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DataSubjectRequest" }
+        "401": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
 components:
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, minLength: 1, maxLength: 128 }
+  responses:
+    Problem:
+      description: Erro em formato Problem Details.
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
   schemas:
+    Problem:
+      type: object
+      required: [title, status, detail]
+      properties:
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
     SystemStatus:
       type: object
-      additionalProperties: false
-      required:
-        - status
-        - database
+      required: [status, database]
       properties:
-        status:
-          type: string
-          enum: [UP]
+        status: { type: string, enum: [UP] }
         database:
-          $ref: "#/components/schemas/DatabaseStatus"
-    DatabaseStatus:
+          type: object
+          required: [status, schemaVersion]
+          properties:
+            status: { type: string, enum: [UP] }
+            schemaVersion: { type: string }
+    CsrfResponse:
       type: object
-      additionalProperties: false
-      required:
-        - status
-        - schemaVersion
+      required: [headerName, token]
       properties:
-        status:
-          type: string
-          enum: [UP]
-        schemaVersion:
-          type: string
-          pattern: "^[0-9]+$"
+        headerName: { type: string }
+        token: { type: string }
+    RegistrationRequest:
+      type: object
+      required: [email, displayName, password]
+      properties:
+        email: { type: string, format: email, maxLength: 320 }
+        displayName: { type: string, minLength: 2, maxLength: 120 }
+        password: { type: string, minLength: 15, maxLength: 128 }
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+    TokenRequest:
+      type: object
+      required: [token]
+      properties:
+        token: { type: string }
+    RecoveryRequest:
+      type: object
+      required: [email]
+      properties:
+        email: { type: string, format: email }
+    ResetPasswordRequest:
+      type: object
+      required: [token, newPassword]
+      properties:
+        token: { type: string }
+        newPassword: { type: string, minLength: 15, maxLength: 128 }
+    UpdateAccountRequest:
+      type: object
+      required: [displayName]
+      properties:
+        displayName: { type: string, minLength: 2, maxLength: 120 }
+    MessageResponse:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string }
+    AccountResponse:
+      type: object
+      required: [id, email, displayName]
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        displayName: { type: string }
+    OnboardingRequirements:
+      type: object
+      required: [termsVersion, privacyNoticeVersion]
+      properties:
+        termsVersion: { type: string }
+        privacyNoticeVersion: { type: string }
+    SaveFinancialProfileRequest:
+      type: object
+      required: [recurringIncome, essentialExpenses, initialGoalBalance, confirmedMonthlyCapacity, termsAccepted, privacyNoticeAcknowledged]
+      properties:
+        recurringIncome: { type: string, pattern: "^[0-9]+(\\.[0-9]{1,2})?$" }
+        essentialExpenses: { type: string, pattern: "^[0-9]+(\\.[0-9]{1,2})?$" }
+        initialGoalBalance: { type: string, pattern: "^[0-9]+(\\.[0-9]{1,2})?$" }
+        confirmedMonthlyCapacity: { type: string, pattern: "^[0-9]+(\\.[0-9]{1,2})?$" }
+        termsAccepted: { type: boolean }
+        privacyNoticeAcknowledged: { type: boolean }
+    FinancialProfile:
+      type: object
+      required: [spaceId, recurringIncome, essentialExpenses, initialGoalBalance, suggestedMonthlyCapacity, confirmedMonthlyCapacity, currency, referenceDate]
+      properties:
+        spaceId: { type: string, format: uuid }
+        recurringIncome: { type: string }
+        essentialExpenses: { type: string }
+        initialGoalBalance: { type: string }
+        suggestedMonthlyCapacity: { type: string }
+        confirmedMonthlyCapacity: { type: string }
+        currency: { type: string, pattern: "^[A-Z]{3}$" }
+        referenceDate: { type: string, format: date }
+    ReauthenticationRequest:
+      type: object
+      required: [password]
+      properties:
+        password: { type: string }
+    DataSubjectRequest:
+      type: object
+      required: [id, type, status, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string, enum: [EXPORT, DELETION] }
+        status: { type: string, enum: [COMPLETED, REQUESTED, BLOCKED] }
+        createdAt: { type: string, format: date-time }
+        completedAt: { type: [string, "null"], format: date-time }
+    PersonalDataExport:
+      type: object
+      required: [account, financialProfile, consents]
+      properties:
+        account: { $ref: "#/components/schemas/ExportedAccount" }
+        financialProfile:
+          oneOf:
+            - { $ref: "#/components/schemas/ExportedFinancialProfile" }
+            - { type: "null" }
+        consents:
+          type: array
+          items:
+            type: object
+            required: [purpose, documentVersion, decision, recordedAt]
+            properties:
+              purpose: { type: string }
+              documentVersion: { type: string }
+              decision: { type: string }
+              recordedAt: { type: string, format: date-time }
+    ExportedAccount:
+      type: object
+      required: [id, email, displayName, createdAt, emailVerifiedAt]
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        displayName: { type: string }
+        createdAt: { type: string, format: date-time }
+        emailVerifiedAt: { type: string, format: date-time }
+    ExportedFinancialProfile:
+      type: object
+      required: [recurringIncome, essentialExpenses, initialGoalBalance, suggestedMonthlyCapacity, confirmedMonthlyCapacity, currency, referenceDate]
+      properties:
+        recurringIncome: { type: string }
+        essentialExpenses: { type: string }
+        initialGoalBalance: { type: string }
+        suggestedMonthlyCapacity: { type: string }
+        confirmedMonthlyCapacity: { type: string }
+        currency: { type: string, pattern: "^[A-Z]{3}$" }
+        referenceDate: { type: string, format: date }

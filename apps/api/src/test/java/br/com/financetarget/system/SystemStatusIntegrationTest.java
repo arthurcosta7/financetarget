@@ -33,7 +33,12 @@ class SystemStatusIntegrationTest {
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
         registry.add("app.environment", () -> "test");
+        registry.add("app.product.default-currency", () -> "BRL");
+        registry.add("app.product.business-time-zone", () -> "America/Sao_Paulo");
         registry.add("app.cors.allowed-origins", () -> "http://localhost:3000");
+        registry.add("app.auth.secure-cookies", () -> "false");
+        registry.add("app.legal-documents.terms-version", () -> "test-terms-v1");
+        registry.add("app.legal-documents.privacy-notice-version", () -> "test-privacy-v1");
     }
 
     @Autowired
@@ -46,13 +51,13 @@ class SystemStatusIntegrationTest {
                 .andExpect(header().string("Cache-Control", "no-store"))
                 .andExpect(jsonPath("$.status").value("UP"))
                 .andExpect(jsonPath("$.database.status").value("UP"))
-                .andExpect(jsonPath("$.database.schemaVersion").value("1"));
+                .andExpect(jsonPath("$.database.schemaVersion").value("2"));
     }
 
     @Test
     void protectsEndpointsThatAreNotExplicitlyPublic() throws Exception {
         mockMvc.perform(get("/api/v1/private-placeholder"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

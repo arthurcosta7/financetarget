@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Manrope } from "next/font/google";
 import Link from "next/link";
+import { headers } from "next/headers";
 
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 import "./globals.css";
+import "./phase3.css";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -34,11 +36,12 @@ const themeInitializer = `
   } catch (_) {}
 `;
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitializer }} />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: themeInitializer }} />
       </head>
       <body className={`${manrope.variable} ${plexMono.variable}`}>
         <a className="skip-link" href="#conteudo-principal">

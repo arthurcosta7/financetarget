@@ -1,6 +1,6 @@
 # Autenticação e autorização
 
-## Decisão proposta
+## Decisão aprovada
 
 Autenticação local no backend com Spring Security para e-mail e senha, mantendo uma fronteira que permita OIDC futuro. A identidade financeira e as permissões do espaço continuam no produto, independentemente do mecanismo de login.
 
@@ -16,6 +16,22 @@ Autenticação local no backend com Spring Security para e-mail e senha, mantend
 - CORS com allowlist exata por ambiente.
 
 `SameSite=Lax` é a proposta inicial para permitir navegação normal e callbacks controlados; o valor será validado com o fluxo real. Cookies sensíveis não usam domínio amplo.
+
+## Implementação da Fase 3
+
+- acesso curto e refresh são opacos, aleatórios e persistidos somente como SHA-256;
+- refresh é de uso único e a reutilização revoga a família dentro da transação;
+- acesso, refresh, verificação e recuperação possuem durações configuráveis;
+- senha usa Argon2id com salt aleatório e aceita de 15 a 128 caracteres por configuração;
+- cookie de acesso usa caminho `/`; refresh fica restrito a `/api/v1/auth`;
+- CSRF usa cookie `XSRF-TOKEN`, cabeçalho explícito e tratamento próprio para SPA;
+- CSP do frontend usa nonce por requisição, `strict-dynamic` e origem da API configurada;
+- respostas de cadastro duplicado e recuperação são neutras;
+- rate limit inicial usa identificador normalizado em hash e janela configurável local;
+- exportação e exclusão exigem nova confirmação da senha;
+- nenhum adaptador de mensagem real está habilitado.
+
+Detalhes e alternativas estão no ADR 0009, ainda proposto até o gate da Fase 3.
 
 ## Senhas
 

@@ -30,7 +30,7 @@ Criar monorepo, Next.js/React/TypeScript, Spring Boot/Java, PostgreSQL, containe
 
 Cadastro, verificação, login, sessões, recuperação, perfil financeiro mínimo, consentimentos, auditoria, exportação e desenho de exclusão.
 
-**Estado:** autorizada em 27/08/2026.
+**Estado:** concluída tecnicamente em 27/08/2026; aguardando aprovação.
 
 **Gate:** isolamento de dados e fluxos negativos demonstrados.
 

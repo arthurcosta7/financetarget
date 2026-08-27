@@ -14,10 +14,10 @@ export default function Home() {
             as premissas por trás de cada projeção.
           </p>
           <div className="hero__actions">
-            <Link className="button button--primary" href="/system-status">
-              Verificar fundação
+            <Link className="button button--primary" href="/cadastro">
+              Começar meu plano
             </Link>
-            <span className="phase-label">Fase 2 · base técnica</span>
+            <Link className="text-link" href="/entrar">Já tenho uma conta</Link>
           </div>
         </div>
         <aside className="hero__statement" aria-label="Princípio do produto">

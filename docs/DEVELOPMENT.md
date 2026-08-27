@@ -16,7 +16,7 @@ O Maven 3.9.16 é baixado automaticamente pelo wrapper do projeto.
 3. Execute `.\scripts\dev.ps1` para iniciar e aguardar o PostgreSQL.
 4. Em outro terminal, execute `.\scripts\run-api.ps1`.
 5. Em outro terminal, execute `.\scripts\run-web.ps1`.
-6. Abra `http://localhost:3000/system-status`.
+6. Abra `http://localhost:3000/cadastro`.
 
 O banco do projeto usa a porta local configurável `55432` no exemplo para não disputar a instalação PostgreSQL já existente nesta máquina. Alterar a porta exige somente atualizar `.env`.
 
@@ -28,7 +28,11 @@ O arquivo fonte é `apps/api/src/main/resources/static/openapi.yaml`. Após qual
 
 Variáveis obrigatórias falham no startup quando ausentes. Dev, staging e produção usam o mesmo artefato e valores injetados por ambiente. Segredos reais não pertencem a `.env`, ao repositório, a imagens ou a logs.
 
-O profile `dev` acrescenta somente o seed sintético. Testes usam PostgreSQL efêmero. Staging e produção não foram provisionados nesta fase.
+O profile `dev` acrescenta o seed sintético e uma caixa efêmera de mensagens de identidade. Após cadastrar um e-mail exclusivamente sintético, consulte `GET /api/v1/dev/identity-messages/latest?email=...` para obter o código de verificação. O mesmo fluxo vale para recuperação. Esse endpoint não existe fora de `dev`, não integra provedor e não deve receber dados reais.
+
+Moeda inicial, fuso de negócio, origem CORS/API, nomes e durações dos cookies e versões dos documentos são configuração de ambiente. `APP_AUTH_SECURE_COOKIES` só pode ser `false` no desenvolvimento HTTP local. Staging e produção não foram provisionados.
+
+Testes usam PostgreSQL efêmero e mensagens capturadas em memória. Tokens e senhas não são registrados em logs.
 
 ## Encerramento local
 
