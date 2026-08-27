@@ -6,6 +6,7 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Added
 
+- Guia de execução na raiz com setup completo e comandos do backend pelo Maven Wrapper.
 - Plano executável e ADR proposto para a Fase 3 de identidade e onboarding.
 - Cadastro, verificação, login, cookies HttpOnly, CSRF, renovação rotativa, logout e recuperação de acesso.
 - Hash de senha Argon2id, rate limit inicial, auditoria modular e CSP com nonce por requisição.

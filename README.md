@@ -1,36 +1,166 @@
-# Planejamento
+# FinanceTarget
 
-SaaS brasileiro de planejamento financeiro por metas. O produto pretende transformar objetivos de vida em planos compreensíveis, mostrando quanto guardar, por quanto tempo e como mudanças de prazo, aporte e premissas alteram a projeção.
+SaaS brasileiro de planejamento financeiro orientado a metas. O produto transforma objetivos de vida em planos compreensíveis, com cálculos transparentes e arquitetura preparada para integrações sem acoplamento direto a fornecedores.
 
 ## Estado atual
 
-O projeto concluiu a **Fase 2 — fundação técnica** e aguarda aprovação para a Fase 3. Há uma interface inicial, API, PostgreSQL, migration, contrato OpenAPI, testes e CI; autenticação e funcionalidades financeiras ainda não foram implementadas.
+A Fase 3 está tecnicamente concluída e aguarda aprovação. O projeto já possui cadastro, verificação de e-mail simulada, autenticação, recuperação de acesso, onboarding financeiro mínimo, privacidade inicial, frontend responsivo, API e banco PostgreSQL. Goal Engine, Scenario Engine, metas compartilhadas, integrações reais, pagamentos e deploy ainda não foram implementados.
 
-Os artefatos centrais desta fase são:
+## Stack
 
-- [PRD](docs/product/PRD.md);
-- [descoberta estratégica](docs/product/DISCOVERY.md);
-- [personas](docs/product/PERSONAS.md);
-- [plano de validação](docs/product/VALIDATION-PLAN.md);
-- [roadmap](docs/product/ROADMAP.md);
-- [arquitetura](docs/architecture/OVERVIEW.md);
-- [motores de cálculo](docs/architecture/CALCULATION-ENGINES.md);
-- [configuração e ambientes](docs/architecture/CONFIGURATION.md);
-- [observabilidade](docs/architecture/OBSERVABILITY.md);
-- [segurança e LGPD](docs/security/THREAT-MODEL.md);
-- [direção visual](docs/ux/DESIGN-SYSTEM.md);
-- [wireframes](docs/ux/WIREFRAMES.md);
-- [premissas](docs/ASSUMPTIONS.md);
-- [estado do projeto](docs/STATUS.md);
-- [registro de decisões](docs/decisions/README.md).
-- [desenvolvimento local](docs/DEVELOPMENT.md);
-- [escopo da Fase 2](docs/implementation/PHASE-2.md);
-- [resultados de validação da Fase 2](docs/testing/PHASE-2-RESULTS.md).
+- frontend: Next.js 16, React 19 e TypeScript 5.9;
+- backend: Spring Boot 3.5 e Java 25;
+- build do backend: Maven 3.9 pelo Maven Wrapper do repositório;
+- banco: PostgreSQL 17 e Flyway;
+- testes: Vitest, Spring Boot Test e Testcontainers;
+- ambiente local: Docker Compose e PowerShell.
 
-## Princípio de trabalho
+O backend usa exclusivamente Maven. Não é necessário instalar Maven globalmente e não há configuração Gradle.
 
-O desenvolvimento é conduzido por fases. Uma fase só avança após revisão dos entregáveis, validações aplicáveis, atualização da documentação e aprovação explícita.
+## Pré-requisitos
 
-## Próximo passo
+Instale e deixe disponíveis no terminal:
 
-Revisar a Fase 2. Após aprovação explícita, a Fase 3 poderá implementar identidade, sessões, consentimentos e onboarding com os testes de isolamento previstos.
+- [Git](https://git-scm.com/downloads);
+- [Node.js 24](https://nodejs.org/);
+- [pnpm 11.19](https://pnpm.io/installation);
+- [Java JDK 25](https://adoptium.net/);
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) em execução;
+- PowerShell 7 ou o Windows PowerShell.
+
+As versões esperadas também estão registradas em `.nvmrc`, `.java-version`, `package.json` e no Maven Wrapper.
+
+## Primeira execução no Windows
+
+Abra o PowerShell na raiz do repositório e execute:
+
+```powershell
+Copy-Item .env.example .env
+pnpm install --frozen-lockfile
+```
+
+O `.env` contém apenas configuração local e está ignorado pelo Git. Não coloque credenciais, dados pessoais ou dados financeiros reais nele.
+
+Depois, use três terminais PowerShell na raiz do projeto.
+
+### Terminal 1 — PostgreSQL
+
+```powershell
+.\scripts\dev.ps1
+```
+
+O script inicia o PostgreSQL com Docker Compose e aguarda o banco ficar saudável. No exemplo, o banco fica disponível na porta `55432`.
+
+### Terminal 2 — backend com Maven
+
+```powershell
+.\scripts\run-api.ps1
+```
+
+Esse é o comando recomendado para desenvolvimento. Ele carrega o `.env`, entra em `apps/api` e executa:
+
+```powershell
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=dev"
+```
+
+O wrapper baixa automaticamente a versão correta do Maven na primeira execução.
+
+### Terminal 3 — frontend
+
+```powershell
+.\scripts\run-web.ps1
+```
+
+Abra [http://localhost:3000/cadastro](http://localhost:3000/cadastro) quando os três serviços estiverem prontos.
+
+## Endereços locais
+
+| Serviço | Endereço |
+|---|---|
+| Site | [http://localhost:3000](http://localhost:3000) |
+| Cadastro | [http://localhost:3000/cadastro](http://localhost:3000/cadastro) |
+| Login | [http://localhost:3000/entrar](http://localhost:3000/entrar) |
+| Status da API | [http://localhost:8080/api/v1/system/status](http://localhost:8080/api/v1/system/status) |
+| Health check | [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health) |
+| Contrato OpenAPI | [http://localhost:8080/openapi.yaml](http://localhost:8080/openapi.yaml) |
+
+## Verificação de conta no ambiente local
+
+O perfil `dev` não envia e-mails reais. Após cadastrar uma conta com dados exclusivamente sintéticos, consulte no navegador ou no PowerShell:
+
+```powershell
+$Email = [uri]::EscapeDataString('teste@example.invalid')
+Invoke-RestMethod "http://localhost:8080/api/v1/dev/identity-messages/latest?email=$Email"
+```
+
+A resposta contém `kind`, `token` e `capturedAt`. Copie o `token` para a tela [http://localhost:3000/verificar-email](http://localhost:3000/verificar-email). O mesmo endpoint retorna o token mais recente de recuperação depois que ela for solicitada pela interface.
+
+Esse recurso existe somente no perfil `dev`, mantém mensagens apenas em memória e não substitui uma integração real de e-mail.
+
+## Comandos do backend Maven
+
+Para executar o backend manualmente, carregue primeiro as variáveis do projeto:
+
+```powershell
+. .\scripts\load-env.ps1 -Path .\.env
+Set-Location .\apps\api
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=dev"
+```
+
+Para validar ou empacotar o backend:
+
+```powershell
+Set-Location .\apps\api
+.\mvnw.cmd verify
+.\mvnw.cmd package -DskipTests
+```
+
+Os testes de integração usam um PostgreSQL efêmero com Testcontainers, portanto o Docker Desktop precisa estar em execução.
+
+## Validação completa
+
+Na raiz do projeto:
+
+```powershell
+.\scripts\check.ps1
+```
+
+O script regenera os tipos a partir do OpenAPI, executa lint, verificação TypeScript, testes e build do frontend, e então roda `mvnw.cmd verify` no backend.
+
+## Encerramento
+
+Interrompa frontend e backend com `Ctrl+C`. Para parar o banco sem apagar o volume local:
+
+```powershell
+docker compose --env-file .env stop postgres
+```
+
+A remoção do volume não faz parte do fluxo normal de desenvolvimento.
+
+## Estrutura principal
+
+```text
+apps/
+  api/        Backend Spring Boot construído com Maven
+  web/        Frontend Next.js
+docs/         Produto, arquitetura, segurança, UX, decisões e testes
+scripts/      Inicialização e validação no Windows
+compose.yaml  PostgreSQL local
+```
+
+## Documentação
+
+- [Desenvolvimento local detalhado](docs/DEVELOPMENT.md)
+- [Estado do projeto](docs/STATUS.md)
+- [PRD](docs/product/PRD.md)
+- [Roadmap](docs/product/ROADMAP.md)
+- [Arquitetura](docs/architecture/OVERVIEW.md)
+- [Autenticação](docs/security/AUTHENTICATION.md)
+- [Threat model](docs/security/THREAT-MODEL.md)
+- [Registro de decisões](docs/decisions/README.md)
+- [Escopo da Fase 3](docs/implementation/PHASE-3.md)
+- [Resultados de validação da Fase 3](docs/testing/PHASE-3-RESULTS.md)
+
+## Regra de evolução
+
+O desenvolvimento é conduzido por fases. Uma fase só avança após revisão dos entregáveis, validações aplicáveis, atualização da documentação e aprovação explícita. A Fase 4 ainda não está autorizada.

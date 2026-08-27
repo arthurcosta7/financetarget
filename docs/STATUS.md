@@ -105,6 +105,7 @@ A Fase 3 demonstrou isolamento de dados e fluxos negativos e aguarda aprovação
 | Contrato e configuração | Concluído | OpenAPI 0.2, `.env.example`, properties |
 | Segurança do frontend | Concluído | `proxy.ts`, CSP com nonce |
 | Testes e inspeção visual | Concluído | `docs/testing/PHASE-3-RESULTS.md` |
+| Guia de execução local | Concluído | `README.md`, `docs/DEVELOPMENT.md` |
 
 ## Validações da Fase 3
 
