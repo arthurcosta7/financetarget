@@ -5,7 +5,7 @@ $ProjectRoot = Split-Path -Parent $PSScriptRoot
 
 Push-Location $ProjectRoot
 try {
-    pnpm dev:web
+    corepack pnpm dev:web
 }
 finally {
     Pop-Location

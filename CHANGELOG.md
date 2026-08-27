@@ -47,6 +47,7 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Changed
 
+- Scripts e instruções do frontend passaram a usar Corepack, sem depender de um atalho global do pnpm.
 - Fase 0 marcada como aprovada.
 - PRD atualizado para incluir metas compartilhadas por casal no MVP.
 - Roadmap atualizado com o estado da Fase 1.

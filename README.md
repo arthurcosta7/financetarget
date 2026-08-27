@@ -23,12 +23,11 @@ Instale e deixe disponíveis no terminal:
 
 - [Git](https://git-scm.com/downloads);
 - [Node.js 24](https://nodejs.org/);
-- [pnpm 11.19](https://pnpm.io/installation);
 - [Java JDK 25](https://adoptium.net/);
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) em execução;
 - PowerShell 7 ou o Windows PowerShell.
 
-As versões esperadas também estão registradas em `.nvmrc`, `.java-version`, `package.json` e no Maven Wrapper.
+O Corepack incluído no Node.js seleciona automaticamente o pnpm 11.19 definido em `package.json`; não é necessário instalar pnpm globalmente. As demais versões esperadas também estão registradas em `.nvmrc`, `.java-version` e no Maven Wrapper.
 
 ## Primeira execução no Windows
 
@@ -36,7 +35,7 @@ Abra o PowerShell na raiz do repositório e execute:
 
 ```powershell
 Copy-Item .env.example .env
-pnpm install --frozen-lockfile
+corepack pnpm install --frozen-lockfile
 ```
 
 O `.env` contém apenas configuração local e está ignorado pelo Git. Não coloque credenciais, dados pessoais ou dados financeiros reais nele.
@@ -125,7 +124,7 @@ Na raiz do projeto:
 .\scripts\check.ps1
 ```
 
-O script regenera os tipos a partir do OpenAPI, executa lint, verificação TypeScript, testes e build do frontend, e então roda `mvnw.cmd verify` no backend.
+O script usa `corepack pnpm` para regenerar os tipos a partir do OpenAPI, executar lint, verificação TypeScript, testes e build do frontend, e então roda `mvnw.cmd verify` no backend.
 
 ## Encerramento
 

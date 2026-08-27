@@ -3,7 +3,7 @@
 ## Pré-requisitos
 
 - Node.js 24;
-- pnpm 11.19;
+- Corepack, incluído no Node.js, para fornecer pnpm 11.19;
 - Java 25;
 - Docker Desktop em execução.
 
@@ -12,7 +12,7 @@ O Maven 3.9.16 é baixado automaticamente pelo wrapper do projeto.
 ## Primeira execução no Windows
 
 1. Copie `.env.example` para `.env` e mantenha os valores apenas locais.
-2. Execute `pnpm install --frozen-lockfile`.
+2. Execute `corepack pnpm install --frozen-lockfile`.
 3. Execute `.\scripts\dev.ps1` para iniciar e aguardar o PostgreSQL.
 4. Em outro terminal, execute `.\scripts\run-api.ps1`.
 5. Em outro terminal, execute `.\scripts\run-web.ps1`.
