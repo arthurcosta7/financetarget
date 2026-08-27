@@ -1,0 +1,48 @@
+{
+  "packet_id": "PKT-phase1_typography_001",
+  "from": "typography-director",
+  "to": "designly-director",
+  "job": "Definir hierarquia tipográfica legível e uma voz numérica própria para a interface financeira.",
+  "decisions": [
+    {
+      "key": "typography_state",
+      "value": {
+        "display_and_body": "Manrope",
+        "financial_values": "IBM Plex Mono",
+        "body_measure": "45-75 caracteres",
+        "headline_leading": "1.05-1.15",
+        "body_leading": "1.45-1.55",
+        "text_zones": "fundos planos, sem imagem ou textura atrás de texto",
+        "contrast_target": "7:1 para corpo; nunca abaixo de 4.5:1",
+        "exact_copy_locks": [
+          "Transforme uma meta em um plano possível.",
+          "Projeções dependem das premissas informadas."
+        ]
+      },
+      "rationale": "Uma família geométrica sustenta a interface; a mono distingue valores sem virar estética de terminal.",
+      "priority": 6
+    }
+  ],
+  "evidence": [
+    "O produto mistura decisões narrativas e comparação de valores.",
+    "A direção visual requer precisão sem copiar tipografia proprietária."
+  ],
+  "confidence": 0.7,
+  "hard_vetoes": [
+    {
+      "rule": "Não usar texto pequeno, uppercase decorativo ou mono em parágrafos.",
+      "reason": "Compromete legibilidade e cria aparência técnica artificial.",
+      "severity": "hard_gate",
+      "remediation": "Reservar mono a valores e metadados comparáveis; manter texto em Manrope."
+    }
+  ],
+  "soft_warnings": [
+    "Fontes devem ser avaliadas por licença, performance e suporte a caracteres pt-BR."
+  ],
+  "unresolved": [
+    "Teste óptico com conteúdo real e renderização nos sistemas alvo."
+  ],
+  "recommended_next": [
+    "Criar specimen de componentes na Fase 2 e medir contraste, rag e algarismos tabulares."
+  ]
+}

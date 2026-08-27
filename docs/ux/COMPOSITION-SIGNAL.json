@@ -1,0 +1,43 @@
+{
+  "packet_id": "PKT-phase1_composition_001",
+  "from": "composition-director",
+  "to": "designly-director",
+  "job": "Definir a estrutura espacial dos fluxos principais e impedir hierarquia uniforme de dashboard genérico.",
+  "decisions": [
+    {
+      "key": "composition_state",
+      "value": {
+        "grid": {"desktop": 12, "tablet": 8, "mobile": 4},
+        "outer_margin": {"desktop": "6-8%", "mobile": "20px"},
+        "primary_anchor": {"x": "8-58%", "y": "12-56%", "role": "decisão ou resultado principal"},
+        "secondary_anchor": {"x": "62-94%", "y": "18-64%", "role": "linha de trajetória ou contexto"},
+        "negative_space_ratio": "30-45% em telas de decisão",
+        "eye_path": "contexto → decisão → projeção → premissas → ação"
+      },
+      "rationale": "O conteúdo financeiro precisa de uma âncora clara e espaço ativo, sem cards com peso igual.",
+      "priority": 5
+    }
+  ],
+  "evidence": [
+    "Os wireframes usam uma única meta ou decisão como foco.",
+    "A linha de trajetória serve como suporte e não compete com a ação."
+  ],
+  "confidence": 0.75,
+  "hard_vetoes": [
+    {
+      "rule": "Não usar três ou mais cards com igual peso como hero do dashboard.",
+      "reason": "Cria equal-emphasis slop e esconde a próxima ação.",
+      "severity": "hard_gate",
+      "remediation": "Eleger uma meta principal e mover pares para lista subordinada."
+    }
+  ],
+  "soft_warnings": [
+    "A assimetria desktop deve reflowar sem alterar a ordem semântica no mobile."
+  ],
+  "unresolved": [
+    "Dimensões finais dependem de protótipo renderizado e conteúdo real."
+  ],
+  "recommended_next": [
+    "Verificar thumbnail, escala de cinza, tangências e 320px após implementação."
+  ]
+}

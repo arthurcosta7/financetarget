@@ -1,0 +1,57 @@
+{
+  "packet_id": "PKT-phase1_brand_001",
+  "from": "brand-intelligence",
+  "to": "designly-director",
+  "job": "Converter as restrições visuais explícitas do usuário em regras de marca auditáveis para o produto.",
+  "decisions": [
+    {
+      "key": "brand_state",
+      "value": {
+        "status": "provisional",
+        "concept": "precisão calma",
+        "core_palette": "monocromática e invertível",
+        "signature": "linha de trajetória"
+      },
+      "rationale": "A direção combina confiança, clareza financeira e diferenciação sem depender de efeitos decorativos.",
+      "priority": 2
+    },
+    {
+      "key": "clearspace_rule",
+      "value": "Quando houver logotipo, preservar no mínimo 0,5x da altura da marca ao redor.",
+      "rationale": "Regra provisória até existir manual e ativo oficial.",
+      "priority": 6
+    }
+  ],
+  "evidence": [
+    "O usuário determinou preto e branco, inversão, minimalismo moderno e rejeição de aparência genérica de IA.",
+    "O produto exige transparência e projeções não enganosas."
+  ],
+  "confidence": 0.85,
+  "hard_vetoes": [
+    {
+      "rule": "Não copiar marca, tipografia proprietária ou componentes de empresas citadas como referência.",
+      "reason": "A referência é um padrão de acabamento, não identidade licenciada.",
+      "severity": "critical",
+      "remediation": "Construir linguagem própria baseada em linha de trajetória, composição e tipografia aberta."
+    },
+    {
+      "rule": "Não introduzir gradiente, glow, glassmorphism ou paleta neon como acabamento.",
+      "reason": "Conflita com restrição explícita e com a direção de precisão calma.",
+      "severity": "hard_gate",
+      "remediation": "Usar valor, espaço, linha, tipografia e padrões estruturais."
+    }
+  ],
+  "soft_warnings": [
+    "Monocromia sem assinatura consistente pode virar minimalismo genérico.",
+    "O logotipo e o nome ainda não foram definidos."
+  ],
+  "unresolved": [
+    "Nome final.",
+    "Logotipo.",
+    "Licença e carregamento final das fontes."
+  ],
+  "recommended_next": [
+    "Testar a assinatura em protótipo real nos dois temas.",
+    "Executar Brand-off test após a primeira implementação visual."
+  ]
+}

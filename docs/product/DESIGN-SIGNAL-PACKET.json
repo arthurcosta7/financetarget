@@ -1,0 +1,67 @@
+{
+  "packet_id": "PKT-phase0_strategy_001",
+  "from": "creative-strategy",
+  "to": "designly-director",
+  "job": "Traduzir a descoberta inicial do SaaS de planejamento financeiro em uma hierarquia de comunicação utilizável nas fases futuras de UX e identidade.",
+  "decisions": [
+    {
+      "key": "strategy_state",
+      "value": "provisional_pending_primary_research",
+      "rationale": "A estratégia é coerente com o brief, mas ainda não foi validada por entrevistas ou comportamento real.",
+      "priority": 1
+    },
+    {
+      "key": "primary_message",
+      "value": "Transforme uma meta em um plano possível.",
+      "rationale": "Sintetiza o valor central sem prometer certeza, rentabilidade ou realização garantida.",
+      "priority": 1
+    },
+    {
+      "key": "desired_action",
+      "value": "Criar uma primeira meta e compreender como prazo e aporte alteram o caminho.",
+      "rationale": "Conecta a comunicação ao primeiro momento mensurável de valor.",
+      "priority": 2
+    },
+    {
+      "key": "secondary_message",
+      "value": "Compare cenários com premissas transparentes.",
+      "rationale": "Sustenta confiança e diferencia o produto de uma calculadora isolada.",
+      "priority": 3
+    }
+  ],
+  "evidence": [
+    "Brief fornecido pelo usuário: planejamento financeiro orientado a metas com Goal Engine e Scenario Engine.",
+    "Escopo aprovado para a Fase 0: produzir personas, PRD, roadmap, hipóteses e plano de validação.",
+    "A pesquisa primária ainda não foi realizada; os sinais de audiência permanecem hipóteses explícitas."
+  ],
+  "confidence": 0.55,
+  "hard_vetoes": [
+    {
+      "rule": "Não prometer rentabilidade, aprovação de crédito ou realização garantida.",
+      "reason": "Projeções dependem de premissas e não podem ser apresentadas como certeza.",
+      "severity": "critical",
+      "remediation": "Usar linguagem de cenário, mostrar premissas e testar compreensão."
+    },
+    {
+      "rule": "Não usar medo, culpa ou urgência manipulativa.",
+      "reason": "O produto lida com vulnerabilidade financeira e deve preservar agência e dignidade.",
+      "severity": "hard_gate",
+      "remediation": "Enquadrar números como escolhas e possibilidades, não vereditos."
+    }
+  ],
+  "soft_warnings": [
+    "O território de clareza financeira pode parecer genérico sem prova visual e linguagem distintivas.",
+    "A meta de imóvel pode dominar a comunicação e excluir usuários de outras metas se não houver equilíbrio."
+  ],
+  "unresolved": [
+    "Nome e identidade da marca.",
+    "Confirmação da persona primária.",
+    "Mensagem vencedora em landing page.",
+    "Modelo de preço e disposição real a pagar."
+  ],
+  "recommended_next": [
+    "Executar entrevistas de problema antes de definir identidade visual final.",
+    "Testar três mensagens de proposta de valor.",
+    "Na Fase 1, converter a estratégia validada em fluxos e wireframes de baixa fidelidade."
+  ]
+}

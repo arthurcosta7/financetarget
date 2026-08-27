@@ -1,0 +1,96 @@
+{
+  "session_id": "phase1-2026-08-27",
+  "task_type": "exploration",
+  "objective": "Definir a direção visual e os wireframes de baixa fidelidade de um SaaS de planejamento financeiro por metas.",
+  "audience": {
+    "primary": "Pessoa ou casal com renda relativamente previsível planejando uma meta de alto valor.",
+    "needs": ["clareza", "confiança", "controle", "colaboração"]
+  },
+  "primary_message": "Transforme uma meta em um plano possível.",
+  "desired_action": "Criar uma meta, compreender a projeção e comparar um cenário.",
+  "platform": {
+    "type": "responsive_web_app",
+    "breakpoints": ["mobile", "tablet", "desktop"]
+  },
+  "cultural_context": {
+    "locale": "pt-BR",
+    "market": "Brasil",
+    "direction": "ltr"
+  },
+  "locks": [
+    {
+      "lock_id": "LCK-monochrome",
+      "target_field": "brand.palette",
+      "locked_value": "preto e branco com temas invertíveis",
+      "locked_by": "user",
+      "priority": 1,
+      "reason": "Restrição visual explícita do usuário.",
+      "immutable": true
+    },
+    {
+      "lock_id": "LCK-minimal-modern",
+      "target_field": "brand.direction",
+      "locked_value": "minimalista, moderna e com acabamento de produto maduro",
+      "locked_by": "user",
+      "priority": 1,
+      "reason": "Direção explícita do usuário.",
+      "immutable": true
+    },
+    {
+      "lock_id": "LCK-no-ai-template",
+      "target_field": "brand.vetoes",
+      "locked_value": ["gradiente decorativo", "glassmorphism", "glow", "cards flutuantes repetitivos", "ilustração 3D genérica"],
+      "locked_by": "user",
+      "priority": 1,
+      "reason": "A identidade deve fugir de padrões recorrentes de interfaces geradas por IA.",
+      "immutable": true
+    },
+    {
+      "lock_id": "LCK-financial-safety",
+      "target_field": "copy.claims",
+      "locked_value": "projeção nunca é garantia, recomendação ou promessa de retorno",
+      "locked_by": "safety_gate",
+      "priority": 3,
+      "reason": "Proteção contra interpretação financeira enganosa.",
+      "immutable": true
+    }
+  ],
+  "brand_state": {
+    "status": "provisional",
+    "concept": "precisão calma",
+    "signature": "linha de trajetória",
+    "reference_boundary": "Apple é referência de rigor e acabamento, não de cópia"
+  },
+  "taste_state": {
+    "explicit": ["minimalista", "moderna", "preto e branco", "produto de empresa madura"],
+    "rejected": ["aparência genérica de IA"]
+  },
+  "strategy_state": {
+    "status": "phase0-provisional",
+    "primary_job": "mostrar o caminho mensal e o efeito das escolhas"
+  },
+  "composition_state": {
+    "grid": "12/8/4 colunas com margens mínimas de 6% no desktop",
+    "primary_anchor": "decisão ou projeção principal, nunca ambas com peso igual",
+    "negative_space": "separa etapas e reduz carga cognitiva"
+  },
+  "typography_state": {
+    "families": ["Manrope", "IBM Plex Mono"],
+    "roles": {"interface": "Manrope", "financial_values": "IBM Plex Mono"},
+    "body_measure": "45-75 caracteres"
+  },
+  "craft_state": {
+    "radius": "8-12px",
+    "shadows": "somente em elevação funcional",
+    "motion": "linha de trajetória, sem loop e com redução de movimento"
+  },
+  "campaign_state": {},
+  "generation_state": {
+    "status": "not_applicable",
+    "reason": "Fase limitada a UX e wireframes de baixa fidelidade."
+  },
+  "qa_state": {
+    "status": "preflight_only",
+    "final_visual_signoff": false
+  }
+}
