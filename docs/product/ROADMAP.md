@@ -22,13 +22,15 @@ Definir módulos, domínio, contratos, Goal Engine, Scenario Engine, autenticaç
 
 Criar monorepo, Next.js/React/TypeScript, Spring Boot/Java, PostgreSQL, containers, migrations, OpenAPI, CI, health checks, seeds e mocks.
 
-**Estado:** concluída em 27/08/2026; aguardando aprovação.
+**Estado:** aprovada em 27/08/2026.
 
 **Gate:** setup reproduzível e primeira integração técnica frontend–API–banco testada.
 
 ## Fase 3 — Identidade e onboarding
 
 Cadastro, verificação, login, sessões, recuperação, perfil financeiro mínimo, consentimentos, auditoria, exportação e desenho de exclusão.
+
+**Estado:** autorizada em 27/08/2026.
 
 **Gate:** isolamento de dados e fluxos negativos demonstrados.
 

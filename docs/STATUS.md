@@ -3,7 +3,7 @@
 ## Resumo
 
 - Fase atual: **Fase 2 — fundação técnica**.
-- Estado: **concluída; aguardando aprovação**.
+- Estado: **aprovada em 27/08/2026; Fase 3 autorizada**.
 - Aplicação implementada: fundação técnica, sem funcionalidades financeiras.
 - Integrações reais: não.
 - Dados reais: não.
@@ -90,7 +90,7 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 2 satisfaz o gate de setup reproduzível e integração frontend–API–banco testada. O projeto aguarda aprovação explícita antes da Fase 3. Não estão autorizados ainda autenticação completa, dados de usuário, Goal Engine, Scenario Engine, integrações reais, pagamentos ou deploy.
+A Fase 2 satisfez o gate de setup reproduzível e integração frontend–API–banco testada e foi aprovada pelo usuário em 27/08/2026. A Fase 3 está autorizada. Goal Engine, Scenario Engine, integrações reais, pagamentos e deploy continuam fora do escopo.
 
 ## Validações da Fase 1
 

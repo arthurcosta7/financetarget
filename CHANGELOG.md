@@ -43,3 +43,4 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - ADRs 0002 a 0007 aceitos após aprovação da Fase 1.
 - Baseline ajustada para TypeScript 5.9 e PostgreSQL 17.11 por compatibilidade declarada das ferramentas.
 - Fase 2 marcada como concluída e aguardando aprovação.
+- Fase 2 aprovada e Fase 3 autorizada em 27/08/2026.

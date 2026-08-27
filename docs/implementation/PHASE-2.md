@@ -1,5 +1,7 @@
 # Fase 2 — fundação técnica
 
+**Estado:** aprovada pelo usuário em 27/08/2026.
+
 ## Objetivo
 
 Criar uma base reproduzível para web, API e PostgreSQL e provar um primeiro caminho técnico completo sem antecipar autenticação, motores financeiros ou integrações externas.
