@@ -25,9 +25,21 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Matriz de testes derivada dos riscos da arquitetura.
 - ADRs 0002 a 0007.
 - Configuração inicial de Git, incluindo normalização de finais de linha e exclusão de segredos, builds e arquivos locais.
+- Workspace pnpm, Next.js 16, React 19 e TypeScript 5.9.
+- API Spring Boot 3.5 em Java 25, organizada por domínio, aplicação e adaptadores.
+- PostgreSQL 17.11, Compose, Flyway e seed exclusivamente sintético de desenvolvimento.
+- Contrato OpenAPI e geração versionada de tipos para o frontend.
+- Primeira integração técnica web–API–banco e health checks.
+- Segurança fechada por padrão, allowlist de CORS e headers defensivos no frontend.
+- Interface monocromática, responsiva e invertível com linha de trajetória.
+- Testes Vitest, Spring Boot e Testcontainers, pipeline de CI e Dependabot.
+- Scripts e documentação de desenvolvimento e validação da Fase 2.
 
 ### Changed
 
 - Fase 0 marcada como aprovada.
 - PRD atualizado para incluir metas compartilhadas por casal no MVP.
 - Roadmap atualizado com o estado da Fase 1.
+- ADRs 0002 a 0007 aceitos após aprovação da Fase 1.
+- Baseline ajustada para TypeScript 5.9 e PostgreSQL 17.11 por compatibilidade declarada das ferramentas.
+- Fase 2 marcada como concluída e aguardando aprovação.

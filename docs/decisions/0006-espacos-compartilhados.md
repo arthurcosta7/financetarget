@@ -1,6 +1,6 @@
 # ADR 0006 — Espaços compartilhados no MVP
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 27/08/2026
 
 ## Contexto

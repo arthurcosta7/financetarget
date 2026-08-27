@@ -1,6 +1,6 @@
 # ADR 0007 — Direção visual monocromática e invertível
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 27/08/2026
 
 ## Contexto

@@ -14,13 +14,15 @@ Personas, JTBD, hipóteses, descoberta, PRD, plano de validação, riscos, escop
 
 Definir módulos, domínio, contratos, Goal Engine, Scenario Engine, autenticação, threat model, LGPD, hubs, modelo de dados, fluxos e wireframes.
 
-**Estado:** concluída documentalmente, aguardando aprovação.
+**Estado:** aprovada em 27/08/2026.
 
 **Gate:** limites claros, riscos críticos mitigados no desenho e jornada revisável.
 
 ## Fase 2 — Fundação técnica
 
 Criar monorepo, Next.js/React/TypeScript, Spring Boot/Java, PostgreSQL, containers, migrations, OpenAPI, CI, health checks, seeds e mocks.
+
+**Estado:** concluída em 27/08/2026; aguardando aprovação.
 
 **Gate:** setup reproduzível e primeira integração técnica frontend–API–banco testada.
 

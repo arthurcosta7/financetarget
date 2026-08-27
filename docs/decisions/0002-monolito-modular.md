@@ -1,6 +1,6 @@
 # ADR 0002 — Monólito modular como arquitetura inicial
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 27/08/2026
 
 ## Contexto

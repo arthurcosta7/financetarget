@@ -14,10 +14,14 @@ coverage/
 playwright-report/
 test-results/
 *.tsbuildinfo
+.turbo/
 
 # Backend
 target/
 .mvn/timing.properties
+
+# Local database volumes
+.data/
 
 # Editors and operating systems
 .idea/

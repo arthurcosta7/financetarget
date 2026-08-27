@@ -1,0 +1,35 @@
+{
+  "name": "@financetarget/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "generate:api": "openapi-typescript ../api/src/main/resources/static/openapi.yaml -o src/lib/api/generated/schema.d.ts",
+    "lint": "eslint . --max-warnings=0",
+    "start": "next start",
+    "test": "vitest",
+    "test:ci": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "16.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "26.4.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "@vitest/coverage-v8": "4.1.11",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.3.3",
+    "jsdom": "30.0.1",
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  }
+}

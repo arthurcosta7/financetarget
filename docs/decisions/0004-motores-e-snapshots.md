@@ -1,6 +1,6 @@
 # ADR 0004 — Motores puros e snapshots imutáveis
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 27/08/2026
 
 ## Contexto

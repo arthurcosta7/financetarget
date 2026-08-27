@@ -4,7 +4,7 @@ SaaS brasileiro de planejamento financeiro por metas. O produto pretende transfo
 
 ## Estado atual
 
-O projeto concluiu documentalmente a **Fase 1 — arquitetura, segurança e direção de UX** e aguarda aprovação. Ainda não há aplicação, banco, autenticação ou integração implementados.
+O projeto concluiu a **Fase 2 — fundação técnica** e aguarda aprovação para a Fase 3. Há uma interface inicial, API, PostgreSQL, migration, contrato OpenAPI, testes e CI; autenticação e funcionalidades financeiras ainda não foram implementadas.
 
 Os artefatos centrais desta fase são:
 
@@ -23,6 +23,9 @@ Os artefatos centrais desta fase são:
 - [premissas](docs/ASSUMPTIONS.md);
 - [estado do projeto](docs/STATUS.md);
 - [registro de decisões](docs/decisions/README.md).
+- [desenvolvimento local](docs/DEVELOPMENT.md);
+- [escopo da Fase 2](docs/implementation/PHASE-2.md);
+- [resultados de validação da Fase 2](docs/testing/PHASE-2-RESULTS.md).
 
 ## Princípio de trabalho
 
@@ -30,4 +33,4 @@ O desenvolvimento é conduzido por fases. Uma fase só avança após revisão do
 
 ## Próximo passo
 
-Validar a Fase 1. Após aprovação, a Fase 2 poderá criar a fundação técnica do frontend, backend e banco conforme as decisões aceitas.
+Revisar a Fase 2. Após aprovação explícita, a Fase 3 poderá implementar identidade, sessões, consentimentos e onboarding com os testes de isolamento previstos.

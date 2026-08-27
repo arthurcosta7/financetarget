@@ -1,0 +1,35 @@
+# Desenvolvimento local
+
+## Pré-requisitos
+
+- Node.js 24;
+- pnpm 11.19;
+- Java 25;
+- Docker Desktop em execução.
+
+O Maven 3.9.16 é baixado automaticamente pelo wrapper do projeto.
+
+## Primeira execução no Windows
+
+1. Copie `.env.example` para `.env` e mantenha os valores apenas locais.
+2. Execute `pnpm install --frozen-lockfile`.
+3. Execute `.\scripts\dev.ps1` para iniciar e aguardar o PostgreSQL.
+4. Em outro terminal, execute `.\scripts\run-api.ps1`.
+5. Em outro terminal, execute `.\scripts\run-web.ps1`.
+6. Abra `http://localhost:3000/system-status`.
+
+O banco do projeto usa a porta local configurável `55432` no exemplo para não disputar a instalação PostgreSQL já existente nesta máquina. Alterar a porta exige somente atualizar `.env`.
+
+## Contrato da API
+
+O arquivo fonte é `apps/api/src/main/resources/static/openapi.yaml`. Após qualquer mudança compatível com a fase autorizada, execute `pnpm generate:api` e versione o tipo gerado. A interface não deve duplicar manualmente os contratos.
+
+## Configuração
+
+Variáveis obrigatórias falham no startup quando ausentes. Dev, staging e produção usam o mesmo artefato e valores injetados por ambiente. Segredos reais não pertencem a `.env`, ao repositório, a imagens ou a logs.
+
+O profile `dev` acrescenta somente o seed sintético. Testes usam PostgreSQL efêmero. Staging e produção não foram provisionados nesta fase.
+
+## Encerramento local
+
+Interrompa API e web com `Ctrl+C`. Para parar o banco sem apagar os dados locais, execute `docker compose stop`. A remoção do volume não faz parte do fluxo normal.

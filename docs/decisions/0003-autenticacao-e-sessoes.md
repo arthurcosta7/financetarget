@@ -1,6 +1,6 @@
 # ADR 0003 — Autenticação local e sessões rotativas
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 27/08/2026
 
 ## Contexto

@@ -1,0 +1,55 @@
+openapi: 3.1.0
+info:
+  title: FinanceTarget API
+  version: 0.1.0
+  description: Contrato público inicial da fundação técnica.
+servers:
+  - url: /api/v1
+paths:
+  /system/status:
+    get:
+      operationId: getSystemStatus
+      summary: Verifica a conexão entre API e banco
+      tags:
+        - System
+      responses:
+        "200":
+          description: Fundação técnica disponível.
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+              description: A resposta não deve ser armazenada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SystemStatus"
+        "500":
+          description: Falha interna sem exposição de detalhes sensíveis.
+components:
+  schemas:
+    SystemStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - database
+      properties:
+        status:
+          type: string
+          enum: [UP]
+        database:
+          $ref: "#/components/schemas/DatabaseStatus"
+    DatabaseStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - schemaVersion
+      properties:
+        status:
+          type: string
+          enum: [UP]
+        schemaVersion:
+          type: string
+          pattern: "^[0-9]+$"

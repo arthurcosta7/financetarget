@@ -2,9 +2,9 @@
 
 ## Resumo
 
-- Fase atual: **Fase 1 — arquitetura, segurança e direção de UX**.
-- Estado: **concluída documentalmente, aguardando aprovação**.
-- Aplicação implementada: não.
+- Fase atual: **Fase 2 — fundação técnica**.
+- Estado: **concluída; aguardando aprovação**.
+- Aplicação implementada: fundação técnica, sem funcionalidades financeiras.
 - Integrações reais: não.
 - Dados reais: não.
 - Deploy: não.
@@ -50,9 +50,9 @@ Fase 0 aprovada pelo usuário em 27/08/2026.
 
 A pasta estava vazia, sem repositório Git, instruções, código ou documentação. Não havia alterações a preservar. O projeto Redator foi consultado somente como referência de disciplina documental, invariantes, segurança e testes; nenhum código ou decisão específica de domínio foi copiado.
 
-## Gate atual
+## Aprovação da Fase 1
 
-A Fase 2 não está autorizada. Antes de avançar, é necessário aprovar ou ajustar:
+A Fase 1 foi aprovada pelo usuário em 27/08/2026. A Fase 2 está autorizada com as decisões abaixo aceitas:
 
 1. monólito modular e limites dos módulos;
 2. autenticação local com possibilidade de OIDC futuro;
@@ -60,7 +60,7 @@ A Fase 2 não está autorizada. Antes de avançar, é necessário aprovar ou aju
 4. `PlanningSpace` e papéis de colaboração;
 5. estratégia REST/OpenAPI e hubs;
 6. direção visual “precisão calma”, fontes e linha de trajetória;
-7. regras ainda abertas de exclusão e saída em espaços compartilhados.
+7. regras ainda abertas de exclusão e saída em espaços compartilhados permanecem para validação antes do fluxo correspondente.
 
 ## Validações da Fase 0
 
@@ -73,6 +73,24 @@ Executadas em 27/08/2026:
 - revisão cruzada de persona, proposta de valor, MVP, não objetivos, hipóteses, riscos e roadmap.
 
 Não existiam validações de build ou testes de aplicação na Fase 0 porque nenhum código de produto foi criado.
+
+## Entregáveis da Fase 2
+
+| Entregável | Estado | Fonte |
+|---|---|---|
+| Workspace e versões reproduzíveis | Concluído | `package.json`, `pnpm-lock.yaml`, `.nvmrc`, `.java-version` |
+| Frontend Next.js | Concluído | `apps/web/` |
+| API Spring Boot modular | Concluído | `apps/api/` |
+| PostgreSQL e migrations | Concluído | `compose.yaml`, `apps/api/src/main/resources/db/` |
+| OpenAPI e tipos gerados | Concluído | `openapi.yaml`, `schema.d.ts` |
+| Segurança e health base | Concluído | `SecurityConfiguration`, `application.yml`, `next.config.ts` |
+| Testes frontend e backend | Concluído | testes Vitest e Spring/Testcontainers |
+| CI e atualização de dependências | Concluído | `.github/workflows/ci.yml`, `.github/dependabot.yml` |
+| Setup e resultados | Concluído | `docs/DEVELOPMENT.md`, `docs/testing/PHASE-2-RESULTS.md` |
+
+## Gate atual
+
+A Fase 2 satisfaz o gate de setup reproduzível e integração frontend–API–banco testada. O projeto aguarda aprovação explícita antes da Fase 3. Não estão autorizados ainda autenticação completa, dados de usuário, Goal Engine, Scenario Engine, integrações reais, pagamentos ou deploy.
 
 ## Validações da Fase 1
 
@@ -89,3 +107,25 @@ Executadas em 27/08/2026:
 - revisão cruzada de colaboração, motores, API, hubs, autenticação, LGPD, acessibilidade e direção visual.
 
 Não houve build ou teste de aplicação porque a Fase 1 não criou código de produção. O preflight visual não equivale a signoff: contraste, reflow, foco e acabamento deverão ser inspecionados na implementação da Fase 2.
+
+## Validações da Fase 2
+
+Executadas em 27/08/2026:
+
+- geração determinística dos tipos TypeScript a partir do OpenAPI;
+- lint, TypeScript estrito, testes de componentes e build de produção do frontend;
+- Maven Enforcer, compilação, testes de integração e empacotamento do backend;
+- migration Flyway executada em PostgreSQL 17.11 efêmero e local;
+- autorização fechada por padrão e allowlist de CORS verificadas;
+- smoke test do caminho web–API–PostgreSQL e health check;
+- inspeção visual em 1440 × 900 e 320 × 800, nos dois temas;
+- ausência de overflow horizontal e erros no console;
+- auditoria de dependências de produção e verificação de whitespace.
+
+Evidências detalhadas estão em `docs/testing/PHASE-2-RESULTS.md`.
+
+## Questões abertas
+
+1. CSP com nonce será fechada na Fase 3 junto do modelo de sessão.
+2. ESLint 9 é uma exceção temporária de compatibilidade; migrar quando os plugins usados pelo Next.js declararem suporte ao ESLint 10.
+3. Exclusão e saída de um dos membros de espaço compartilhado continuam aguardando validação antes de sua implementação.

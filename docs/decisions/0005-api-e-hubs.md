@@ -1,6 +1,6 @@
 # ADR 0005 — API contratual e abstração por hubs
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 27/08/2026
 
 ## Contexto
