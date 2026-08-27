@@ -56,6 +56,7 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Fase 2 marcada como concluída e aguardando aprovação.
 - Fase 2 aprovada e Fase 3 autorizada em 27/08/2026.
 - Fase 3 concluída tecnicamente e mantida no gate de aprovação.
+- Fase 3 aprovada, ADR 0009 aceito e Fase 4 autorizada em 27/08/2026.
 - Persistência executável simplificada para Spring JDBC, preservando portas de aplicação e módulos.
 
 ### Fixed

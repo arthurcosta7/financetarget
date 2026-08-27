@@ -2,8 +2,8 @@
 
 ## Resumo
 
-- Fase atual: **Fase 3 — identidade e onboarding**.
-- Estado: **concluída tecnicamente em 27/08/2026; aguardando aprovação**.
+- Fase atual: **Fase 4 — fatia vertical de metas**.
+- Estado: **autorizada em 27/08/2026; em implementação**.
 - Aplicação implementada: identidade, sessões, onboarding financeiro mínimo e privacidade inicial.
 - Integrações reais: não.
 - Dados reais: não.
@@ -90,7 +90,7 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 3 demonstrou isolamento de dados e fluxos negativos e aguarda aprovação explícita. A Fase 4 não foi iniciada. Goal Engine, Scenario Engine, colaboração, integrações reais, pagamentos e deploy continuam fora do escopo.
+A Fase 3 foi aprovada em 27/08/2026 após demonstrar isolamento de dados e fluxos negativos. A Fase 4 está autorizada somente para a primeira fatia vertical de metas e o Goal Engine. Scenario Engine, colaboração operacional, integrações reais, pagamentos e deploy continuam fora do escopo.
 
 ## Entregáveis da Fase 3
 
@@ -106,6 +106,8 @@ A Fase 3 demonstrou isolamento de dados e fluxos negativos e aguarda aprovação
 | Segurança do frontend | Concluído | `proxy.ts`, CSP com nonce |
 | Testes e inspeção visual | Concluído | `docs/testing/PHASE-3-RESULTS.md` |
 | Guia de execução local | Concluído | `README.md`, `docs/DEVELOPMENT.md` |
+
+Fase 3 aprovada pelo usuário em 27/08/2026. O ADR 0009 foi aceito com a condição de revisão já registrada antes do beta.
 
 ## Validações da Fase 3
 
@@ -159,7 +161,6 @@ Evidências detalhadas estão em `docs/testing/PHASE-2-RESULTS.md`.
 
 ## Questões abertas
 
-1. Aprovar ou revisar o ADR 0009 de tokens opacos e entrega simulada.
-2. Rate limit distribuído e fonte de senhas comprometidas precisam ser definidos antes do beta.
-3. ESLint 9 é uma exceção temporária de compatibilidade; migrar quando os plugins usados pelo Next.js declararem suporte ao ESLint 10.
-4. Exclusão e saída de um dos membros de espaço compartilhado continuam aguardando validação antes da remoção física.
+1. Rate limit distribuído e fonte de senhas comprometidas precisam ser definidos antes do beta.
+2. ESLint 9 é uma exceção temporária de compatibilidade; migrar quando os plugins usados pelo Next.js declararem suporte ao ESLint 10.
+3. Exclusão e saída de um dos membros de espaço compartilhado continuam aguardando validação antes da remoção física.

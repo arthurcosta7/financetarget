@@ -30,13 +30,15 @@ Criar monorepo, Next.js/React/TypeScript, Spring Boot/Java, PostgreSQL, containe
 
 Cadastro, verificação, login, sessões, recuperação, perfil financeiro mínimo, consentimentos, auditoria, exportação e desenho de exclusão.
 
-**Estado:** concluída tecnicamente em 27/08/2026; aguardando aprovação.
+**Estado:** aprovada em 27/08/2026.
 
 **Gate:** isolamento de dados e fluxos negativos demonstrados.
 
 ## Fase 4 — Fatia vertical de metas
 
 Criar e acompanhar uma meta inicial, implementar Goal Engine, snapshots, explicação das premissas e testes independentes dos cálculos.
+
+**Estado:** autorizada em 27/08/2026; em implementação.
 
 **Gate:** jornada ponta a ponta, cálculo reproduzível e nenhuma regra financeira na UI.
 

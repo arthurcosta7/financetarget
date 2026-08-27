@@ -1,6 +1,6 @@
 # ADR 0009 — Tokens opacos e entrega simulada na Fase 3
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 27/08/2026
 
 ## Contexto
@@ -37,3 +37,7 @@ Usar Argon2id para senhas e proteção CSRF por cookie legível pelo frontend e 
 ## Condições de revisão
 
 Reavaliar antes do beta, ao introduzir múltiplas instâncias, IdP gerenciado ou provedor real de mensagens.
+
+## Aprovação
+
+Aceito com a aprovação da Fase 3 pelo usuário em 27/08/2026. As condições de revisão permanecem obrigatórias.
