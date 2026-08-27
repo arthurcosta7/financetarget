@@ -57,3 +57,7 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Fase 2 aprovada e Fase 3 autorizada em 27/08/2026.
 - Fase 3 concluída tecnicamente e mantida no gate de aprovação.
 - Persistência executável simplificada para Spring JDBC, preservando portas de aplicação e módulos.
+
+### Fixed
+
+- Resolução dos comandos pnpm encadeados no Windows quando o frontend é iniciado pelo Corepack.

@@ -6,12 +6,12 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "build": "pnpm --filter @financetarget/web build",
-    "dev:web": "pnpm --filter @financetarget/web dev",
-    "generate:api": "pnpm --filter @financetarget/web generate:api",
-    "lint": "pnpm --filter @financetarget/web lint",
-    "test": "pnpm --filter @financetarget/web test",
-    "test:ci": "pnpm --filter @financetarget/web test:ci",
-    "typecheck": "pnpm --filter @financetarget/web typecheck"
+    "build": "corepack pnpm --filter @financetarget/web build",
+    "dev:web": "corepack pnpm --filter @financetarget/web dev",
+    "generate:api": "corepack pnpm --filter @financetarget/web generate:api",
+    "lint": "corepack pnpm --filter @financetarget/web lint",
+    "test": "corepack pnpm --filter @financetarget/web test",
+    "test:ci": "corepack pnpm --filter @financetarget/web test:ci",
+    "typecheck": "corepack pnpm --filter @financetarget/web typecheck"
   }
 }
