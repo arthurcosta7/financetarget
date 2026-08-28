@@ -48,7 +48,7 @@ public class JdbcPrivacyRepository implements PrivacyRepository {
                         select g.*,s.engine_version,s.formula_version from goal g
                         join lateral (
                             select engine_version,formula_version from calculation_snapshot
-                            where goal_id=g.id order by created_at desc,id desc limit 1
+                            where goal_id=g.id and scenario_id is null order by created_at desc,id desc limit 1
                         ) s on true
                         where g.created_by=:userId order by g.created_at,g.id
                         """).param("userId", userId).query((rs, row) -> {
@@ -61,6 +61,17 @@ public class JdbcPrivacyRepository implements PrivacyRepository {
                                     crs.getBigDecimal("amount").toPlainString(), crs.getString("currency"),
                                     crs.getDate("contribution_date").toLocalDate().toString(), crs.getString("note"),
                                     crs.getTimestamp("created_at").toInstant())).list();
+                    var scenarios = jdbc.sql("""
+                                    select sc.*,cs.engine_version,cs.formula_version from scenario sc
+                                    join calculation_snapshot cs on cs.scenario_id=sc.id
+                                    where sc.goal_id=:goalId and sc.created_by=:userId order by sc.created_at,sc.id
+                                    """).param("goalId", goalId).param("userId", userId)
+                            .query((srs, scenarioRow) -> new ScenarioData(srs.getObject("id", UUID.class),
+                                    srs.getString("title"), srs.getDate("target_date").toLocalDate().toString(),
+                                    srs.getBigDecimal("annual_inflation_rate").toPlainString(),
+                                    srs.getBigDecimal("annual_return_rate").toPlainString(),
+                                    srs.getString("contribution_timing"), srs.getString("engine_version"),
+                                    srs.getString("formula_version"), srs.getTimestamp("created_at").toInstant())).list();
                     return new GoalData(goalId, rs.getString("title"), rs.getString("goal_type"),
                             rs.getBigDecimal("target_amount").toPlainString(), rs.getString("currency"),
                             rs.getString("target_value_basis"), rs.getDate("target_date").toLocalDate().toString(),
@@ -69,7 +80,7 @@ public class JdbcPrivacyRepository implements PrivacyRepository {
                             rs.getBigDecimal("annual_return_rate").toPlainString(), rs.getString("contribution_timing"),
                             rs.getBigDecimal("planned_monthly_contribution").toPlainString(), rs.getString("status"),
                             rs.getString("engine_version"), rs.getString("formula_version"),
-                            rs.getTimestamp("created_at").toInstant(), contributions);
+                            rs.getTimestamp("created_at").toInstant(), contributions, scenarios);
                 }).list();
         return new ExportData(account, profile, goals, consents);
     }

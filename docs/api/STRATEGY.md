@@ -24,7 +24,7 @@ Valores decimais via JSON são strings para preservar precisão entre JavaScript
 
 ## Recursos iniciais
 
-Identidade, perfil, privacidade e os endpoints de metas e contribuições abaixo já estão implementados. Cenários, snapshots consultáveis e preview permanecem planejados para evolução incremental.
+Identidade, perfil, privacidade, metas, contribuições e comparação de cenários já estão implementados. Snapshots consultáveis e preview permanecem planejados para evolução incremental.
 
 ```text
 /api/v1/auth/*

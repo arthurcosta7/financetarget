@@ -6,6 +6,14 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Added
 
+- Scenario Engine puro com comparação reproduzível e deltas contra o plano base.
+- Cenários imutáveis limitados a três por meta, migration `V4` e OpenAPI 0.4.
+- Dashboard responsivo de múltiplas metas com dados calculados no backend.
+- Comparação por gráfico de prazo, tabela acessível e histórico de cenários.
+- Tipos de meta para reserva, imóvel, veículo, viagem e objetivo personalizado.
+- Exportação LGPD ampliada para cenários de autoria do titular.
+- ADR 0011 e evidências técnicas e visuais da Fase 5.
+
 - Primeira jornada de meta, da criação ao acompanhamento manual autenticado.
 - Goal Engine puro com `BigDecimal`, versões de motor e fórmula, avisos e testes determinísticos.
 - Snapshots imutáveis com hash canônico e contribuições idempotentes separadas.
@@ -55,6 +63,8 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Changed
 
+- Fase 5 concluída tecnicamente em 28/08/2026 e movida para o gate de aprovação.
+
 - Fase 4 aprovada e Fase 5 autorizada em 28/08/2026.
 
 - Scripts e instruções do frontend passaram a usar Corepack, sem depender de um atalho global do pnpm.
@@ -70,5 +80,7 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Persistência executável simplificada para Spring JDBC, preservando portas de aplicação e módulos.
 
 ### Fixed
+
+- Consulta do plano base agora ignora snapshots de cenário, com teste de regressão.
 
 - Resolução dos comandos pnpm encadeados no Windows quando o frontend é iniciado pelo Corepack.

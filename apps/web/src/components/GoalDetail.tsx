@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { AppShell } from "@/components/AppShell";
 import { FormMessage } from "@/components/FormMessage";
 import { ApiError, apiFetch, idempotencyKey } from "@/lib/api/client";
-import { formatDate, formatMoney, warningCopy, type FinancialProfile, type Goal } from "@/lib/goals";
+import { formatDate, formatMoney, goalTypeCopy, warningCopy, type FinancialProfile, type Goal } from "@/lib/goals";
 
 export function GoalDetail({ goalId }: { goalId: string }) {
   const router = useRouter();
@@ -59,7 +60,7 @@ export function GoalDetail({ goalId }: { goalId: string }) {
   return (
     <AppShell section="Metas · plano">
       <header className="goal-detail-heading">
-        <div><p className="eyebrow">Entrada de imóvel</p><h1>{goal.title}</h1><p>Plano calculado para {formatDate(goal.targetDate)}.</p></div>
+        <div><p className="eyebrow">{goalTypeCopy[goal.goalType]}</p><h1>{goal.title}</h1><p>Plano calculado para {formatDate(goal.targetDate)}.</p><Link className="text-link" href={`/app/metas/${goal.id}/cenarios`}>Comparar cenários</Link></div>
         <div className="goal-primary-number"><span>Estimativa mensal</span><strong>{formatMoney(goal.projection.requiredMonthlyContribution)}</strong><small>aporte no {goal.contributionTiming === "END_OF_MONTH" ? "fim" : "início"} do mês</small></div>
       </header>
 

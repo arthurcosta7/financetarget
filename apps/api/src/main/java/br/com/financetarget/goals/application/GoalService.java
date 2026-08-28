@@ -8,12 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,8 +33,9 @@ public class GoalService {
     public GoalView create(UUID userId, UUID spaceId, CreateGoal command) {
         var space = repository.findSpace(userId, spaceId, true).orElseThrow(GoalService::notFound);
         String title = normalizeTitle(command.title());
-        if (!"HOME_DOWN_PAYMENT".equals(command.goalType())) {
-            throw badRequest("UNSUPPORTED_GOAL_TYPE", "Nesta fase, crie uma meta para entrada de imóvel.");
+        if (!List.of("HOME_DOWN_PAYMENT", "EMERGENCY_RESERVE", "VEHICLE", "TRAVEL", "CUSTOM")
+                .contains(command.goalType())) {
+            throw badRequest("UNSUPPORTED_GOAL_TYPE", "Escolha um tipo de meta disponível.");
         }
         var input = new GoalProjectionInput(today(), command.targetDate(), command.targetAmount(),
                 command.targetValueBasis(), command.initialBalance(), command.annualInflationRate(),
@@ -56,7 +53,7 @@ public class GoalService {
                 command.initialBalance().setScale(2), command.annualInflationRate(), command.annualReturnRate(),
                 command.contributionTiming(), projection.requiredMonthlyContribution(), space.currency(),
                 "ACTIVE", 0, now);
-        repository.insertGoal(goal, input, projection, inputHash(input), userId, now);
+        repository.insertGoal(goal, input, projection, ProjectionHasher.hash(input), userId, now);
         audit.record(userId, "GOAL_CREATED", "GOAL", goal.id(), "SUCCESS", now);
         return view(goal, projection);
     }
@@ -115,24 +112,6 @@ public class GoalService {
 
     private LocalDate today() {
         return LocalDate.now(clock.withZone(product.businessTimeZone()));
-    }
-
-    private static String inputHash(GoalProjectionInput input) {
-        String canonical = String.join("|", input.referenceDate().toString(), input.targetDate().toString(),
-                decimal(input.targetAmount()), input.targetValueBasis().name(), decimal(input.initialBalance()),
-                decimal(input.annualInflationRate()), decimal(input.annualReturnRate()),
-                input.declaredMonthlyCapacity() == null ? "" : decimal(input.declaredMonthlyCapacity()),
-                input.currency(), input.contributionTiming().name());
-        try {
-            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
-                    .digest(canonical.getBytes(StandardCharsets.UTF_8)));
-        } catch (NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("SHA-256 indisponível.", exception);
-        }
-    }
-
-    private static String decimal(BigDecimal value) {
-        return value.stripTrailingZeros().toPlainString();
     }
 
     private static BigDecimal positiveMoney(BigDecimal value) {

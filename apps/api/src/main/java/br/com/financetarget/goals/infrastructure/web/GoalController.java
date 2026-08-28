@@ -63,7 +63,7 @@ public class GoalController {
     }
 
     public record CreateGoalRequest(
-            @NotBlank @Pattern(regexp = "HOME_DOWN_PAYMENT") String goalType,
+            @NotBlank @Pattern(regexp = "HOME_DOWN_PAYMENT|EMERGENCY_RESERVE|VEHICLE|TRAVEL|CUSTOM") String goalType,
             @NotBlank @Size(min = 2, max = 120) String title,
             @NotNull @DecimalMin("0.01") @Digits(integer = 17, fraction = 2) BigDecimal targetAmount,
             @NotNull TargetValueBasis targetValueBasis,

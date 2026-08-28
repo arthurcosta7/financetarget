@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { AppShell } from "@/components/AppShell";
 import { ApiError, apiFetch } from "@/lib/api/client";
-import { formatDate, formatMoney, type FinancialProfile, type Goal } from "@/lib/goals";
+import { formatDate, formatMoney, goalTypeCopy, type FinancialProfile, type Goal } from "@/lib/goals";
 
 export function GoalList() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export function GoalList() {
       {goals?.length === 0 && <section className="goal-empty"><p>Comece pela meta que mais ocupa sua cabeça hoje.</p><Link className="text-link" href="/app/metas/nova">Criar a primeira meta</Link></section>}
       {goals?.map((goal) => (
         <article className="goal-row" key={goal.id}>
-          <div><p className="eyebrow">Entrada de imóvel</p><h2>{goal.title}</h2><p>{formatMoney(goal.currentBalance)} de {formatMoney(goal.projection.targetNominal)}</p></div>
+          <div><p className="eyebrow">{goalTypeCopy[goal.goalType]}</p><h2>{goal.title}</h2><p>{formatMoney(goal.currentBalance)} de {formatMoney(goal.projection.targetNominal)}</p></div>
           <div className="goal-row__projection"><span>Estimativa mensal</span><strong>{formatMoney(goal.projection.requiredMonthlyContribution)}</strong><small>até {formatDate(goal.targetDate)}</small></div>
           <Link className="text-link" href={`/app/metas/${goal.id}`}>Ver plano</Link>
         </article>

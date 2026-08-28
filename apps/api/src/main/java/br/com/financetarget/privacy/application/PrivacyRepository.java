@@ -13,11 +13,14 @@ public interface PrivacyRepository {
                          String referenceDate) {}
     record ContributionData(UUID id, String amount, String currency, String contributionDate, String note,
                             Instant createdAt) {}
+    record ScenarioData(UUID id, String title, String targetDate, String annualInflationRate,
+                        String annualReturnRate, String contributionTiming, String engineVersion,
+                        String formulaVersion, Instant createdAt) {}
     record GoalData(UUID id, String title, String goalType, String targetAmount, String currency,
                     String targetValueBasis, String targetDate, String initialBalance,
                     String annualInflationRate, String annualReturnRate, String contributionTiming,
                     String plannedMonthlyContribution, String status, String engineVersion, String formulaVersion,
-                    Instant createdAt, List<ContributionData> contributions) {}
+                    Instant createdAt, List<ContributionData> contributions, List<ScenarioData> scenarios) {}
     record ExportData(AccountData account, Optional<FinancialData> financialProfile,
                       List<GoalData> goals, List<ConsentData> consents) {}
     record SubjectRequest(UUID id, String type, String status, Instant createdAt, Instant completedAt) {}

@@ -1,0 +1,54 @@
+.dashboard-heading h1, .scenario-heading h1 { max-width: 13ch; }
+.dashboard-index { padding: 2rem 0; display: grid; grid-template-columns: repeat(2, minmax(9rem, 1fr)) auto; gap: 2rem; align-items: end; border-block: 1px solid var(--line); }
+.dashboard-index > div { display: grid; gap: 1rem; }
+.dashboard-index span { color: var(--muted); font-size: .75rem; }
+.dashboard-index strong { font: 500 clamp(2.5rem, 6vw, 6rem)/1 var(--font-plex-mono), monospace; }
+.dashboard-goals article { min-height: 15rem; padding: 2rem 0; display: grid; grid-template-columns: 4rem minmax(16rem, 1fr) minmax(15rem, .75fr) auto; gap: 2rem; align-items: end; border-bottom: 1px solid var(--line); }
+.dashboard-goals h2 { margin: .4rem 0; font-size: clamp(2rem, 4vw, 4rem); font-weight: 540; letter-spacing: -.055em; }
+.dashboard-goals p { color: var(--muted); }
+.dashboard-goal-number { align-self: start; font: 500 .75rem/1 var(--font-plex-mono), monospace; }
+.dashboard-progress { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; }
+.dashboard-progress::before { content: ""; grid-column: 1 / -1; height: 1px; background: var(--line); }
+.dashboard-progress span { width: var(--goal-progress); height: 4px; background: var(--foreground); }
+.dashboard-progress small { font: 500 .7rem/1 var(--font-plex-mono), monospace; }
+
+.scenario-chart { padding: 2.5rem 0; border-block: 1px solid var(--line); }
+.scenario-chart__intro { margin-bottom: 2rem; display: flex; justify-content: space-between; gap: 2rem; }
+.scenario-chart__intro small { color: var(--muted); }
+.scenario-line { min-height: 3.4rem; display: grid; grid-template-columns: minmax(8rem, .4fr) 1fr 5rem; gap: 1.5rem; align-items: center; }
+.scenario-line strong, .scenario-line small { font-size: .75rem; }
+.scenario-line span { height: 1px; position: relative; background: var(--line); }
+.scenario-line i { width: .65rem; height: .65rem; position: absolute; top: -.31rem; border-radius: 50%; background: var(--foreground); transform: translateX(-50%); }
+.scenario-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(20rem, .6fr); }
+.scenario-comparison { min-width: 0; padding: 4rem clamp(2rem, 5vw, 6rem) 5rem 0; border-right: 1px solid var(--line); }
+.scenario-form-panel { padding: 4rem 0 5rem clamp(2rem, 5vw, 6rem); }
+.table-scroll { overflow-x: auto; }
+.scenario-comparison table { width: 100%; min-width: 45rem; border-collapse: collapse; }
+.scenario-comparison caption { padding-bottom: 1.5rem; text-align: left; font: 500 .72rem/1.4 var(--font-plex-mono), monospace; text-transform: uppercase; letter-spacing: .08em; }
+.scenario-comparison th, .scenario-comparison td { padding: 1rem .75rem; border-bottom: 1px solid var(--line); text-align: right; font: 500 .75rem/1.4 var(--font-plex-mono), monospace; }
+.scenario-comparison th:first-child, .scenario-comparison td:first-child { padding-left: 0; text-align: left; }
+.scenario-version { margin: 1.5rem 0 0; color: var(--muted); font-size: .75rem; }
+.scenario-history { margin-top: 6rem; }
+.scenario-history article { padding: 1.3rem 0; border-top: 1px solid var(--line); }
+.scenario-history h2 { margin: 0; font-size: 1.25rem; }
+.scenario-history p, .scenario-history small { color: var(--muted); font-size: .75rem; }
+
+@media (max-width: 58rem) {
+  .dashboard-goals article { grid-template-columns: 3rem 1fr; }
+  .dashboard-progress, .dashboard-goals article > .text-link { grid-column: 2; }
+  .scenario-layout { grid-template-columns: 1fr; }
+  .scenario-comparison { padding-right: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .scenario-form-panel { padding-left: 0; }
+}
+
+@media (max-width: 34rem) {
+  .dashboard-index { grid-template-columns: 1fr 1fr; }
+  .dashboard-index .button { grid-column: 1 / -1; }
+  .dashboard-goals article { grid-template-columns: 1fr; }
+  .dashboard-progress, .dashboard-goals article > .text-link { grid-column: 1; }
+  .scenario-chart__intro { display: grid; }
+  .scenario-line { grid-template-columns: 1fr 4rem; gap: .5rem 1rem; }
+  .scenario-line span { grid-column: 1 / -1; grid-row: 2; }
+}
+
+@media (prefers-reduced-motion: reduce) { .scenario-line i { transition: none; } }

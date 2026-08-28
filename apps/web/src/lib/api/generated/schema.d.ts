@@ -300,6 +300,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/planning-spaces/{spaceId}/goals/{goalId}/scenarios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+                goalId: components["parameters"]["GoalId"];
+            };
+            cookie?: never;
+        };
+        get: operations["compareGoalScenarios"];
+        put?: never;
+        post: operations["createGoalScenario"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -387,7 +406,7 @@ export interface components {
         };
         CreateGoalRequest: {
             /** @enum {string} */
-            goalType: "HOME_DOWN_PAYMENT";
+            goalType: "HOME_DOWN_PAYMENT" | "EMERGENCY_RESERVE" | "VEHICLE" | "TRAVEL" | "CUSTOM";
             title: string;
             targetAmount: string;
             /** @enum {string} */
@@ -430,7 +449,7 @@ export interface components {
             /** Format: uuid */
             spaceId: string;
             /** @enum {string} */
-            goalType: "HOME_DOWN_PAYMENT";
+            goalType: "HOME_DOWN_PAYMENT" | "EMERGENCY_RESERVE" | "VEHICLE" | "TRAVEL" | "CUSTOM";
             title: string;
             targetAmount: components["schemas"]["Money"];
             /** @enum {string} */
@@ -463,6 +482,47 @@ export interface components {
         ContributionResult: {
             contribution: components["schemas"]["Contribution"];
             goal: components["schemas"]["Goal"];
+        };
+        CreateScenarioRequest: {
+            title: string;
+            /** Format: date */
+            targetDate: string;
+            annualInflationRate: string;
+            annualReturnRate: string;
+            /** @enum {string} */
+            contributionTiming: "END_OF_MONTH" | "BEGINNING_OF_MONTH";
+        };
+        ScenarioProjection: {
+            targetNominal: components["schemas"]["Money"];
+            requiredMonthlyContribution: components["schemas"]["Money"];
+            /** Format: date */
+            estimatedCompletionDate: string;
+            projectionMonths: number;
+            warnings: string[];
+            engineVersion: string;
+            formulaVersion: string;
+        };
+        Scenario: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** Format: date */
+            targetDate: string;
+            annualInflationRate: string;
+            annualReturnRate: string;
+            /** @enum {string} */
+            contributionTiming: "END_OF_MONTH" | "BEGINNING_OF_MONTH";
+            projection: components["schemas"]["ScenarioProjection"];
+            requiredContributionDelta: components["schemas"]["Money"];
+            targetNominalDelta: components["schemas"]["Money"];
+            projectionMonthsDelta: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ScenarioComparison: {
+            base: components["schemas"]["ScenarioProjection"];
+            scenarios: components["schemas"]["Scenario"][];
+            scenarioEngineVersion: string;
         };
         ReauthenticationRequest: {
             password: string;
@@ -533,6 +593,21 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
             contributions: components["schemas"]["ExportedContribution"][];
+            scenarios: components["schemas"]["ExportedScenario"][];
+        };
+        ExportedScenario: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            /** Format: date */
+            targetDate: string;
+            annualInflationRate: string;
+            annualReturnRate: string;
+            contributionTiming: string;
+            engineVersion: string;
+            formulaVersion: string;
+            /** Format: date-time */
+            createdAt: string;
         };
         ExportedContribution: {
             /** Format: uuid */
@@ -1069,6 +1144,61 @@ export interface operations {
             401: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
             409: components["responses"]["Problem"];
+        };
+    };
+    compareGoalScenarios: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+                goalId: components["parameters"]["GoalId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Base e histórico de até três cenários reproduzíveis. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioComparison"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    createGoalScenario: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+                goalId: components["parameters"]["GoalId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateScenarioRequest"];
+            };
+        };
+        responses: {
+            /** @description Cenário e snapshot imutável criados. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScenarioComparison"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
         };
     };
 }

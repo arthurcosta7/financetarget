@@ -46,7 +46,7 @@ Criar e acompanhar uma meta inicial, implementar Goal Engine, snapshots, explica
 
 Scenario Engine, comparação, gráficos acessíveis, histórico, múltiplas metas progressivas e revisão visual responsiva.
 
-**Estado:** autorizada em 28/08/2026; em implementação.
+**Estado:** concluída tecnicamente em 28/08/2026; aguardando aprovação.
 
 **Gate:** compreensão de projeção testada e cenários reproduzíveis.
 

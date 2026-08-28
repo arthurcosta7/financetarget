@@ -99,6 +99,8 @@ GoalProjection
 
 ## Scenario Engine
 
+Implementado na Fase 5 como `scenario-engine-1`, limitado a três alternativas por comparação.
+
 Responsabilidades:
 
 1. validar conjuntos de premissas;

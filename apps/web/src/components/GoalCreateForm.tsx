@@ -35,7 +35,7 @@ export function GoalCreateForm() {
       const goal = await apiFetch<Goal>(`/planning-spaces/${profile.spaceId}/goals`, {
         method: "POST",
         body: JSON.stringify({
-          goalType: "HOME_DOWN_PAYMENT",
+          goalType: data.get("goalType"),
           title: data.get("title"),
           targetAmount: decimal("targetAmount"),
           targetValueBasis: data.get("targetValueBasis"),
@@ -57,12 +57,21 @@ export function GoalCreateForm() {
   return (
     <AppShell section="Metas · nova">
       <header className="app-heading goal-heading">
-        <p className="eyebrow">Primeira direção</p>
-        <h1>Qual entrada você quer alcançar?</h1>
+        <p className="eyebrow">Nova direção</p>
+        <h1>Qual meta você quer alcançar?</h1>
         <p>Informe a meta e as premissas que você escolheu. O cálculo será feito e versionado no servidor.</p>
       </header>
       <div className="goal-create-layout">
         <form className="form-stack form-stack--large goal-form" onSubmit={submit}>
+          <label className="field"><span>Tipo de meta</span>
+            <select defaultValue="HOME_DOWN_PAYMENT" name="goalType">
+              <option value="HOME_DOWN_PAYMENT">Entrada de imóvel</option>
+              <option value="EMERGENCY_RESERVE">Reserva de emergência</option>
+              <option value="VEHICLE">Veículo</option>
+              <option value="TRAVEL">Viagem</option>
+              <option value="CUSTOM">Meta personalizada</option>
+            </select>
+          </label>
           <label className="field"><span>Nome da meta</span>
             <input defaultValue="Entrada do imóvel" maxLength={120} minLength={2} name="title" required />
           </label>

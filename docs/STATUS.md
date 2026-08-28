@@ -3,8 +3,8 @@
 ## Resumo
 
 - Fase atual: **Fase 5 — cenários e dashboard**.
-- Estado: **autorizada em 28/08/2026; em implementação**.
-- Aplicação implementada: identidade, sessões, onboarding financeiro, privacidade inicial e primeira jornada de meta com Goal Engine.
+- Estado: **concluída tecnicamente em 28/08/2026; aguardando aprovação**.
+- Aplicação implementada: identidade, sessões, onboarding financeiro, privacidade, metas, Goal Engine, Scenario Engine, dashboard e comparação acessível.
 - Integrações reais: não.
 - Dados reais: não.
 - Deploy: não.
@@ -90,7 +90,7 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 4 foi aprovada em 28/08/2026 após demonstrar jornada ponta a ponta, cálculo reproduzível e ausência de regras financeiras na UI. A Fase 5 está autorizada somente para Scenario Engine, comparação, histórico, dashboard e múltiplas metas progressivas. Colaboração operacional, integrações reais, pagamentos e deploy continuam fora do escopo.
+A Fase 5 concluiu Scenario Engine, comparação, histórico, dashboard e múltiplas metas progressivas. O gate exige aprovação explícita; a Fase 6 não está autorizada. Colaboração operacional, integrações reais, pagamentos, notificações reais e deploy continuam fora do escopo.
 
 ## Entregáveis da Fase 3
 
@@ -139,6 +139,35 @@ Executadas em 28/08/2026:
 - ausência de overflow horizontal e erros de console.
 
 Evidências detalhadas estão em `docs/testing/PHASE-4-RESULTS.md`.
+
+## Entregáveis da Fase 5
+
+| Entregável | Estado | Fonte |
+|---|---|---|
+| Scenario Engine puro | Concluído | `planning/domain/Scenario*` |
+| Cenários e snapshots | Concluído | `scenarios/`, migration `V4` |
+| Isolamento do plano base | Concluído | repositórios e teste de regressão |
+| Tipos progressivos de meta | Concluído | API, banco e formulário de meta |
+| Dashboard | Concluído | `Dashboard.tsx`, `/app/inicio` |
+| Comparação e histórico | Concluído | `ScenarioPlanner.tsx`, rota de cenários |
+| Contrato e privacidade | Concluído | OpenAPI 0.4, exportação LGPD |
+| Evidências e decisão | Concluído | `docs/testing/PHASE-5-RESULTS.md`, ADR 0011 proposto |
+
+## Validações da Fase 5
+
+Executadas em 28/08/2026:
+
+- 20 testes backend pelo Maven em PostgreSQL 17.11 efêmero;
+- 10 testes frontend, lint, TypeScript estrito e build de produção;
+- migrations `V1` a `V4` e empacotamento do JAR;
+- comparação determinística, limite de cenários e isolamento por espaço;
+- cenário não altera o snapshot base, coberto por regressão;
+- exportação LGPD inclui cenários do titular;
+- dashboard e comparação inspecionados em 1440 × 900 e 320 × 800;
+- temas claro e escuro, landmarks, tabela semântica e região rolável validados;
+- ausência de overflow global e erros de console.
+
+Evidências detalhadas estão em `docs/testing/PHASE-5-RESULTS.md`.
 
 ## Validações da Fase 3
 

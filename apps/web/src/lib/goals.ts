@@ -25,7 +25,7 @@ export type Contribution = {
 export type Goal = {
   id: string;
   spaceId: string;
-  goalType: "HOME_DOWN_PAYMENT";
+  goalType: GoalType;
   title: string;
   targetAmount: Money;
   targetValueBasis: "CURRENT_VALUE" | "FIXED_NOMINAL";
@@ -42,6 +42,40 @@ export type Goal = {
   progressPercentage: string;
   contributions: Contribution[];
   createdAt: string;
+};
+
+export type GoalType = "HOME_DOWN_PAYMENT" | "EMERGENCY_RESERVE" | "VEHICLE" | "TRAVEL" | "CUSTOM";
+
+export const goalTypeCopy: Record<GoalType, string> = {
+  HOME_DOWN_PAYMENT: "Entrada de imóvel",
+  EMERGENCY_RESERVE: "Reserva de emergência",
+  VEHICLE: "Veículo",
+  TRAVEL: "Viagem",
+  CUSTOM: "Meta personalizada",
+};
+
+export type ScenarioProjection = Pick<GoalProjection,
+  "targetNominal" | "requiredMonthlyContribution" | "estimatedCompletionDate" | "projectionMonths" |
+  "warnings" | "engineVersion" | "formulaVersion">;
+
+export type Scenario = {
+  id: string;
+  title: string;
+  targetDate: string;
+  annualInflationRate: string;
+  annualReturnRate: string;
+  contributionTiming: "END_OF_MONTH" | "BEGINNING_OF_MONTH";
+  projection: ScenarioProjection;
+  requiredContributionDelta: Money;
+  targetNominalDelta: Money;
+  projectionMonthsDelta: number;
+  createdAt: string;
+};
+
+export type ScenarioComparison = {
+  base: ScenarioProjection;
+  scenarios: Scenario[];
+  scenarioEngineVersion: string;
 };
 
 export type FinancialProfile = {

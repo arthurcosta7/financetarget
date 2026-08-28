@@ -100,7 +100,7 @@ public class JdbcGoalRepository implements GoalRepository {
     public GoalProjection latestProjection(UUID goalId) {
         String value = jdbc.sql("""
                         select projection_result::text from calculation_snapshot
-                        where goal_id=:goalId order by created_at desc,id desc limit 1
+                        where goal_id=:goalId and scenario_id is null order by created_at desc,id desc limit 1
                         """).param("goalId", goalId).query(String.class).single();
         try {
             return json.readValue(value, GoalProjection.class);

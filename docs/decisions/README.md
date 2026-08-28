@@ -14,6 +14,7 @@ Este diretório registra decisões relevantes e suas consequências. Decisões a
 | [0008](0008-baseline-tecnologica.md) | Baseline tecnológica da Fase 2 | Aceito | 27/08/2026 |
 | [0009](0009-tokens-opacos-e-entrega-simulada.md) | Tokens opacos e entrega simulada na Fase 3 | Aceito | 27/08/2026 |
 | [0010](0010-fatia-vertical-de-metas.md) | Fatia vertical de metas e snapshot inicial | Aceito | 28/08/2026 |
+| [0011](0011-cenarios-como-snapshots-independentes.md) | Cenários como snapshots independentes | Proposto | 28/08/2026 |
 
 ## Formato
 

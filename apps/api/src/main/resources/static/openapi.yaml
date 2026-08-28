@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: FinanceTarget API
-  version: 0.3.0
+  version: 0.4.0
   description: Contrato da identidade, onboarding e primeira fatia vertical de metas.
 servers:
   - url: /api/v1
@@ -297,6 +297,38 @@ paths:
         "401": { $ref: "#/components/responses/Problem" }
         "404": { $ref: "#/components/responses/Problem" }
         "409": { $ref: "#/components/responses/Problem" }
+  /planning-spaces/{spaceId}/goals/{goalId}/scenarios:
+    parameters:
+      - $ref: "#/components/parameters/SpaceId"
+      - $ref: "#/components/parameters/GoalId"
+    get:
+      operationId: compareGoalScenarios
+      tags: [Scenarios]
+      responses:
+        "200":
+          description: Base e histórico de até três cenários reproduzíveis.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ScenarioComparison" }
+        "401": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+    post:
+      operationId: createGoalScenario
+      tags: [Scenarios]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateScenarioRequest" }
+      responses:
+        "201":
+          description: Cenário e snapshot imutável criados.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ScenarioComparison" }
+        "400": { $ref: "#/components/responses/Problem" }
+        "401": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
 components:
   parameters:
     IdempotencyKey:
@@ -429,7 +461,7 @@ components:
       type: object
       required: [goalType, title, targetAmount, targetValueBasis, targetDate, initialBalance, annualInflationRate, annualReturnRate, contributionTiming]
       properties:
-        goalType: { type: string, enum: [HOME_DOWN_PAYMENT] }
+        goalType: { type: string, enum: [HOME_DOWN_PAYMENT, EMERGENCY_RESERVE, VEHICLE, TRAVEL, CUSTOM] }
         title: { type: string, minLength: 2, maxLength: 120 }
         targetAmount: { type: string, pattern: "^[0-9]+(\\.[0-9]{1,2})?$" }
         targetValueBasis: { type: string, enum: [CURRENT_VALUE, FIXED_NOMINAL] }
@@ -472,7 +504,7 @@ components:
       properties:
         id: { type: string, format: uuid }
         spaceId: { type: string, format: uuid }
-        goalType: { type: string, enum: [HOME_DOWN_PAYMENT] }
+        goalType: { type: string, enum: [HOME_DOWN_PAYMENT, EMERGENCY_RESERVE, VEHICLE, TRAVEL, CUSTOM] }
         title: { type: string }
         targetAmount: { $ref: "#/components/schemas/Money" }
         targetValueBasis: { type: string, enum: [CURRENT_VALUE, FIXED_NOMINAL] }
@@ -504,6 +536,48 @@ components:
       properties:
         contribution: { $ref: "#/components/schemas/Contribution" }
         goal: { $ref: "#/components/schemas/Goal" }
+    CreateScenarioRequest:
+      type: object
+      required: [title, targetDate, annualInflationRate, annualReturnRate, contributionTiming]
+      properties:
+        title: { type: string, minLength: 2, maxLength: 80 }
+        targetDate: { type: string, format: date }
+        annualInflationRate: { type: string, pattern: "^-?[0-9]+(\\.[0-9]{1,8})?$" }
+        annualReturnRate: { type: string, pattern: "^-?[0-9]+(\\.[0-9]{1,8})?$" }
+        contributionTiming: { type: string, enum: [END_OF_MONTH, BEGINNING_OF_MONTH] }
+    ScenarioProjection:
+      type: object
+      required: [targetNominal, requiredMonthlyContribution, estimatedCompletionDate, projectionMonths, warnings, engineVersion, formulaVersion]
+      properties:
+        targetNominal: { $ref: "#/components/schemas/Money" }
+        requiredMonthlyContribution: { $ref: "#/components/schemas/Money" }
+        estimatedCompletionDate: { type: string, format: date }
+        projectionMonths: { type: integer, minimum: 1 }
+        warnings: { type: array, items: { type: string } }
+        engineVersion: { type: string }
+        formulaVersion: { type: string }
+    Scenario:
+      type: object
+      required: [id, title, targetDate, annualInflationRate, annualReturnRate, contributionTiming, projection, requiredContributionDelta, targetNominalDelta, projectionMonthsDelta, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        targetDate: { type: string, format: date }
+        annualInflationRate: { type: string }
+        annualReturnRate: { type: string }
+        contributionTiming: { type: string, enum: [END_OF_MONTH, BEGINNING_OF_MONTH] }
+        projection: { $ref: "#/components/schemas/ScenarioProjection" }
+        requiredContributionDelta: { $ref: "#/components/schemas/Money" }
+        targetNominalDelta: { $ref: "#/components/schemas/Money" }
+        projectionMonthsDelta: { type: integer }
+        createdAt: { type: string, format: date-time }
+    ScenarioComparison:
+      type: object
+      required: [base, scenarios, scenarioEngineVersion]
+      properties:
+        base: { $ref: "#/components/schemas/ScenarioProjection" }
+        scenarios: { type: array, maxItems: 3, items: { $ref: "#/components/schemas/Scenario" } }
+        scenarioEngineVersion: { type: string }
     ReauthenticationRequest:
       type: object
       required: [password]
@@ -562,7 +636,7 @@ components:
         referenceDate: { type: string, format: date }
     ExportedGoal:
       type: object
-      required: [id, title, goalType, targetAmount, currency, targetValueBasis, targetDate, initialBalance, annualInflationRate, annualReturnRate, contributionTiming, plannedMonthlyContribution, status, engineVersion, formulaVersion, createdAt, contributions]
+      required: [id, title, goalType, targetAmount, currency, targetValueBasis, targetDate, initialBalance, annualInflationRate, annualReturnRate, contributionTiming, plannedMonthlyContribution, status, engineVersion, formulaVersion, createdAt, contributions, scenarios]
       properties:
         id: { type: string, format: uuid }
         title: { type: string }
@@ -583,6 +657,22 @@ components:
         contributions:
           type: array
           items: { $ref: "#/components/schemas/ExportedContribution" }
+        scenarios:
+          type: array
+          items: { $ref: "#/components/schemas/ExportedScenario" }
+    ExportedScenario:
+      type: object
+      required: [id, title, targetDate, annualInflationRate, annualReturnRate, contributionTiming, engineVersion, formulaVersion, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        targetDate: { type: string, format: date }
+        annualInflationRate: { type: string }
+        annualReturnRate: { type: string }
+        contributionTiming: { type: string }
+        engineVersion: { type: string }
+        formulaVersion: { type: string }
+        createdAt: { type: string, format: date-time }
     ExportedContribution:
       type: object
       required: [id, amount, currency, contributionDate, createdAt]

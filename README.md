@@ -4,7 +4,7 @@ SaaS brasileiro de planejamento financeiro orientado a metas. O produto transfor
 
 ## Estado atual
 
-A Fase 4 está concluída e a Fase 5 foi autorizada. O projeto já possui identidade, onboarding financeiro, privacidade inicial, primeira jornada de meta, Goal Engine puro, snapshots imutáveis, contribuições manuais, frontend responsivo, API e PostgreSQL. Scenario Engine, colaboração operacional, integrações reais, pagamentos e deploy ainda não foram implementados.
+A Fase 5 está tecnicamente concluída e aguarda aprovação. O projeto já possui identidade, onboarding financeiro, privacidade inicial, cinco tipos progressivos de meta, Goal Engine e Scenario Engine puros, snapshots imutáveis, contribuições manuais, dashboard, comparação acessível, frontend responsivo, API e PostgreSQL. Colaboração operacional, integrações reais, pagamentos e deploy ainda não foram implementados.
 
 ## Stack
 

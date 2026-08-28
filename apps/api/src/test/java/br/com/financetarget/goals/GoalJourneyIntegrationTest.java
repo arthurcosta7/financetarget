@@ -142,6 +142,41 @@ class GoalJourneyIntegrationTest {
                 .andExpect(jsonPath("$.goals[0].formulaVersion").value("monthly-annuity-1"));
     }
 
+    @Test
+    void comparesAndPersistsScenarioWithoutExposingItAcrossSpaces() throws Exception {
+        Cookie owner = verifiedAccess("dora.scenario@example.test", "Dora");
+        Cookie outsider = verifiedAccess("enzo.scenario@example.test", "Enzo");
+        UUID spaceId = personalSpace("dora.scenario@example.test");
+        LocalDate today = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
+        MvcResult created = mvc.perform(withCsrf(post("/api/v1/planning-spaces/" + spaceId + "/goals")
+                        .cookie(owner).contentType(MediaType.APPLICATION_JSON).content(goalBody(today.plusYears(4).toString()))))
+                .andExpect(status().isCreated()).andReturn();
+        String goalId = json.readTree(created.getResponse().getContentAsString()).path("id").asText();
+        String endpoint = "/api/v1/planning-spaces/" + spaceId + "/goals/" + goalId + "/scenarios";
+        String payload = json.writeValueAsString(Map.of("title", "Mais tempo", "targetDate", today.plusYears(5).toString(),
+                "annualInflationRate", "0", "annualReturnRate", "0", "contributionTiming", "END_OF_MONTH"));
+
+        mvc.perform(withCsrf(post(endpoint).cookie(owner).contentType(MediaType.APPLICATION_JSON).content(payload)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.scenarioEngineVersion").value("scenario-engine-1"))
+                .andExpect(jsonPath("$.scenarios[0].title").value("Mais tempo"))
+                .andExpect(jsonPath("$.scenarios[0].projection.projectionMonths").value(60))
+                .andExpect(jsonPath("$.scenarios[0].requiredContributionDelta.amount").value("-400.00"));
+
+        assertThat(jdbc.sql("select count(*) from calculation_snapshot where scenario_id is not null")
+                .query(Integer.class).single()).isEqualTo(1);
+        mvc.perform(get("/api/v1/planning-spaces/" + spaceId + "/goals/" + goalId).cookie(owner))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.projection.requiredMonthlyContribution.amount").value("2000.00"));
+        mvc.perform(withCsrf(post("/api/v1/privacy/exports").cookie(owner)
+                        .header("Idempotency-Key", "scenario-export-1").contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsString(Map.of("password", PASSWORD)))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.goals[0].scenarios[0].title").value("Mais tempo"))
+                .andExpect(jsonPath("$.goals[0].scenarios[0].engineVersion").value("goal-engine-1"));
+        mvc.perform(get(endpoint).cookie(outsider)).andExpect(status().isNotFound());
+    }
+
     private Cookie verifiedAccess(String email, String name) throws Exception {
         mvc.perform(withCsrf(post("/api/v1/auth/registrations").contentType(MediaType.APPLICATION_JSON)
                         .content(json.writeValueAsString(Map.of("email", email, "displayName", name, "password", PASSWORD)))))
