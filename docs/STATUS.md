@@ -2,9 +2,9 @@
 
 ## Resumo
 
-- Fase atual: **Fase 4 — fatia vertical de metas**.
-- Estado: **autorizada em 27/08/2026; em implementação**.
-- Aplicação implementada: identidade, sessões, onboarding financeiro mínimo e privacidade inicial.
+- Fase atual: **Fase 5 — cenários e dashboard**.
+- Estado: **autorizada em 28/08/2026; em implementação**.
+- Aplicação implementada: identidade, sessões, onboarding financeiro, privacidade inicial e primeira jornada de meta com Goal Engine.
 - Integrações reais: não.
 - Dados reais: não.
 - Deploy: não.
@@ -90,7 +90,7 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 3 foi aprovada em 27/08/2026 após demonstrar isolamento de dados e fluxos negativos. A Fase 4 está autorizada somente para a primeira fatia vertical de metas e o Goal Engine. Scenario Engine, colaboração operacional, integrações reais, pagamentos e deploy continuam fora do escopo.
+A Fase 4 foi aprovada em 28/08/2026 após demonstrar jornada ponta a ponta, cálculo reproduzível e ausência de regras financeiras na UI. A Fase 5 está autorizada somente para Scenario Engine, comparação, histórico, dashboard e múltiplas metas progressivas. Colaboração operacional, integrações reais, pagamentos e deploy continuam fora do escopo.
 
 ## Entregáveis da Fase 3
 
@@ -108,6 +108,37 @@ A Fase 3 foi aprovada em 27/08/2026 após demonstrar isolamento de dados e fluxo
 | Guia de execução local | Concluído | `README.md`, `docs/DEVELOPMENT.md` |
 
 Fase 3 aprovada pelo usuário em 27/08/2026. O ADR 0009 foi aceito com a condição de revisão já registrada antes do beta.
+
+## Entregáveis da Fase 4
+
+| Entregável | Estado | Fonte |
+|---|---|---|
+| Goal Engine puro | Concluído | `planning/domain/` |
+| Meta e snapshot imutável | Concluído | `goals/`, migration `V3` |
+| Contribuição manual idempotente | Concluído | `GoalService`, `JdbcGoalRepository` |
+| Autorização por espaço | Concluído | `GoalJourneyIntegrationTest` |
+| Jornada web de metas | Concluído | `app/metas/`, componentes de meta |
+| Contrato e tipos | Concluído | OpenAPI 0.3, `schema.d.ts` |
+| Exportação LGPD ampliada | Concluído | `privacy/` |
+| Evidências e decisão | Concluído | `docs/testing/PHASE-4-RESULTS.md`, ADR 0010 |
+
+Fase 4 aprovada pelo usuário em 28/08/2026. O ADR 0010 foi aceito e a Fase 5 foi autorizada.
+
+## Validações da Fase 4
+
+Executadas em 28/08/2026:
+
+- 17 testes backend pelo Maven em PostgreSQL 17.11 efêmero;
+- 8 testes frontend, lint, TypeScript estrito e build de produção;
+- OpenAPI 0.3 e tipos TypeScript regenerados;
+- cálculo puro com dinheiro exato, versões e hash canônico;
+- isolamento por espaço, CSRF e contribuição idempotente;
+- exportação LGPD com meta e contribuição;
+- inspeção visual em 1440 × 900 e 320 × 800 nos dois temas;
+- correção e revalidação do reflow móvel das premissas;
+- ausência de overflow horizontal e erros de console.
+
+Evidências detalhadas estão em `docs/testing/PHASE-4-RESULTS.md`.
 
 ## Validações da Fase 3
 
@@ -164,3 +195,4 @@ Evidências detalhadas estão em `docs/testing/PHASE-2-RESULTS.md`.
 1. Rate limit distribuído e fonte de senhas comprometidas precisam ser definidos antes do beta.
 2. ESLint 9 é uma exceção temporária de compatibilidade; migrar quando os plugins usados pelo Next.js declararem suporte ao ESLint 10.
 3. Exclusão e saída de um dos membros de espaço compartilhado continuam aguardando validação antes da remoção física.
+4. A validação matemática independente por especialista financeiro permanece obrigatória antes do beta.

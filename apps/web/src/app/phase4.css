@@ -1,0 +1,75 @@
+.field select { width: 100%; min-height: 3.35rem; padding: .85rem 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: var(--background); color: var(--foreground); font: 500 1rem/1.4 var(--font-manrope), sans-serif; }
+.goal-heading h1 { max-width: 13ch; }
+.goal-create-layout { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(18rem, .55fr); gap: clamp(3rem, 7vw, 7rem); padding-top: 4rem; }
+.goal-form { padding-bottom: 4rem; }
+.assumption-fields { margin: 1rem 0; padding: 2rem 0; display: grid; gap: 1.5rem; border: 0; border-block: 1px solid var(--line); }
+.assumption-fields legend { padding: 0 1rem 0 0; color: var(--muted); font: 500 .72rem/1.4 var(--font-plex-mono), monospace; letter-spacing: .1em; text-transform: uppercase; }
+.goal-create-note { min-height: 32rem; padding-top: 1.25rem; border-top: 1px solid var(--foreground); }
+.goal-create-note > p:not(.eyebrow) { color: var(--muted); font-size: .85rem; line-height: 1.7; }
+.goal-create-note dl { margin: 8rem 0 0; }
+.goal-create-note dl div, .goal-data-list div { padding: 1rem 0; display: flex; justify-content: space-between; gap: 2rem; border-top: 1px solid var(--line); }
+.goal-create-note dt, .goal-data-list dt { color: var(--muted); font-size: .75rem; }
+.goal-create-note dd, .goal-data-list dd { margin: 0; font: 500 .75rem/1.4 var(--font-plex-mono), monospace; text-align: right; }
+
+.goal-list-heading { display: flex; align-items: end; justify-content: space-between; gap: 3rem; }
+.goal-list-heading h1 { max-width: 10ch; }
+.goal-row { min-height: 17rem; padding: 2rem 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, .6fr) auto; gap: 3rem; align-items: end; border-bottom: 1px solid var(--line); }
+.goal-row h2 { margin: 0 0 1rem; font-size: clamp(2rem, 4vw, 4rem); font-weight: 540; letter-spacing: -.055em; }
+.goal-row p { color: var(--muted); }
+.goal-row__projection { display: grid; gap: .45rem; }
+.goal-row__projection span, .goal-row__projection small { color: var(--muted); font-size: .72rem; }
+.goal-row__projection strong { font: 500 clamp(1.35rem, 2.5vw, 2.2rem)/1.2 var(--font-plex-mono), monospace; }
+.goal-empty { min-height: 16rem; margin: 0; padding: 4rem 0; color: var(--muted); border-bottom: 1px solid var(--line); }
+
+.goal-detail-heading { min-height: 26rem; padding: clamp(4rem, 8vw, 8rem) 0 3rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, .5fr); gap: 4rem; align-items: end; }
+.goal-detail-heading h1 { max-width: 12ch; margin: 0; font-size: clamp(3rem, 7vw, 7.2rem); font-weight: 550; line-height: .92; letter-spacing: -.07em; }
+.goal-detail-heading > div > p:last-child { color: var(--muted); }
+.goal-primary-number { padding-top: 1.2rem; display: grid; gap: .75rem; border-top: 1px solid var(--foreground); }
+.goal-primary-number span, .goal-primary-number small { color: var(--muted); font-size: .75rem; }
+.goal-primary-number strong { margin-top: 4rem; font: 500 clamp(2rem, 4vw, 4rem)/1 var(--font-plex-mono), monospace; letter-spacing: -.04em; }
+.goal-trajectory { padding: 2rem 0 3rem; border-block: 1px solid var(--line); }
+.goal-trajectory__labels { display: flex; justify-content: space-between; gap: 2rem; font: 500 .72rem/1.4 var(--font-plex-mono), monospace; }
+.goal-trajectory__track { height: 2rem; margin: 1.5rem 0 1rem; position: relative; border-bottom: 1px solid var(--foreground); }
+.goal-trajectory__track::before, .goal-trajectory__track::after, .goal-trajectory__track span::after { content: ""; position: absolute; bottom: -.33rem; width: .6rem; height: .6rem; border: 1px solid var(--foreground); border-radius: 50%; background: var(--background); }
+.goal-trajectory__track::before { left: 0; }
+.goal-trajectory__track::after { right: 0; }
+.goal-trajectory__track span { position: absolute; left: 0; bottom: -1px; width: var(--goal-progress); height: 3px; background: var(--foreground); transition: width 260ms ease; }
+.goal-trajectory__track span::after { right: -.3rem; bottom: -.24rem; background: var(--foreground); }
+.goal-trajectory p { margin: 0; color: var(--muted); font-size: .78rem; }
+.goal-detail-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(20rem, .75fr); }
+.goal-plan, .goal-progress-panel { padding: 4rem 0; }
+.goal-plan { padding-right: clamp(2rem, 6vw, 7rem); border-right: 1px solid var(--line); }
+.goal-progress-panel { padding-left: clamp(2rem, 6vw, 7rem); }
+.goal-data-list { margin: 3rem 0; }
+.goal-explanation { padding: 1.25rem 0; border-block: 1px solid var(--line); }
+.goal-explanation summary { cursor: pointer; font-weight: 650; }
+.goal-explanation p, .goal-warnings p, .contribution-history p { color: var(--muted); font-size: .8rem; line-height: 1.7; }
+.goal-warnings { margin-top: 2.5rem; }
+.goal-warnings p { margin: 0; padding: .8rem 0; border-bottom: 1px solid var(--line); }
+.contribution-history { margin-top: 5rem; }
+.contribution-history h2 { font-size: 1.2rem; font-weight: 560; }
+.contribution-history > div { padding: 1rem 0; display: grid; grid-template-columns: 1fr auto; gap: .35rem 1rem; border-top: 1px solid var(--line); }
+.contribution-history span, .contribution-history small { color: var(--muted); font-size: .7rem; }
+.contribution-history strong { font: 500 .8rem/1.4 var(--font-plex-mono), monospace; }
+.contribution-history small { grid-column: 1 / -1; }
+
+@media (max-width: 52rem) {
+  .goal-create-layout, .goal-detail-heading, .goal-detail-grid { grid-template-columns: 1fr; }
+  .goal-list-heading { align-items: start; flex-direction: column; }
+  .goal-row { grid-template-columns: 1fr; gap: 2rem; }
+  .goal-create-note { min-height: auto; padding-bottom: 4rem; }
+  .goal-create-note dl { margin-top: 3rem; }
+  .goal-primary-number strong { margin-top: 2rem; }
+  .goal-plan { padding-right: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .goal-progress-panel { padding-left: 0; }
+  .goal-trajectory__labels { align-items: flex-start; flex-direction: column; gap: .5rem; }
+}
+
+@media (max-width: 30rem) {
+  .goal-data-list div { display: grid; gap: .45rem; }
+  .goal-data-list dd { overflow-wrap: anywhere; text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .goal-trajectory__track span { transition: none; }
+}

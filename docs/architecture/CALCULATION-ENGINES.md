@@ -15,7 +15,7 @@ Os motores são bibliotecas internas puras de domínio. Não acessam banco, rel�
 - `AssumptionSet`: inflação, retorno, custos e convenções;
 - `EngineVersion` e `FormulaVersion`.
 
-## Convenções propostas
+## Convenções implementadas no Goal Engine
 
 - Período padrão do MVP: mensal.
 - Aporte padrão: final do mês, explicitado no resultado.
@@ -152,4 +152,4 @@ Snapshots são imutáveis. Recalcular cria um novo snapshot.
 | Início versus fim do mês | Diferença conforme convenção |
 | Repetição da mesma entrada | Mesmo resultado e mesmo hash canônico |
 
-Na Fase 2, os casos conhecidos deverão ser confirmados por uma implementação ou planilha independente que não reutilize o algoritmo de produção.
+Na Fase 4, taxa zero, valor atual, meta financiada, retorno negativo, capacidade declarada, prazo inválido e momento do aporte foram cobertos por testes puros. Uma validação matemática externa que não reutilize o algoritmo de produção permanece obrigatória antes do beta.

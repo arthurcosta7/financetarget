@@ -20,6 +20,7 @@ export function AppShell({ section, children }: { section: string; children: Rea
       <nav className="app-nav" aria-label="Área autenticada">
         <p className="eyebrow">{section}</p>
         <div>
+          <Link href="/app/metas">Metas</Link>
           <Link href="/app/onboarding">Perfil financeiro</Link>
           <Link href="/app/conta">Conta e privacidade</Link>
           <button onClick={logout} type="button">Sair</button>

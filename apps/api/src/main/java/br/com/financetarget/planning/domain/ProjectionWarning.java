@@ -1,0 +1,11 @@
+package br.com.financetarget.planning.domain;
+
+public enum ProjectionWarning {
+    TARGET_ALREADY_FUNDED,
+    NEGATIVE_RETURN_ASSUMPTION,
+    INFLATION_NOT_INCLUDED,
+    FEES_NOT_INCLUDED,
+    TAXES_NOT_INCLUDED,
+    CONTRIBUTION_EXCEEDS_DECLARED_CAPACITY,
+    PROJECTION_NOT_GUARANTEE
+}

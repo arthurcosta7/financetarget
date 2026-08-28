@@ -11,7 +11,15 @@ public interface PrivacyRepository {
     record FinancialData(String recurringIncome, String essentialExpenses, String initialGoalBalance,
                          String suggestedMonthlyCapacity, String confirmedMonthlyCapacity, String currency,
                          String referenceDate) {}
-    record ExportData(AccountData account, Optional<FinancialData> financialProfile, List<ConsentData> consents) {}
+    record ContributionData(UUID id, String amount, String currency, String contributionDate, String note,
+                            Instant createdAt) {}
+    record GoalData(UUID id, String title, String goalType, String targetAmount, String currency,
+                    String targetValueBasis, String targetDate, String initialBalance,
+                    String annualInflationRate, String annualReturnRate, String contributionTiming,
+                    String plannedMonthlyContribution, String status, String engineVersion, String formulaVersion,
+                    Instant createdAt, List<ContributionData> contributions) {}
+    record ExportData(AccountData account, Optional<FinancialData> financialProfile,
+                      List<GoalData> goals, List<ConsentData> consents) {}
     record SubjectRequest(UUID id, String type, String status, Instant createdAt, Instant completedAt) {}
 
     ExportData exportOwnData(UUID userId);

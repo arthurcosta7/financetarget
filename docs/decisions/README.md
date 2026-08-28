@@ -13,6 +13,7 @@ Este diretório registra decisões relevantes e suas consequências. Decisões a
 | [0007](0007-direcao-visual-monocromatica.md) | Direção visual monocromática e invertível | Aceito | 27/08/2026 |
 | [0008](0008-baseline-tecnologica.md) | Baseline tecnológica da Fase 2 | Aceito | 27/08/2026 |
 | [0009](0009-tokens-opacos-e-entrega-simulada.md) | Tokens opacos e entrega simulada na Fase 3 | Aceito | 27/08/2026 |
+| [0010](0010-fatia-vertical-de-metas.md) | Fatia vertical de metas e snapshot inicial | Aceito | 28/08/2026 |
 
 ## Formato
 

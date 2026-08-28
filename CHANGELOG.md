@@ -6,6 +6,14 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Added
 
+- Primeira jornada de meta, da criação ao acompanhamento manual autenticado.
+- Goal Engine puro com `BigDecimal`, versões de motor e fórmula, avisos e testes determinísticos.
+- Snapshots imutáveis com hash canônico e contribuições idempotentes separadas.
+- Endpoints REST/OpenAPI 0.3, migration `V3` e tipos TypeScript para metas.
+- Interface editorial de metas com trajetória, premissas, limitações e reflow móvel.
+- Exportação LGPD ampliada para metas e contribuições do titular.
+- ADR 0010 e evidências técnicas e visuais da Fase 4.
+
 - Guia de execução na raiz com setup completo e comandos do backend pelo Maven Wrapper.
 - Plano executável e ADR proposto para a Fase 3 de identidade e onboarding.
 - Cadastro, verificação, login, cookies HttpOnly, CSRF, renovação rotativa, logout e recuperação de acesso.
@@ -46,6 +54,8 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Scripts e documentação de desenvolvimento e validação da Fase 2.
 
 ### Changed
+
+- Fase 4 aprovada e Fase 5 autorizada em 28/08/2026.
 
 - Scripts e instruções do frontend passaram a usar Corepack, sem depender de um atalho global do pnpm.
 - Fase 0 marcada como aprovada.

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { AppShell } from "@/components/AppShell";
 import { FormMessage } from "@/components/FormMessage";
@@ -99,6 +100,7 @@ export function OnboardingForm() {
           <button className="button button--primary" disabled={pending || !requirements} type="submit">
             {pending ? "Salvando…" : "Salvar ponto de partida"}
           </button>
+          {profile && <Link className="text-link" href="/app/metas/nova">Continuar para a primeira meta</Link>}
         </form>
         <aside className="calculation-note" aria-live="polite">
           <span className="hero__number">Estimativa do sistema</span>

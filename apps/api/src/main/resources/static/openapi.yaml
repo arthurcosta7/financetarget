@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: FinanceTarget API
-  version: 0.2.0
-  description: Contrato da identidade e do onboarding da Fase 3.
+  version: 0.3.0
+  description: Contrato da identidade, onboarding e primeira fatia vertical de metas.
 servers:
   - url: /api/v1
 paths:
@@ -225,6 +225,78 @@ paths:
               schema: { $ref: "#/components/schemas/DataSubjectRequest" }
         "401": { $ref: "#/components/responses/Problem" }
         "404": { $ref: "#/components/responses/Problem" }
+  /planning-spaces/{spaceId}/goals:
+    parameters:
+      - $ref: "#/components/parameters/SpaceId"
+    get:
+      operationId: listGoals
+      tags: [Goals]
+      responses:
+        "200":
+          description: Metas ativas visíveis no espaço.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Goal" }
+        "401": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+    post:
+      operationId: createGoal
+      tags: [Goals]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateGoalRequest" }
+      responses:
+        "201":
+          description: Meta e snapshot inicial criados.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Goal" }
+        "400": { $ref: "#/components/responses/Problem" }
+        "401": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+  /planning-spaces/{spaceId}/goals/{goalId}:
+    parameters:
+      - $ref: "#/components/parameters/SpaceId"
+      - $ref: "#/components/parameters/GoalId"
+    get:
+      operationId: getGoal
+      tags: [Goals]
+      responses:
+        "200":
+          description: Meta, snapshot e acompanhamento manual.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Goal" }
+        "401": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+  /planning-spaces/{spaceId}/goals/{goalId}/contributions:
+    parameters:
+      - $ref: "#/components/parameters/SpaceId"
+      - $ref: "#/components/parameters/GoalId"
+    post:
+      operationId: recordContribution
+      tags: [Goals]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ContributionRequest" }
+      responses:
+        "201":
+          description: Contribuição registrada uma única vez.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ContributionResult" }
+        "400": { $ref: "#/components/responses/Problem" }
+        "401": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+        "409": { $ref: "#/components/responses/Problem" }
 components:
   parameters:
     IdempotencyKey:
@@ -232,6 +304,16 @@ components:
       in: header
       required: true
       schema: { type: string, minLength: 1, maxLength: 128 }
+    SpaceId:
+      name: spaceId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    GoalId:
+      name: goalId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
   responses:
     Problem:
       description: Erro em formato Problem Details.
@@ -337,6 +419,91 @@ components:
         confirmedMonthlyCapacity: { type: string }
         currency: { type: string, pattern: "^[A-Z]{3}$" }
         referenceDate: { type: string, format: date }
+    Money:
+      type: object
+      required: [amount, currency]
+      properties:
+        amount: { type: string, pattern: "^-?[0-9]+(\\.[0-9]{1,2})?$" }
+        currency: { type: string, pattern: "^[A-Z]{3}$" }
+    CreateGoalRequest:
+      type: object
+      required: [goalType, title, targetAmount, targetValueBasis, targetDate, initialBalance, annualInflationRate, annualReturnRate, contributionTiming]
+      properties:
+        goalType: { type: string, enum: [HOME_DOWN_PAYMENT] }
+        title: { type: string, minLength: 2, maxLength: 120 }
+        targetAmount: { type: string, pattern: "^[0-9]+(\\.[0-9]{1,2})?$" }
+        targetValueBasis: { type: string, enum: [CURRENT_VALUE, FIXED_NOMINAL] }
+        targetDate: { type: string, format: date }
+        initialBalance: { type: string, pattern: "^[0-9]+(\\.[0-9]{1,2})?$" }
+        annualInflationRate: { type: string, pattern: "^-?[0-9]+(\\.[0-9]{1,8})?$" }
+        annualReturnRate: { type: string, pattern: "^-?[0-9]+(\\.[0-9]{1,8})?$" }
+        contributionTiming: { type: string, enum: [END_OF_MONTH, BEGINNING_OF_MONTH] }
+    GoalProjection:
+      type: object
+      required: [targetNominal, requiredMonthlyContribution, projectedValueAtTarget, estimatedCompletionDate, totalContributed, projectedGrowth, shortfallOrSurplus, projectionMonths, warnings, engineVersion, formulaVersion]
+      properties:
+        targetNominal: { $ref: "#/components/schemas/Money" }
+        requiredMonthlyContribution: { $ref: "#/components/schemas/Money" }
+        projectedValueAtTarget: { $ref: "#/components/schemas/Money" }
+        estimatedCompletionDate: { type: string, format: date }
+        totalContributed: { $ref: "#/components/schemas/Money" }
+        projectedGrowth: { $ref: "#/components/schemas/Money" }
+        shortfallOrSurplus: { $ref: "#/components/schemas/Money" }
+        projectionMonths: { type: integer, minimum: 1 }
+        warnings:
+          type: array
+          items:
+            type: string
+            enum: [TARGET_ALREADY_FUNDED, NEGATIVE_RETURN_ASSUMPTION, INFLATION_NOT_INCLUDED, FEES_NOT_INCLUDED, TAXES_NOT_INCLUDED, CONTRIBUTION_EXCEEDS_DECLARED_CAPACITY, PROJECTION_NOT_GUARANTEE]
+        engineVersion: { type: string }
+        formulaVersion: { type: string }
+    Contribution:
+      type: object
+      required: [id, amount, contributionDate, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        amount: { $ref: "#/components/schemas/Money" }
+        contributionDate: { type: string, format: date }
+        note: { type: [string, "null"], maxLength: 240 }
+        createdAt: { type: string, format: date-time }
+    Goal:
+      type: object
+      required: [id, spaceId, goalType, title, targetAmount, targetValueBasis, targetDate, initialBalance, annualInflationRate, annualReturnRate, contributionTiming, status, version, projection, currentBalance, remainingAmount, progressPercentage, contributions, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        spaceId: { type: string, format: uuid }
+        goalType: { type: string, enum: [HOME_DOWN_PAYMENT] }
+        title: { type: string }
+        targetAmount: { $ref: "#/components/schemas/Money" }
+        targetValueBasis: { type: string, enum: [CURRENT_VALUE, FIXED_NOMINAL] }
+        targetDate: { type: string, format: date }
+        initialBalance: { $ref: "#/components/schemas/Money" }
+        annualInflationRate: { type: string }
+        annualReturnRate: { type: string }
+        contributionTiming: { type: string, enum: [END_OF_MONTH, BEGINNING_OF_MONTH] }
+        status: { type: string, enum: [ACTIVE, ARCHIVED] }
+        version: { type: integer, format: int64 }
+        projection: { $ref: "#/components/schemas/GoalProjection" }
+        currentBalance: { $ref: "#/components/schemas/Money" }
+        remainingAmount: { $ref: "#/components/schemas/Money" }
+        progressPercentage: { type: string }
+        contributions:
+          type: array
+          items: { $ref: "#/components/schemas/Contribution" }
+        createdAt: { type: string, format: date-time }
+    ContributionRequest:
+      type: object
+      required: [amount, contributionDate]
+      properties:
+        amount: { type: string, pattern: "^[0-9]+(\\.[0-9]{1,2})?$" }
+        contributionDate: { type: string, format: date }
+        note: { type: string, maxLength: 240 }
+    ContributionResult:
+      type: object
+      required: [contribution, goal]
+      properties:
+        contribution: { $ref: "#/components/schemas/Contribution" }
+        goal: { $ref: "#/components/schemas/Goal" }
     ReauthenticationRequest:
       type: object
       required: [password]
@@ -353,13 +520,16 @@ components:
         completedAt: { type: [string, "null"], format: date-time }
     PersonalDataExport:
       type: object
-      required: [account, financialProfile, consents]
+      required: [account, financialProfile, goals, consents]
       properties:
         account: { $ref: "#/components/schemas/ExportedAccount" }
         financialProfile:
           oneOf:
             - { $ref: "#/components/schemas/ExportedFinancialProfile" }
             - { type: "null" }
+        goals:
+          type: array
+          items: { $ref: "#/components/schemas/ExportedGoal" }
         consents:
           type: array
           items:
@@ -390,3 +560,36 @@ components:
         confirmedMonthlyCapacity: { type: string }
         currency: { type: string, pattern: "^[A-Z]{3}$" }
         referenceDate: { type: string, format: date }
+    ExportedGoal:
+      type: object
+      required: [id, title, goalType, targetAmount, currency, targetValueBasis, targetDate, initialBalance, annualInflationRate, annualReturnRate, contributionTiming, plannedMonthlyContribution, status, engineVersion, formulaVersion, createdAt, contributions]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        goalType: { type: string }
+        targetAmount: { type: string }
+        currency: { type: string }
+        targetValueBasis: { type: string }
+        targetDate: { type: string, format: date }
+        initialBalance: { type: string }
+        annualInflationRate: { type: string }
+        annualReturnRate: { type: string }
+        contributionTiming: { type: string }
+        plannedMonthlyContribution: { type: string }
+        status: { type: string }
+        engineVersion: { type: string }
+        formulaVersion: { type: string }
+        createdAt: { type: string, format: date-time }
+        contributions:
+          type: array
+          items: { $ref: "#/components/schemas/ExportedContribution" }
+    ExportedContribution:
+      type: object
+      required: [id, amount, currency, contributionDate, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        amount: { type: string }
+        currency: { type: string }
+        contributionDate: { type: string, format: date }
+        note: { type: [string, "null"] }
+        createdAt: { type: string, format: date-time }

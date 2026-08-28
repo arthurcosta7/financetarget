@@ -244,6 +244,62 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/planning-spaces/{spaceId}/goals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        get: operations["listGoals"];
+        put?: never;
+        post: operations["createGoal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/planning-spaces/{spaceId}/goals/{goalId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+                goalId: components["parameters"]["GoalId"];
+            };
+            cookie?: never;
+        };
+        get: operations["getGoal"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/planning-spaces/{spaceId}/goals/{goalId}/contributions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+                goalId: components["parameters"]["GoalId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["recordContribution"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -325,6 +381,89 @@ export interface components {
             /** Format: date */
             referenceDate: string;
         };
+        Money: {
+            amount: string;
+            currency: string;
+        };
+        CreateGoalRequest: {
+            /** @enum {string} */
+            goalType: "HOME_DOWN_PAYMENT";
+            title: string;
+            targetAmount: string;
+            /** @enum {string} */
+            targetValueBasis: "CURRENT_VALUE" | "FIXED_NOMINAL";
+            /** Format: date */
+            targetDate: string;
+            initialBalance: string;
+            annualInflationRate: string;
+            annualReturnRate: string;
+            /** @enum {string} */
+            contributionTiming: "END_OF_MONTH" | "BEGINNING_OF_MONTH";
+        };
+        GoalProjection: {
+            targetNominal: components["schemas"]["Money"];
+            requiredMonthlyContribution: components["schemas"]["Money"];
+            projectedValueAtTarget: components["schemas"]["Money"];
+            /** Format: date */
+            estimatedCompletionDate: string;
+            totalContributed: components["schemas"]["Money"];
+            projectedGrowth: components["schemas"]["Money"];
+            shortfallOrSurplus: components["schemas"]["Money"];
+            projectionMonths: number;
+            warnings: ("TARGET_ALREADY_FUNDED" | "NEGATIVE_RETURN_ASSUMPTION" | "INFLATION_NOT_INCLUDED" | "FEES_NOT_INCLUDED" | "TAXES_NOT_INCLUDED" | "CONTRIBUTION_EXCEEDS_DECLARED_CAPACITY" | "PROJECTION_NOT_GUARANTEE")[];
+            engineVersion: string;
+            formulaVersion: string;
+        };
+        Contribution: {
+            /** Format: uuid */
+            id: string;
+            amount: components["schemas"]["Money"];
+            /** Format: date */
+            contributionDate: string;
+            note?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        Goal: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            spaceId: string;
+            /** @enum {string} */
+            goalType: "HOME_DOWN_PAYMENT";
+            title: string;
+            targetAmount: components["schemas"]["Money"];
+            /** @enum {string} */
+            targetValueBasis: "CURRENT_VALUE" | "FIXED_NOMINAL";
+            /** Format: date */
+            targetDate: string;
+            initialBalance: components["schemas"]["Money"];
+            annualInflationRate: string;
+            annualReturnRate: string;
+            /** @enum {string} */
+            contributionTiming: "END_OF_MONTH" | "BEGINNING_OF_MONTH";
+            /** @enum {string} */
+            status: "ACTIVE" | "ARCHIVED";
+            /** Format: int64 */
+            version: number;
+            projection: components["schemas"]["GoalProjection"];
+            currentBalance: components["schemas"]["Money"];
+            remainingAmount: components["schemas"]["Money"];
+            progressPercentage: string;
+            contributions: components["schemas"]["Contribution"][];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ContributionRequest: {
+            amount: string;
+            /** Format: date */
+            contributionDate: string;
+            note?: string;
+        };
+        ContributionResult: {
+            contribution: components["schemas"]["Contribution"];
+            goal: components["schemas"]["Goal"];
+        };
         ReauthenticationRequest: {
             password: string;
         };
@@ -343,6 +482,7 @@ export interface components {
         PersonalDataExport: {
             account: components["schemas"]["ExportedAccount"];
             financialProfile: components["schemas"]["ExportedFinancialProfile"] | null;
+            goals: components["schemas"]["ExportedGoal"][];
             consents: {
                 purpose: string;
                 documentVersion: string;
@@ -372,6 +512,39 @@ export interface components {
             /** Format: date */
             referenceDate: string;
         };
+        ExportedGoal: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            goalType: string;
+            targetAmount: string;
+            currency: string;
+            targetValueBasis: string;
+            /** Format: date */
+            targetDate: string;
+            initialBalance: string;
+            annualInflationRate: string;
+            annualReturnRate: string;
+            contributionTiming: string;
+            plannedMonthlyContribution: string;
+            status: string;
+            engineVersion: string;
+            formulaVersion: string;
+            /** Format: date-time */
+            createdAt: string;
+            contributions: components["schemas"]["ExportedContribution"][];
+        };
+        ExportedContribution: {
+            /** Format: uuid */
+            id: string;
+            amount: string;
+            currency: string;
+            /** Format: date */
+            contributionDate: string;
+            note?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
     };
     responses: {
         /** @description Erro em formato Problem Details. */
@@ -386,6 +559,8 @@ export interface components {
     };
     parameters: {
         IdempotencyKey: string;
+        SpaceId: string;
+        GoalId: string;
     };
     requestBodies: never;
     headers: never;
@@ -783,6 +958,117 @@ export interface operations {
             };
             401: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+        };
+    };
+    listGoals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Metas ativas visíveis no espaço. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Goal"][];
+                };
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    createGoal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateGoalRequest"];
+            };
+        };
+        responses: {
+            /** @description Meta e snapshot inicial criados. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Goal"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    getGoal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+                goalId: components["parameters"]["GoalId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Meta, snapshot e acompanhamento manual. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Goal"];
+                };
+            };
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    recordContribution: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+                goalId: components["parameters"]["GoalId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContributionRequest"];
+            };
+        };
+        responses: {
+            /** @description Contribuição registrada uma única vez. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContributionResult"];
+                };
+            };
+            400: components["responses"]["Problem"];
+            401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
         };
     };
 }

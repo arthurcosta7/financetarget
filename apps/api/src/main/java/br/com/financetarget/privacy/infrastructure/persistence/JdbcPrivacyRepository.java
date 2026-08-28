@@ -44,7 +44,34 @@ public class JdbcPrivacyRepository implements PrivacyRepository {
                         """).param("userId", userId).query((rs, row) -> new ConsentData(
                         rs.getString("purpose"), rs.getString("document_version"), rs.getString("decision"),
                         rs.getTimestamp("recorded_at").toInstant())).list();
-        return new ExportData(account, profile, consents);
+        var goals = jdbc.sql("""
+                        select g.*,s.engine_version,s.formula_version from goal g
+                        join lateral (
+                            select engine_version,formula_version from calculation_snapshot
+                            where goal_id=g.id order by created_at desc,id desc limit 1
+                        ) s on true
+                        where g.created_by=:userId order by g.created_at,g.id
+                        """).param("userId", userId).query((rs, row) -> {
+                    UUID goalId = rs.getObject("id", UUID.class);
+                    var contributions = jdbc.sql("""
+                                    select * from contribution where goal_id=:goalId and created_by=:userId
+                                    order by contribution_date,created_at,id
+                                    """).param("goalId", goalId).param("userId", userId)
+                            .query((crs, contributionRow) -> new ContributionData(crs.getObject("id", UUID.class),
+                                    crs.getBigDecimal("amount").toPlainString(), crs.getString("currency"),
+                                    crs.getDate("contribution_date").toLocalDate().toString(), crs.getString("note"),
+                                    crs.getTimestamp("created_at").toInstant())).list();
+                    return new GoalData(goalId, rs.getString("title"), rs.getString("goal_type"),
+                            rs.getBigDecimal("target_amount").toPlainString(), rs.getString("currency"),
+                            rs.getString("target_value_basis"), rs.getDate("target_date").toLocalDate().toString(),
+                            rs.getBigDecimal("initial_balance").toPlainString(),
+                            rs.getBigDecimal("annual_inflation_rate").toPlainString(),
+                            rs.getBigDecimal("annual_return_rate").toPlainString(), rs.getString("contribution_timing"),
+                            rs.getBigDecimal("planned_monthly_contribution").toPlainString(), rs.getString("status"),
+                            rs.getString("engine_version"), rs.getString("formula_version"),
+                            rs.getTimestamp("created_at").toInstant(), contributions);
+                }).list();
+        return new ExportData(account, profile, goals, consents);
     }
 
     @Override

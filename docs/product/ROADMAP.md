@@ -38,13 +38,15 @@ Cadastro, verificação, login, sessões, recuperação, perfil financeiro míni
 
 Criar e acompanhar uma meta inicial, implementar Goal Engine, snapshots, explicação das premissas e testes independentes dos cálculos.
 
-**Estado:** autorizada em 27/08/2026; em implementação.
+**Estado:** aprovada em 28/08/2026.
 
 **Gate:** jornada ponta a ponta, cálculo reproduzível e nenhuma regra financeira na UI.
 
 ## Fase 5 — Cenários e dashboard
 
 Scenario Engine, comparação, gráficos acessíveis, histórico, múltiplas metas progressivas e revisão visual responsiva.
+
+**Estado:** autorizada em 28/08/2026; em implementação.
 
 **Gate:** compreensão de projeção testada e cenários reproduzíveis.
 
