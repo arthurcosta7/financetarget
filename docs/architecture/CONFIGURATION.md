@@ -49,6 +49,10 @@ Nunca copiar produção integralmente para dev ou staging.
 - `.env.example` contém apenas nomes e exemplos não secretos;
 - configuração efetiva pode ser auditada com valores sensíveis mascarados.
 
+### Implementação da Fase 7
+
+`EnvironmentSafetyGuard` aceita somente `dev`, `test`, `staging` ou `production`. Em staging/produção, o processo não inicia com cookies inseguros, origem local/não HTTPS ou qualquer flag de integração ativa. O profile `staging` carrega apenas migrations base, graceful shutdown, logs ECS e sampling configurável. `.env.staging.example` contém marcadores, nunca credenciais funcionais.
+
 ## Segredos
 
 - nunca versionados;

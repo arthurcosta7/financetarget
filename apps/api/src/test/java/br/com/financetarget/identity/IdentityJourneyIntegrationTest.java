@@ -67,7 +67,7 @@ class IdentityJourneyIntegrationTest {
     @BeforeEach
     void clean() {
         jdbc.sql("""
-                truncate audit_event,data_subject_request,consent_record,financial_profile,space_member,
+                truncate authentication_attempt_window,audit_event,data_subject_request,consent_record,financial_profile,space_member,
                 planning_space,access_token,refresh_token,session_family,identity_token,credential,app_user cascade
                 """).update();
         messages.clear();
@@ -174,6 +174,25 @@ class IdentityJourneyIntegrationTest {
                 .andExpect(status().isOk()).andExpect(cookie().exists("XSRF-TOKEN"));
         Cookie[] cookies = verifiedSession("eva@example.test", "Eva");
         assertThat(cookies).hasSize(2);
+    }
+
+    @Test
+    void persistsAuthenticationRateLimitsWithoutStoringTheIdentifier() throws Exception {
+        for (int attempt = 0; attempt < 10; attempt++) {
+            mvc.perform(withCsrf(post("/api/v1/auth/sessions").contentType(MediaType.APPLICATION_JSON)
+                            .content(json.writeValueAsString(java.util.Map.of(
+                                    "email", "limit@example.test", "password", PASSWORD)))))
+                    .andExpect(status().isUnauthorized());
+        }
+        mvc.perform(withCsrf(post("/api/v1/auth/sessions").contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsString(java.util.Map.of(
+                                "email", "limit@example.test", "password", PASSWORD)))))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.title").value("RATE_LIMITED"));
+
+        String storedKey = jdbc.sql("select key_hash from authentication_attempt_window")
+                .query(String.class).single();
+        assertThat(storedKey).hasSize(64).doesNotContain("limit@example.test");
     }
 
     private org.springframework.test.web.servlet.ResultActions register(String email, String name) throws Exception {

@@ -1,0 +1,42 @@
+groups:
+  - name: financetarget-api
+    rules:
+      - alert: FinanceTargetApiUnavailable
+        expr: up{job="financetarget-api"} == 0
+        for: 2m
+        labels: { severity: critical, owner: platform }
+        annotations:
+          summary: API indisponível
+          runbook: docs/operations/INCIDENT-RESPONSE.md#api-indisponivel
+      - alert: FinanceTargetHighServerErrorRate
+        expr: |
+          sum(rate(http_server_requests_seconds_count{job="financetarget-api",status=~"5.."}[5m]))
+          / clamp_min(sum(rate(http_server_requests_seconds_count{job="financetarget-api"}[5m])), 0.001) > 0.02
+        for: 10m
+        labels: { severity: critical, owner: backend }
+        annotations:
+          summary: Taxa de respostas 5xx acima de 2%
+          runbook: docs/operations/INCIDENT-RESPONSE.md#erros-5xx
+      - alert: FinanceTargetHighP95Latency
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le) (rate(http_server_requests_seconds_bucket{job="financetarget-api"}[5m]))) > 0.5
+        for: 10m
+        labels: { severity: warning, owner: backend }
+        annotations:
+          summary: p95 da API acima de 500 ms
+          runbook: docs/operations/INCIDENT-RESPONSE.md#latencia
+      - alert: FinanceTargetDatabasePoolSaturated
+        expr: hikaricp_connections_active / clamp_min(hikaricp_connections_max, 1) > 0.9
+        for: 5m
+        labels: { severity: warning, owner: platform }
+        annotations:
+          summary: Pool de banco acima de 90%
+          runbook: docs/operations/INCIDENT-RESPONSE.md#banco
+      - alert: FinanceTargetBackupStale
+        expr: time() - financetarget_backup_last_success_timestamp_seconds > 90000
+        for: 15m
+        labels: { severity: critical, owner: platform }
+        annotations:
+          summary: Backup válido não registrado nas últimas 25 horas
+          runbook: docs/operations/BACKUP-RESTORE.md

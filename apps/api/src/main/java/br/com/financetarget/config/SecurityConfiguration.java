@@ -57,9 +57,17 @@ public class SecurityConfiguration {
                                 "/api/v1/integrations/payments/webhooks/mock")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health/**", "/openapi.yaml").permitAll()
+                        .requestMatchers(request -> HttpMethod.GET.matches(request.getMethod())
+                                && "/actuator/prometheus".equals(request.getRequestURI())
+                                && isLoopback(request.getRemoteAddr())).permitAll()
+                        .requestMatchers("/actuator/prometheus").denyAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(accessTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    private static boolean isLoopback(String address) {
+        return "127.0.0.1".equals(address) || "0:0:0:0:0:0:0:1".equals(address) || "::1".equals(address);
     }
 
     @Bean

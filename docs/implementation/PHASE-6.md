@@ -52,4 +52,4 @@ Ficaram excluídos: cobrança, envio, SDK externo, credencial real, conexão ban
 
 ## Gate
 
-Implementação e validação técnica concluídas em 28/08/2026. A Fase 6 aguarda aprovação explícita antes da Fase 7.
+Fase 6 aprovada explicitamente em 28/08/2026. O ADR 0012 foi aceito e a Fase 7 foi autorizada.

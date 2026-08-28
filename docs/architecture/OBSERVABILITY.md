@@ -6,7 +6,9 @@ Permitir detectar falhas, investigar jornadas e medir capacidade sem registrar d
 
 ## Padrão
 
-Usar OpenTelemetry para traces e métricas quando a implementação começar. Bibliotecas de observabilidade ficam em adaptadores; o domínio emite eventos sem depender de fornecedor.
+Usar OpenTelemetry para traces e Micrometer/Prometheus para métricas. Bibliotecas de observabilidade ficam em adaptadores; o domínio permanece sem depender de fornecedor.
+
+Na Fase 7, a API passou a emitir logs ECS em staging, incluir `requestId`, `traceId` e `spanId`, aceitar somente request IDs em formato allowlisted e gerar UUID quando inválidos. O endpoint Prometheus é acessível apenas por loopback; health e OpenAPI permanecem públicos sem detalhes sensíveis.
 
 ## Logs
 
@@ -61,6 +63,8 @@ Propagar contexto entre frontend, API, banco e adaptadores. Spans usam nomes de 
 - cálculo produz taxa de erro ou aviso anômalo após release.
 
 Todo alerta deve ter severidade, responsável, janela, condição de recuperação e runbook. Evitar alertas para eventos sem ação operacional.
+
+As cinco regras iniciais estão em `ops/observability/prometheus-rules.yml` e são validadas por `promtool` na CI. Collector, armazenamento de séries, Alertmanager e canal de plantão ainda não foram implantados.
 
 ## Auditoria versus logging
 

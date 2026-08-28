@@ -1,6 +1,6 @@
 # ADR 0012 — Catálogo interno e webhook mock assinado
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 28/08/2026
 
 ## Contexto
@@ -42,4 +42,4 @@ Revisar ao validar modelo comercial, definir downgrade, contratar provedor, cria
 
 ## Aprovação
 
-Aguardando aprovação explícita da Fase 6.
+Aceito após aprovação explícita da Fase 6 em 28/08/2026.

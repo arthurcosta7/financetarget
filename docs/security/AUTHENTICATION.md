@@ -27,11 +27,13 @@ Autenticação local no backend com Spring Security para e-mail e senha, mantend
 - CSRF usa cookie `XSRF-TOKEN`, cabeçalho explícito e tratamento próprio para SPA;
 - CSP do frontend usa nonce por requisição, `strict-dynamic` e origem da API configurada;
 - respostas de cadastro duplicado e recuperação são neutras;
-- rate limit inicial usa identificador normalizado em hash e janela configurável local;
+- rate limit usa identificador normalizado em hash e janela configurável persistida no PostgreSQL, compartilhada entre instâncias;
 - exportação e exclusão exigem nova confirmação da senha;
 - nenhum adaptador de mensagem real está habilitado.
 
-Detalhes e alternativas estão no ADR 0009, ainda proposto até o gate da Fase 3.
+Detalhes e alternativas estão no ADR 0009, aceito após o gate da Fase 3.
+
+Na Fase 7, a janela local foi substituída por `authentication_attempt_window`. A chave persistida é SHA-256 de ação e identificador normalizado, possui expiração e não contém o e-mail. O incremento usa transação independente para que uma falha de login não reverta a contagem.
 
 ## Senhas
 

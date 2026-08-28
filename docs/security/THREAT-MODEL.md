@@ -44,7 +44,7 @@ Toda entrada do navegador e provedor é não confiável. O frontend melhora a ex
 
 | ID | Ameaça | Impacto | Probabilidade inicial | Mitigações propostas | Risco residual |
 |---|---|---|---|---|---|
-| T-001 | Account takeover | Crítico | Média | Argon2id, rate limit, rotação, alertas, MFA futuro | Médio |
+| T-001 | Account takeover | Crítico | Média | Argon2id, rate limit distribuído, rotação, alertas, MFA futuro | Médio |
 | T-002 | IDOR entre espaços | Crítico | Média | autorização por espaço/recurso, queries escopadas, testes negativos | Baixo/médio |
 | T-003 | Parceiro mantém acesso após remoção | Alto | Média | revogação de associação, invalidação de cache e teste de sessão | Baixo |
 | T-004 | Convite roubado ou encaminhado | Alto | Média | token em hash, expiração, destinatário vinculado e uso único | Baixo/médio |
@@ -56,11 +56,11 @@ Toda entrada do navegador e provedor é não confiável. O frontend melhora a ex
 | T-010 | Falsa precisão induz decisão | Alto | Média | premissas visíveis, avisos, testes de compreensão | Médio |
 | T-011 | Webhook falso/replay | Alto | Média futura | HMAC antes do parsing, timestamp, idempotência e reconciliação; controles provados no mock | Baixo/médio |
 | T-012 | Exposição por analytics | Alto | Média | allowlist de propriedades e proibição de valores financeiros | Baixo |
-| T-013 | Backup acessível ou irrecuperável | Crítico | Baixa/média | criptografia, acesso mínimo, restore testado | Médio até teste |
+| T-013 | Backup acessível ou irrecuperável | Crítico | Baixa/média | AES-256-GCM, chave separada, restore V6 isolado testado | Baixo/médio |
 | T-014 | Abuso de exportação | Alto | Média | reautenticação, rate limit, link curto e auditado | Baixo/médio |
 | T-015 | Exclusão apaga dados do parceiro | Alto | Média | separação por espaço, workflow e revisão de impacto | Médio |
 | T-016 | SSRF em integração futura | Alto | Baixa/média | destinos allowlisted, egress e validação de URL | Baixo |
-| T-017 | Dependência comprometida | Alto | Média | lockfiles, SBOM, scanning, atualização controlada | Médio |
+| T-017 | Dependência comprometida | Alto | Média | lockfiles, SBOM Maven, pnpm/OSV na CI e atualização controlada | Baixo/médio |
 | T-018 | Operador interno consulta dados | Alto | Baixa/média | privilégio mínimo, acesso just-in-time e auditoria | Médio |
 
 ## Abuso específico de colaboração
@@ -105,3 +105,13 @@ Atualizar antes de:
 - canal de notificação real;
 - painel administrativo;
 - beta e produção.
+
+## Revisão da Fase 7
+
+- O rate limit deixou de depender da memória de uma instância; a chave pseudonimizada expira no PostgreSQL.
+- Staging/produção falham no startup com cookies, CORS ou flags inseguros.
+- Métricas são técnicas, o endpoint é restrito a loopback e IDs de correlação passam por allowlist.
+- Backup criptografado, restauração V6 e rollback do binário foram exercitados sem alterar o banco original.
+- SBOM e scanners removeram os achados conhecidos da baseline.
+
+Persistem: fonte de senhas comprometidas, MFA, infraestrutura externa de alertas/cofre, revisão independente e controles de operador antes de dados reais.

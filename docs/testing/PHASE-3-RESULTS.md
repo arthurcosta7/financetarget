@@ -51,7 +51,7 @@ O cadastro foi inspecionado no navegador real em 1440 × 900 e 320 × 800, nos t
 
 ## Limitações conhecidas
 
-- rate limit é local à instância e precisa de armazenamento compartilhado antes de escalar horizontalmente;
+- na Fase 3, o rate limit era local à instância; a pendência foi resolvida com persistência compartilhada na Fase 7;
 - verificação de senha comprometida ainda não possui fonte externa aprovada;
 - entrega de verificação e recuperação é apenas simulada em `dev` e testes;
 - exclusão física permanece bloqueada pelas regras abertas de espaços compartilhados;

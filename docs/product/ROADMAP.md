@@ -54,13 +54,15 @@ Scenario Engine, comparação, gráficos acessíveis, histórico, múltiplas met
 
 Entitlements, PaymentsHub mock, NotificationHub mock, webhooks idempotentes, preferências, feature flags e contratos dos demais hubs.
 
-**Estado:** concluída tecnicamente em 28/08/2026; aguardando aprovação.
+**Estado:** aprovada em 28/08/2026.
 
 **Gate:** nenhum provedor real no domínio e falhas simuláveis.
 
 ## Fase 7 — Hardening e staging
 
 Staging, testes de carga, observabilidade, alertas, backups, restauração, rollback, auditoria de segurança, runbooks e revisão LGPD.
+
+**Estado:** concluída tecnicamente em 28/08/2026; aguardando aprovação.
 
 **Gate:** vulnerabilidades críticas resolvidas e operação recuperável demonstrada.
 

@@ -132,6 +132,16 @@ Eventos não incluem renda, patrimônio, texto livre de meta, título personaliz
 
 Avaliar formalmente a necessidade antes do beta, considerando perfil financeiro, colaboração, escala, integrações e potenciais efeitos de decisões baseadas em projeções.
 
+## Revisão técnica da Fase 7
+
+- staging usa somente dados sintéticos e não recebe cópia de produção;
+- logs, métricas e traces proíbem valores financeiros, payloads, tokens e texto livre;
+- rate limit persiste apenas hash técnico com retenção curta pela janela;
+- backups de dev/staging são criptografados e restaurados somente em banco isolado;
+- nenhuma plataforma externa, analytics, canal de mensagem ou operador novo foi contratado.
+
+Essa revisão reduz risco técnico, mas não define bases legais, prazos ou RIPD. A revisão jurídica qualificada continua como gate do beta.
+
 ## Questões para revisão qualificada
 
 1. papel exato da empresa como agente de tratamento;

@@ -2,7 +2,7 @@
 
 ## Resumo
 
-- Fase atual: **Fase 6 — assinaturas, notificações e hubs simulados**.
+- Fase atual: **Fase 7 — hardening e staging**.
 - Estado: **concluída tecnicamente em 28/08/2026; aguardando aprovação**.
 - Aplicação implementada: identidade, sessões, onboarding, privacidade, metas, motores, dashboard, assinatura canônica, preferências e hubs simulados.
 - Integrações reais: não.
@@ -90,7 +90,7 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 6 concluiu catálogo e entitlements internos, checkout e webhook mock, preferências, flags e contratos dos hubs. O gate exige aprovação explícita; a Fase 7 não está autorizada. Integrações, pagamentos, notificações reais e deploy continuam fora do escopo.
+A Fase 7 concluiu hardening, staging sintético, observabilidade, carga, auditoria, backup/restauração e rollback compatível. O gate exige aprovação explícita; a Fase 8 não está autorizada. Beta, dados reais, integrações, pagamentos, notificações reais e deploy continuam fora do escopo.
 
 ## Entregáveis da Fase 3
 
@@ -201,6 +201,37 @@ Executadas em 28/08/2026:
 
 Evidências detalhadas estão em `docs/testing/PHASE-6-RESULTS.md`.
 
+Fase 6 aprovada pelo usuário em 28/08/2026. O ADR 0012 foi aceito e a Fase 7 foi autorizada.
+
+## Entregáveis da Fase 7
+
+| Entregável | Estado | Fonte |
+|---|---|---|
+| Staging fail-closed | Concluído | `application-staging.yml`, `EnvironmentSafetyGuard` |
+| Rate limit distribuído | Concluído | `authentication_attempt_window`, repositório JDBC |
+| Observabilidade | Concluído | Micrometer, OpenTelemetry, Prometheus, correlação |
+| Alertas | Concluído | `ops/observability/prometheus-rules.yml` |
+| Auditoria de dependências e SBOM | Concluído | Maven CycloneDX, pnpm audit, OSV Scanner |
+| Backup e restauração | Concluído | `backup-db.ps1`, `verify-db-restore.ps1` |
+| Smoke e carga | Concluído | `staging-smoke.ps1`, `load-smoke.mjs` |
+| Runbooks | Concluído | `docs/operations/` |
+| Revisão LGPD e threat model | Concluído tecnicamente | `docs/security/` |
+| Evidência e decisão | Concluído | `docs/testing/PHASE-7-RESULTS.md`, ADR 0013 proposto |
+
+## Validações da Fase 7
+
+Executadas em 28/08/2026:
+
+- 29 testes backend e 12 frontend, lint, TypeScript e builds sem falha;
+- staging sintético no schema V6, sem seeds ou flags externas;
+- 31.446 requests em 10 s, p95 4,67 ms e zero erros;
+- SBOM de 82 componentes, pnpm audit e OSV sem achados conhecidos após atualização;
+- cinco regras Prometheus validadas;
+- backup AES-256-GCM restaurado em banco V6 isolado;
+- artefato `b7a9924` saudável sobre schema V6.
+
+Evidências detalhadas estão em `docs/testing/PHASE-7-RESULTS.md`.
+
 ## Validações da Fase 3
 
 Executadas em 27/08/2026:
@@ -253,7 +284,9 @@ Evidências detalhadas estão em `docs/testing/PHASE-2-RESULTS.md`.
 
 ## Questões abertas
 
-1. Rate limit distribuído e fonte de senhas comprometidas precisam ser definidos antes do beta.
+1. A fonte de senhas comprometidas precisa ser definida antes do beta.
 2. ESLint 9 é uma exceção temporária de compatibilidade; migrar quando os plugins usados pelo Next.js declararem suporte ao ESLint 10.
 3. Exclusão e saída de um dos membros de espaço compartilhado continuam aguardando validação antes da remoção física.
 4. A validação matemática independente por especialista financeiro permanece obrigatória antes do beta.
+5. Plataforma de staging externa, cofre, collector/Alertmanager e agenda de backup exigem escolha e autorização.
+6. Revisão jurídica, RIPD e responsáveis operacionais precisam estar definidos antes do beta.

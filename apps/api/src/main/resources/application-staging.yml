@@ -1,0 +1,22 @@
+spring:
+  flyway:
+    locations: classpath:db/migration
+  lifecycle:
+    timeout-per-shutdown-phase: ${APP_SHUTDOWN_TIMEOUT:20s}
+
+server:
+  shutdown: graceful
+
+logging:
+  structured:
+    format:
+      console: ecs
+
+management:
+  tracing:
+    sampling:
+      probability: ${MANAGEMENT_TRACING_SAMPLING_PROBABILITY:0.1}
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true

@@ -6,6 +6,14 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Added
 
+- Perfil staging fail-closed, sem seed de desenvolvimento e com logs ECS.
+- Rate limit de autenticação distribuído no PostgreSQL sem persistir e-mail.
+- Métricas Prometheus, tracing OpenTelemetry e correlação por request ID validado.
+- Regras de alerta, smoke de staging, carga sintética e runbooks operacionais.
+- SBOM CycloneDX, auditoria pnpm/OSV e validação Prometheus na CI.
+- Backup AES-256-GCM, restauração isolada e ensaio de rollback compatível.
+- ADR 0013 e evidências da Fase 7.
+
 - Catálogo interno de planos e entitlements sem preços hardcoded.
 - PaymentsHub e NotificationHub com adaptadores exclusivamente simulados.
 - Checkout mock idempotente e webhook HMAC com janela antirreplay.
@@ -71,6 +79,10 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Scripts e documentação de desenvolvimento e validação da Fase 2.
 
 ### Changed
+
+- Fase 6 aprovada, ADR 0012 aceito e Fase 7 autorizada em 28/08/2026.
+- Dependências Jackson, OpenTelemetry, Log4j e PostgreSQL JDBC atualizadas após auditoria do SBOM.
+- Fase 7 concluída tecnicamente em 28/08/2026 e movida para o gate de aprovação.
 
 - Fase 5 aprovada, ADR 0011 aceito e Fase 6 autorizada em 28/08/2026.
 - Fase 6 concluída tecnicamente em 28/08/2026 e movida para o gate de aprovação.

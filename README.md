@@ -4,7 +4,7 @@ SaaS brasileiro de planejamento financeiro orientado a metas. O produto transfor
 
 ## Estado atual
 
-A Fase 5 está tecnicamente concluída e aguarda aprovação. O projeto já possui identidade, onboarding financeiro, privacidade inicial, cinco tipos progressivos de meta, Goal Engine e Scenario Engine puros, snapshots imutáveis, contribuições manuais, dashboard, comparação acessível, frontend responsivo, API e PostgreSQL. Colaboração operacional, integrações reais, pagamentos e deploy ainda não foram implementados.
+A Fase 7 está tecnicamente concluída e aguarda aprovação. O projeto já possui identidade, onboarding financeiro, privacidade inicial, metas, Goal Engine e Scenario Engine, dashboard, assinaturas e notificações simuladas, staging fail-closed, observabilidade, auditoria de dependências e recuperação testada. Colaboração operacional, integrações reais, pagamentos, beta e deploy externo ainda não foram implementados.
 
 ## Stack
 
@@ -126,6 +126,17 @@ Na raiz do projeto:
 
 O script usa `corepack pnpm` para regenerar os tipos a partir do OpenAPI, executar lint, verificação TypeScript, testes e build do frontend, e então roda `mvnw.cmd verify` no backend.
 
+Para os gates de segurança e observabilidade da Fase 7:
+
+```powershell
+.\scripts\security-audit.ps1
+.\scripts\validate-observability.ps1
+```
+
+Ambos usam Docker para ferramentas fixadas por digest. O primeiro também gera o SBOM Maven.
+
+Se um banco `dev` muito antigo acusar checksum de migration, não execute `flyway repair` automaticamente. Preserve o volume e consulte [Operação de staging](docs/operations/STAGING.md) e [Backup e restauração](docs/operations/BACKUP-RESTORE.md); ambientes sintéticos descartáveis devem ser recriados a partir das migrations versionadas.
+
 ## Encerramento
 
 Interrompa frontend e backend com `Ctrl+C`. Para parar o banco sem apagar o volume local:
@@ -157,9 +168,13 @@ compose.yaml  PostgreSQL local
 - [Autenticação](docs/security/AUTHENTICATION.md)
 - [Threat model](docs/security/THREAT-MODEL.md)
 - [Registro de decisões](docs/decisions/README.md)
-- [Escopo da Fase 3](docs/implementation/PHASE-3.md)
-- [Resultados de validação da Fase 3](docs/testing/PHASE-3-RESULTS.md)
+- [Escopo da Fase 7](docs/implementation/PHASE-7.md)
+- [Resultados da Fase 7](docs/testing/PHASE-7-RESULTS.md)
+- [Operação de staging](docs/operations/STAGING.md)
+- [Resposta a incidentes](docs/operations/INCIDENT-RESPONSE.md)
+- [Backup e restauração](docs/operations/BACKUP-RESTORE.md)
+- [Release e rollback](docs/operations/RELEASE-ROLLBACK.md)
 
 ## Regra de evolução
 
-O desenvolvimento é conduzido por fases. Uma fase só avança após revisão dos entregáveis, validações aplicáveis, atualização da documentação e aprovação explícita. A Fase 4 ainda não está autorizada.
+O desenvolvimento é conduzido por fases. Uma fase só avança após revisão dos entregáveis, validações aplicáveis, atualização da documentação e aprovação explícita. A Fase 8 ainda não está autorizada.

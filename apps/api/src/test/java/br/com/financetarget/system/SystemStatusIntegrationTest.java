@@ -12,7 +12,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,7 +53,7 @@ class SystemStatusIntegrationTest {
                 .andExpect(header().string("Cache-Control", "no-store"))
                 .andExpect(jsonPath("$.status").value("UP"))
                 .andExpect(jsonPath("$.database.status").value("UP"))
-                .andExpect(jsonPath("$.database.schemaVersion").value("5"));
+                .andExpect(jsonPath("$.database.schemaVersion").value("6"));
     }
 
     @Test
@@ -71,5 +73,27 @@ class SystemStatusIntegrationTest {
                         .header("Origin", "https://untrusted.example"))
                 .andExpect(status().isForbidden())
                 .andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
+    }
+
+    @Test
+    void propagatesOnlySafeRequestIdentifiersAndKeepsMetricsLocal() throws Exception {
+        mockMvc.perform(get("/actuator/health/liveness").header("X-Request-ID", "phase7-smoke-1"))
+                .andExpect(status().isOk()).andExpect(header().string("X-Request-ID", "phase7-smoke-1"));
+
+        mockMvc.perform(get("/actuator/health/readiness").header("X-Request-ID", "invalid id with spaces"))
+                .andExpect(status().isOk()).andExpect(header().exists("X-Request-ID"))
+                .andExpect(header().string("X-Request-ID", org.hamcrest.Matchers.not("invalid id with spaces")));
+
+        mockMvc.perform(get("/actuator/prometheus").with(request -> {
+                    request.setRemoteAddr("198.51.100.20");
+                    return request;
+                })).andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/actuator/prometheus").with(user("authenticated-user")).with(request -> {
+                    request.setRemoteAddr("198.51.100.20");
+                    return request;
+                })).andExpect(status().isForbidden());
+        mockMvc.perform(get("/actuator/prometheus"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("http_server_requests_seconds")));
     }
 }

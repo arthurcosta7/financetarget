@@ -26,15 +26,19 @@ O arquivo fonte é `apps/api/src/main/resources/static/openapi.yaml`. Após qual
 
 ## Configuração
 
-Variáveis obrigatórias falham no startup quando ausentes. Dev, staging e produção usam o mesmo artefato e valores injetados por ambiente. Segredos reais não pertencem a `.env`, ao repositório, a imagens ou a logs.
+Variáveis obrigatórias falham no startup quando ausentes. Dev, staging e produção usam o mesmo artefato e valores injetados por ambiente. Segredos reais não pertencem a `.env`, ao repositório, a imagens ou a logs. O perfil staging é reproduzível localmente, mas nenhum ambiente externo foi provisionado.
 
 O profile `dev` acrescenta o seed sintético e uma caixa efêmera de mensagens de identidade. Após cadastrar um e-mail exclusivamente sintético, consulte `GET /api/v1/dev/identity-messages/latest?email=...` para obter o código de verificação. O mesmo fluxo vale para recuperação. Esse endpoint não existe fora de `dev`, não integra provedor e não deve receber dados reais.
 
-Moeda inicial, fuso de negócio, origem CORS/API, nomes e durações dos cookies e versões dos documentos são configuração de ambiente. `APP_AUTH_SECURE_COOKIES` só pode ser `false` no desenvolvimento HTTP local. Staging e produção não foram provisionados.
+Moeda inicial, fuso de negócio, origem CORS/API, nomes e durações dos cookies e versões dos documentos são configuração de ambiente. `APP_AUTH_SECURE_COOKIES` só pode ser `false` no desenvolvimento HTTP local. Staging/produção rejeitam origem não HTTPS, cookies inseguros e flags de integração ativas.
 
 Os hubs simulados da Fase 6 permanecem desligados por padrão. No profile `dev`, habilite somente `APP_FEATURE_PAYMENTS_MOCK` e `APP_FEATURE_NOTIFICATIONS_MOCK` quando precisar testar a jornada local. O segredo `APP_MOCK_PAYMENT_WEBHOOK_SECRET` deve ser longo, sintético e exclusivo do ambiente; o mock não cobra, não envia mensagens e não é um adaptador de produção. As flags de Open Finance, fidelidade, viagens e financiamentos apenas expõem disponibilidade planejada e não habilitam integrações.
 
 Testes usam PostgreSQL efêmero e mensagens capturadas em memória. Tokens e senhas não são registrados em logs.
+
+## Banco local anterior às migrations consolidadas
+
+Flyway trata migrations aplicadas como imutáveis. Se um volume sintético antigo reportar checksum divergente, não use `flyway repair` sem comparar schema e conteúdo. Faça backup, preserve qualquer dado de teste necessário e recrie conscientemente um banco sintético vazio. O perfil staging deve sempre usar um PostgreSQL isolado, conforme `docs/operations/STAGING.md`.
 
 ## Encerramento local
 
