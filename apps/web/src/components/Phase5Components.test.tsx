@@ -6,7 +6,7 @@ import { ScenarioPlanner } from "./ScenarioPlanner";
 import type { Goal, ScenarioComparison } from "@/lib/goals";
 
 const push = vi.fn();
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/app/inicio", useRouter: () => ({ push }) }));
 
 const profile = { spaceId: "11111111-1111-1111-1111-111111111111", initialGoalBalance: "10000.00", confirmedMonthlyCapacity: "2000.00", currency: "BRL" };
 const goal: Goal = {
@@ -33,9 +33,11 @@ describe("dashboard e cenários", () => {
   it("mostra múltiplas metas usando o progresso calculado pelo backend", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(jsonResponse(profile)).mockResolvedValueOnce(jsonResponse([goal]));
     render(<Dashboard />);
-    expect(await screen.findByRole("heading", { name: "Viagem longa" })).toBeInTheDocument();
-    expect(screen.getByLabelText("16.67% concluído")).toBeInTheDocument();
-    expect(screen.getByText("Viagem")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Progresso por meta" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Comparação do percentual concluído de cada meta")).toBeInTheDocument();
+    expect(screen.getAllByText("Viagem longa")).toHaveLength(3);
+    expect(screen.getByText("16.67%")).toBeInTheDocument();
+    expect(screen.getByText(/Viagem · agosto de 2029/)).toBeInTheDocument();
   });
 
   it("compara a base, exibe delta e envia somente premissas declaradas", async () => {

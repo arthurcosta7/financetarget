@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { IdentityForm } from "./IdentityForms";
 
 const push = vi.fn();
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/entrar", useRouter: () => ({ push }) }));
 
 describe("IdentityForm", () => {
   afterEach(() => {
@@ -51,5 +51,21 @@ describe("IdentityForm", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("E-mail ou senha inválidos.");
     expect(push).not.toHaveBeenCalled();
+  });
+
+  it("solicita novo link de verificação com resposta neutra", async () => {
+    document.cookie = "XSRF-TOKEN=csrf-sintetico; path=/";
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response(null, { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        message: "Se existir uma conta pendente, enviaremos uma nova mensagem de verificação.",
+      }), { status: 202, headers: { "Content-Type": "application/json" } }));
+
+    render(<IdentityForm mode="request-verification" />);
+    fireEvent.change(screen.getByLabelText("E-mail"), { target: { value: "ana@example.test" } });
+    fireEvent.click(screen.getByRole("button", { name: "Reenviar verificação" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent("Se existir uma conta pendente");
+    expect(fetchMock.mock.calls[1]?.[0]).toContain("/api/v1/auth/verification-requests");
   });
 });

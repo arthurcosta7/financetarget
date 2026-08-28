@@ -1,6 +1,7 @@
 package br.com.financetarget.identity.infrastructure.messaging;
 
 import br.com.financetarget.identity.application.IdentityMessagePort;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Profile({"dev", "test"})
+@ConditionalOnProperty(name = "app.integrations.resend.enabled", havingValue = "false", matchIfMissing = true)
 public class InMemoryIdentityMessageAdapter implements IdentityMessagePort {
     public record Message(String kind, String token, Instant capturedAt) {}
 

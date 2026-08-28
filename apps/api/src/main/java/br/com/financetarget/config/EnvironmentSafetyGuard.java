@@ -15,22 +15,24 @@ public class EnvironmentSafetyGuard {
     private final CorsProperties cors;
     private final AuthProperties auth;
     private final FeatureFlagProperties features;
+    private final ResendProperties resend;
 
     public EnvironmentSafetyGuard(@Value("${app.environment}") String environment, CorsProperties cors,
-                                  AuthProperties auth, FeatureFlagProperties features) {
+                                  AuthProperties auth, FeatureFlagProperties features, ResendProperties resend) {
         this.environment = environment;
         this.cors = cors;
         this.auth = auth;
         this.features = features;
+        this.resend = resend;
     }
 
     @PostConstruct
     void validate() {
-        validate(environment, cors, auth, features);
+        validate(environment, cors, auth, features, resend);
     }
 
     static void validate(String environment, CorsProperties cors, AuthProperties auth,
-                         FeatureFlagProperties features) {
+                         FeatureFlagProperties features, ResendProperties resend) {
         if (!SUPPORTED.contains(environment)) {
             throw new IllegalStateException("APP_ENV deve identificar um ambiente suportado.");
         }
@@ -40,6 +42,7 @@ public class EnvironmentSafetyGuard {
         if (auth.minimumPasswordLength() < 15 || auth.maximumPasswordLength() < auth.minimumPasswordLength()) {
             throw new IllegalStateException("A política de senha configurada é insegura.");
         }
+        validateResend(environment, resend);
         if (!Set.of("staging", "production").contains(environment)) return;
         if (!auth.secureCookies()) {
             throw new IllegalStateException("Cookies seguros são obrigatórios fora de dev e test.");
@@ -52,6 +55,37 @@ public class EnvironmentSafetyGuard {
                 || features.autoFinancing()) {
             throw new IllegalStateException("Integrações não aprovadas devem permanecer desligadas neste ambiente.");
         }
+    }
+
+    private static void validateResend(String environment, ResendProperties resend) {
+        if (!resend.enabled()) return;
+        if (resend.apiKey() == null || !resend.apiKey().startsWith("re_") || resend.apiKey().length() < 12) {
+            throw new IllegalStateException("A chave do Resend está ausente ou inválida.");
+        }
+        if (containsLineBreak(resend.fromEmail()) || resend.fromEmail() == null
+                || !resend.fromEmail().contains("@")) {
+            throw new IllegalStateException("O remetente do Resend está ausente ou inválido.");
+        }
+        if (resend.fromName() == null || resend.fromName().isBlank() || containsLineBreak(resend.fromName())) {
+            throw new IllegalStateException("O nome do remetente do Resend está ausente ou inválido.");
+        }
+        if (resend.endpoint() == null || !"https".equalsIgnoreCase(resend.endpoint().getScheme())) {
+            throw new IllegalStateException("O endpoint do Resend deve usar HTTPS.");
+        }
+        if (resend.frontendBaseUrl() == null || resend.frontendBaseUrl().getHost() == null
+                || (Set.of("staging", "production").contains(environment)
+                && !isPublicHttps(resend.frontendBaseUrl().toString()))) {
+            throw new IllegalStateException("A URL pública usada nos e-mails é inválida para o ambiente.");
+        }
+        if (resend.connectTimeout() == null || resend.connectTimeout().isNegative()
+                || resend.connectTimeout().isZero() || resend.readTimeout() == null
+                || resend.readTimeout().isNegative() || resend.readTimeout().isZero()) {
+            throw new IllegalStateException("Os timeouts do Resend devem ser positivos.");
+        }
+    }
+
+    private static boolean containsLineBreak(String value) {
+        return value != null && (value.contains("\r") || value.contains("\n"));
     }
 
     private static boolean isPublicHttps(String origin) {

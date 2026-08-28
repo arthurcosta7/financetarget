@@ -6,7 +6,7 @@ import { GoalDetail } from "./GoalDetail";
 import type { Goal } from "@/lib/goals";
 
 const push = vi.fn();
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/app/metas", useRouter: () => ({ push }) }));
 
 const profile = { spaceId: "11111111-1111-1111-1111-111111111111", initialGoalBalance: "24000.00", confirmedMonthlyCapacity: "2500.00", currency: "BRL" };
 const goal: Goal = {

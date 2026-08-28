@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: FinanceTarget API
-  version: 0.5.0
-  description: Contrato do MVP manual, cenários, assinaturas e hubs simulados.
+  version: 0.6.0
+  description: Contrato do MVP manual, cenários, assinaturas, hubs simulados e mensagens de identidade.
 servers:
   - url: /api/v1
 paths:
@@ -56,6 +56,22 @@ paths:
       responses:
         "204": { description: Conta verificada e espaço pessoal criado. }
         "400": { $ref: "#/components/responses/Problem" }
+  /auth/verification-requests:
+    post:
+      operationId: requestEmailVerification
+      tags: [Identity]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RecoveryRequest" }
+      responses:
+        "202":
+          description: Resposta neutra, inclusive para conta inexistente ou já verificada.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MessageResponse" }
+        "429": { $ref: "#/components/responses/Problem" }
   /auth/sessions:
     post:
       operationId: login

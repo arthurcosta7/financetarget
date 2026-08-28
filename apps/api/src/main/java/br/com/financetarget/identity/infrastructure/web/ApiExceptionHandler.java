@@ -1,6 +1,7 @@
 package br.com.financetarget.identity.infrastructure.web;
 
 import br.com.financetarget.identity.application.IdentityException;
+import br.com.financetarget.identity.application.IdentityMessageDeliveryException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,6 +10,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    @ExceptionHandler(IdentityMessageDeliveryException.class)
+    ResponseEntity<ProblemDetail> messageDelivery(IdentityMessageDeliveryException exception) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE,
+                "Não foi possível enviar a mensagem agora. Tente novamente em alguns instantes.");
+        problem.setTitle("IDENTITY_MESSAGE_UNAVAILABLE");
+        return ResponseEntity.status(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE).body(problem);
+    }
+
     @ExceptionHandler(IdentityException.class)
     ResponseEntity<ProblemDetail> identity(IdentityException exception) {
         var status = switch (exception.kind()) {

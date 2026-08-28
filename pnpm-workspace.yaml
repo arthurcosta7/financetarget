@@ -8,3 +8,4 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - '@testing-library/react@16.3.3'
   - '@types/node@26.4.0'
+  - lucide-react@1.35.0

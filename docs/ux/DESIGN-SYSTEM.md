@@ -128,6 +128,17 @@ Um único gesto característico: a linha de trajetória se reposiciona ao compar
 - confirmação destrutiva;
 - theme switcher.
 
+## Shell autenticado e dashboards
+
+- A área autenticada usa sidebar persistente no desktop e drawer acionado explicitamente no mobile.
+- A sidebar pode ser recolhida para ícones no desktop; rótulos completos permanecem disponíveis por `title` e nomes acessíveis.
+- O item da rota atual usa `aria-current="page"` e contraste estrutural, sem depender apenas de cor.
+- O seletor de tema, saída e contexto do espaço permanecem no rodapé e no topo da sidebar, respectivamente.
+- Títulos da aplicação são mais compactos que displays de marketing para manter decisões e dados na primeira dobra.
+- Dashboards evitam mosaicos de cards equivalentes: resumo, gráfico principal e linha do tempo possuem pesos distintos.
+- Gráficos representam apenas resultados recebidos da API. Escalas calculadas no frontend servem exclusivamente à apresentação e sempre exibem os valores exatos em texto.
+- Todo gráfico precisa de nome acessível, rótulos textuais e leitura equivalente sem depender da geometria das barras.
+
 ## Acessibilidade
 
 - objetivo WCAG 2.2 AA;

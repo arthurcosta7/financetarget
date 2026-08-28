@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { SubscriptionCenter } from "./SubscriptionCenter";
 
 const push = vi.fn();
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/app/plano", useRouter: () => ({ push }) }));
 
 const overview = { subscription: null, entitlements: {}, mockCheckoutEnabled: true, availablePlans: [{
   code: "TEST_COMPLETE", displayName: "Completo sintético",

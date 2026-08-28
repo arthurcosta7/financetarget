@@ -5,10 +5,11 @@
 - Fase atual: **Fase 7 — hardening e staging**.
 - Estado: **concluída tecnicamente em 28/08/2026; aguardando aprovação**.
 - Aplicação implementada: identidade, sessões, onboarding, privacidade, metas, motores, dashboard, assinatura canônica, preferências e hubs simulados.
-- Integrações reais: não.
+- Integrações reais: Resend opcional e limitado a mensagens de identidade, autorizado em 28/08/2026; demais integrações, não.
 - Dados reais: não.
 - Deploy: não.
 - Repositório Git: inicializado localmente em 27/08/2026.
+- Refinamento de UX autorizado em 28/08/2026: shell autenticado com sidebar e dashboard comparativo implementados e validados.
 
 ## Entregáveis da Fase 0
 
@@ -90,7 +91,32 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 7 concluiu hardening, staging sintético, observabilidade, carga, auditoria, backup/restauração e rollback compatível. O gate exige aprovação explícita; a Fase 8 não está autorizada. Beta, dados reais, integrações, pagamentos, notificações reais e deploy continuam fora do escopo.
+A Fase 7 concluiu hardening, staging sintético, observabilidade, carga, auditoria, backup/restauração e rollback compatível. O gate exige aprovação explícita; a Fase 8 não está autorizada. O usuário autorizou exclusivamente o adaptador Resend para verificação e recuperação de identidade. Beta, dados financeiros reais, outras integrações, pagamentos e deploy continuam fora do escopo.
+
+## Integração Resend autorizada
+
+| Entregável | Estado | Fonte |
+|---|---|---|
+| Adaptador atrás de `IdentityMessagePort` | Concluído | `ResendIdentityMessageAdapter` |
+| Configuração e fail-fast | Concluído | `ResendProperties`, `EnvironmentSafetyGuard` |
+| Fechamento da caixa dev ao habilitar | Concluído | adapters e controller condicionais |
+| Testes sem envio externo | Concluído | `ResendIdentityMessageAdapterTest` |
+| Reenvio seguro para conta pendente | Concluído | `/api/v1/auth/verification-requests`, `/reenviar-verificacao` |
+| Segurança, LGPD e decisão | Concluído | ADR 0014, threat model e plano LGPD |
+
+A credencial foi copiada entre arquivos `.env` locais ignorados, sem entrar no repositório ou nos logs. A API precisa ser reiniciada para carregar a configuração.
+
+### Validações da integração Resend
+
+Executadas em 28/08/2026:
+
+- 32 testes backend, incluindo contrato HTTP local, falha do provedor, configuração e jornada de identidade;
+- 12 testes frontend, lint, TypeScript estrito e build Next.js;
+- migrations V1 a V6 validadas em PostgreSQL efêmero e local;
+- startup real com a configuração local do Resend, health check HTTP 200 e nenhuma mensagem externa enviada;
+- caixa de tokens de desenvolvimento inacessível quando o adaptador real está ativo;
+- `git diff --check` limpo, `.env` ignorado e chave real ausente de todos os arquivos rastreados.
+- reenvio real solicitado para a conta pendente preexistente e confirmado como `delivered` pelo Resend em 28/08/2026, sem expor destinatário ou token.
 
 ## Entregáveis da Fase 3
 

@@ -4,7 +4,7 @@ SaaS brasileiro de planejamento financeiro orientado a metas. O produto transfor
 
 ## Estado atual
 
-A Fase 7 está tecnicamente concluída e aguarda aprovação. O projeto já possui identidade, onboarding financeiro, privacidade inicial, metas, Goal Engine e Scenario Engine, dashboard, assinaturas e notificações simuladas, staging fail-closed, observabilidade, auditoria de dependências e recuperação testada. Colaboração operacional, integrações reais, pagamentos, beta e deploy externo ainda não foram implementados.
+A Fase 7 está tecnicamente concluída e aguarda aprovação. O projeto já possui identidade, onboarding financeiro, privacidade inicial, metas, Goal Engine e Scenario Engine, dashboard, assinaturas e notificações simuladas, staging fail-closed, observabilidade, auditoria de dependências e recuperação testada. O Resend está disponível como integração real e opcional apenas para mensagens de identidade. Colaboração operacional, pagamentos reais, beta e deploy externo ainda não foram implementados.
 
 ## Stack
 
@@ -85,7 +85,7 @@ Abra [http://localhost:3000/cadastro](http://localhost:3000/cadastro) quando os 
 
 ## Verificação de conta no ambiente local
 
-O perfil `dev` não envia e-mails reais. Após cadastrar uma conta com dados exclusivamente sintéticos, consulte no navegador ou no PowerShell:
+Por padrão, o perfil `dev` não envia e-mails reais. Após cadastrar uma conta com dados exclusivamente sintéticos, consulte no navegador ou no PowerShell:
 
 ```powershell
 $Email = [uri]::EscapeDataString('teste@example.invalid')
@@ -94,7 +94,11 @@ Invoke-RestMethod "http://localhost:8080/api/v1/dev/identity-messages/latest?ema
 
 A resposta contém `kind`, `token` e `capturedAt`. Copie o `token` para a tela [http://localhost:3000/verificar-email](http://localhost:3000/verificar-email). O mesmo endpoint retorna o token mais recente de recuperação depois que ela for solicitada pela interface.
 
-Esse recurso existe somente no perfil `dev`, mantém mensagens apenas em memória e não substitui uma integração real de e-mail.
+Esse recurso existe somente no perfil `dev` e mantém mensagens apenas em memória.
+
+Para usar Resend, configure no `.env` pelo menos `APP_INTEGRATION_RESEND_ENABLED=true`, `RESEND_API_KEY`, `APP_EMAIL_FROM_ADDRESS` e `APP_PUBLIC_WEB_URL`, e reinicie a API. Quando o Resend está habilitado, a caixa em memória e o endpoint `/api/v1/dev/identity-messages` deixam de existir. Nunca use uma chave real no `.env.example`, no frontend ou no Git.
+
+Uma conta ainda pendente pode solicitar outro link em [http://localhost:3000/reenviar-verificacao](http://localhost:3000/reenviar-verificacao). O token anterior é invalidado e a resposta não revela se a conta existe ou qual é seu estado.
 
 ## Comandos do backend Maven
 

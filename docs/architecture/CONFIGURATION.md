@@ -76,6 +76,12 @@ Flags possuem proprietário, finalidade, valor padrão seguro, ambientes, data d
 | `real-estate-financing` | Produto + jurídico | `false` | Reservada para futuro ADR | antes de sandbox |
 | `auto-financing` | Produto + jurídico | `false` | Reservada para futuro ADR | antes de sandbox |
 
+### Mensagens transacionais de identidade
+
+O Resend é um adaptador específico de `IdentityMessagePort` e permanece desligado por padrão. Sua configuração usa `APP_INTEGRATION_RESEND_ENABLED`, `RESEND_API_KEY`, `APP_RESEND_ENDPOINT`, `APP_EMAIL_FROM_ADDRESS`, `APP_EMAIL_FROM_NAME`, `APP_PUBLIC_WEB_URL`, `APP_RESEND_CONNECT_TIMEOUT` e `APP_RESEND_READ_TIMEOUT`.
+
+Quando habilitado, chave, remetente, URLs e timeouts são validados no startup. Staging e produção exigem URL pública HTTPS. A chave nunca é exposta ao frontend. Endpoint e remetente não são constantes de domínio e podem mudar sem recompilar.
+
 As flags de integração futura devem ser removidas caso a hipótese seja descartada; habilitá-las sem adaptador não produz conexão nem acesso.
 
 ## Presets de cenário

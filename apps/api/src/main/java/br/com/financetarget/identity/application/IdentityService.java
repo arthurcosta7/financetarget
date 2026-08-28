@@ -18,6 +18,8 @@ public class IdentityService {
             "Se o endereço puder ser cadastrado, enviaremos as próximas instruções.";
     public static final String GENERIC_RECOVERY_MESSAGE =
             "Se existir uma conta elegível, enviaremos as próximas instruções.";
+    public static final String GENERIC_VERIFICATION_MESSAGE =
+            "Se existir uma conta pendente, enviaremos uma nova mensagem de verificação.";
 
     private final IdentityRepository repository;
     private final IdentityMessagePort messages;
@@ -75,6 +77,21 @@ public class IdentityService {
         repository.activateVerifiedAccount(token, now);
         personalSpaces.createForVerifiedUser(token.userId(), now);
         audit.record(token.userId(), "EMAIL_VERIFIED", "USER", token.userId(), "SUCCESS", now);
+    }
+
+    @Transactional
+    public String requestEmailVerification(String email) {
+        String normalizedEmail = normalizeEmail(email);
+        attemptLimiter.check("verification", normalizedEmail);
+        var account = repository.findForLogin(normalizedEmail);
+        if (account.isPresent() && "PENDING_VERIFICATION".equals(account.get().status())) {
+            Instant now = clock.instant();
+            String rawToken = tokens.generate();
+            repository.replaceIdentityToken(account.get().id(), "VERIFY_EMAIL", UUID.randomUUID(),
+                    tokens.hash(rawToken), now.plus(properties.verificationTtl()), now);
+            messages.sendVerification(normalizedEmail, rawToken);
+        }
+        return GENERIC_VERIFICATION_MESSAGE;
     }
 
     @Transactional

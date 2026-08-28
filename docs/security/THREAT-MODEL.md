@@ -62,6 +62,7 @@ Toda entrada do navegador e provedor é não confiável. O frontend melhora a ex
 | T-016 | SSRF em integração futura | Alto | Baixa/média | destinos allowlisted, egress e validação de URL | Baixo |
 | T-017 | Dependência comprometida | Alto | Média | lockfiles, SBOM Maven, pnpm/OSV na CI e atualização controlada | Baixo/médio |
 | T-018 | Operador interno consulta dados | Alto | Baixa/média | privilégio mínimo, acesso just-in-time e auditoria | Médio |
+| T-019 | Mensagem de identidade vaza token, destinatário ou permite phishing | Crítico | Média | token opaco de uso único, hash no banco, TLS, origem configurada, remetente validado, sem logs e timeout | Baixo/médio |
 
 ## Abuso específico de colaboração
 
@@ -115,3 +116,13 @@ Atualizar antes de:
 - SBOM e scanners removeram os achados conhecidos da baseline.
 
 Persistem: fonte de senhas comprometidas, MFA, infraestrutura externa de alertas/cofre, revisão independente e controles de operador antes de dados reais.
+
+## Revisão do canal Resend
+
+- O domínio depende somente de `IdentityMessagePort`; DTO, autenticação e erros do Resend ficam no adaptador.
+- O perfil `dev` não expõe a caixa de tokens quando a entrega real está habilitada.
+- Remetente rejeita quebras de linha e a configuração externa usa HTTPS.
+- Destinatário, token, link e corpo não entram em logs, métricas ou auditoria.
+- Entrega síncrona possui timeouts e falha de forma explícita, sem retry cego.
+
+Persistem antes do beta: domínio definitivo com SPF/DKIM/DMARC, monitoramento de bounce/complaint, rotação em cofre, análise contratual do operador e decisão sobre outbox/retry.

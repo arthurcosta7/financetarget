@@ -24,7 +24,8 @@ import java.time.Clock;
 
 @Configuration
 @EnableConfigurationProperties({CorsProperties.class, AuthProperties.class, LegalDocumentProperties.class,
-        ProductProperties.class, FeatureFlagProperties.class, MockIntegrationProperties.class})
+        ProductProperties.class, FeatureFlagProperties.class, MockIntegrationProperties.class,
+        ResendProperties.class})
 public class SecurityConfiguration {
 
     @Bean
@@ -52,6 +53,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/v1/auth/csrf", "/api/v1/dev/identity-messages/**").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/registrations", "/api/v1/auth/verifications",
+                                "/api/v1/auth/verification-requests",
                                 "/api/v1/auth/sessions", "/api/v1/auth/sessions/refresh",
                                 "/api/v1/auth/password-recovery-requests", "/api/v1/auth/password-recoveries",
                                 "/api/v1/integrations/payments/webhooks/mock")

@@ -142,6 +142,12 @@ Avaliar formalmente a necessidade antes do beta, considerando perfil financeiro,
 
 Essa revisão reduz risco técnico, mas não define bases legais, prazos ou RIPD. A revisão jurídica qualificada continua como gate do beta.
 
+## Operador de e-mail transacional
+
+Quando o Resend está habilitado, endereço de e-mail, conteúdo estritamente necessário à verificação/recuperação e metadados técnicos são enviados ao operador. O corpo não inclui dados financeiros, perfil, metas ou valores. A finalidade é comunicação essencial de segurança e execução da conta; a base legal definitiva continua sujeita à revisão jurídica.
+
+Antes de usuários reais, registrar contrato, região de processamento, retenção, suboperadores, exclusão, resposta a incidente e mecanismo aplicável de transferência internacional. Marketing não pode reutilizar esse canal ou essa finalidade sem decisão separada.
+
 ## Questões para revisão qualificada
 
 1. papel exato da empresa como agente de tratamento;

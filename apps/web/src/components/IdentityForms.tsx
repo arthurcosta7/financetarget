@@ -7,12 +7,13 @@ import { useRouter } from "next/navigation";
 import { ApiError, apiFetch } from "@/lib/api/client";
 import { FormMessage } from "@/components/FormMessage";
 
-type Mode = "register" | "login" | "verify" | "request-recovery" | "reset-password";
+type Mode = "register" | "login" | "verify" | "request-verification" | "request-recovery" | "reset-password";
 
 const copy: Record<Mode, { submit: string; pending: string }> = {
   register: { submit: "Criar minha conta", pending: "Criando conta…" },
   login: { submit: "Entrar", pending: "Entrando…" },
   verify: { submit: "Verificar e-mail", pending: "Verificando…" },
+  "request-verification": { submit: "Reenviar verificação", pending: "Enviando…" },
   "request-recovery": { submit: "Enviar instruções", pending: "Enviando…" },
   "reset-password": { submit: "Definir nova senha", pending: "Alterando…" },
 };
@@ -46,6 +47,11 @@ export function IdentityForm({ mode, initialToken = "" }: { mode: Mode; initialT
       } else if (mode === "verify") {
         await apiFetch("/auth/verifications", { method: "POST", body: JSON.stringify({ token }) });
         setMessage({ kind: "success", text: "E-mail confirmado. Sua conta está pronta para receber o primeiro plano." });
+      } else if (mode === "request-verification") {
+        const result = await apiFetch<{ message: string }>("/auth/verification-requests", {
+          method: "POST", body: JSON.stringify({ email: data.get("email") }),
+        });
+        setMessage({ kind: "success", text: result.message });
       } else if (mode === "request-recovery") {
         const result = await apiFetch<{ message: string }>("/auth/password-recovery-requests", {
           method: "POST", body: JSON.stringify({ email: data.get("email") }),
@@ -64,7 +70,7 @@ export function IdentityForm({ mode, initialToken = "" }: { mode: Mode; initialT
     }
   }
 
-  const asksEmail = ["register", "login", "request-recovery"].includes(mode);
+  const asksEmail = ["register", "login", "request-verification", "request-recovery"].includes(mode);
   const asksPassword = ["register", "login", "reset-password"].includes(mode);
   const asksToken = ["verify", "reset-password"].includes(mode);
 
@@ -103,6 +109,7 @@ export function IdentityForm({ mode, initialToken = "" }: { mode: Mode; initialT
       </button>
       {mode === "login" && <Link className="text-link" href="/recuperar-acesso">Esqueci minha senha</Link>}
       {mode === "register" && <p className="form-footnote">Já tem uma conta? <Link href="/entrar">Entrar</Link></p>}
+      {mode === "verify" && <Link className="text-link" href="/reenviar-verificacao">Não recebeu o e-mail?</Link>}
       {mode === "verify" && message?.kind === "success" && <Link className="button button--quiet" href="/entrar">Ir para o acesso</Link>}
     </form>
   );

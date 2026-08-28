@@ -6,6 +6,15 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Added
 
+- Sidebar autenticada responsiva e recolhível, com rota ativa, contexto do espaço, tema e saída.
+- Gráficos acessíveis de progresso e esforço mensal, além de linha do tempo ordenada no dashboard.
+- Ícones Lucide usados como apoio semântico nas ações e na navegação.
+
+- Reenvio antienumeração de verificação para contas pendentes, com rotação do token, rate limit e tela dedicada.
+- Adaptador Resend opcional para verificação de e-mail e recuperação de senha atrás de `IdentityMessagePort`.
+- Configuração fail-fast, timeouts, templates transacionais e testes de contrato HTTP sem envio externo.
+- ADR 0014 e revisão de threat model/LGPD para o novo operador de mensagens.
+
 - Perfil staging fail-closed, sem seed de desenvolvimento e com logs ECS.
 - Rate limit de autenticação distribuído no PostgreSQL sem persistir e-mail.
 - Métricas Prometheus, tracing OpenTelemetry e correlação por request ID validado.
@@ -79,6 +88,11 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Scripts e documentação de desenvolvimento e validação da Fase 2.
 
 ### Changed
+
+- Dashboard reorganizado para expor ação principal, comparações e próximos marcos na primeira dobra.
+- Hierarquia tipográfica e espaçamento das telas autenticadas reduzidos para melhorar densidade e distribuição de ações.
+
+- A caixa de mensagens de identidade e seu endpoint de desenvolvimento são desativados quando o Resend está habilitado.
 
 - Fase 6 aprovada, ADR 0012 aceito e Fase 7 autorizada em 28/08/2026.
 - Dependências Jackson, OpenTelemetry, Log4j e PostgreSQL JDBC atualizadas após auditoria do SBOM.

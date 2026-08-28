@@ -49,6 +49,12 @@ public class IdentityController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/verification-requests")
+    ResponseEntity<MessageResponse> requestVerification(@Valid @RequestBody RecoveryRequest request) {
+        return ResponseEntity.accepted().cacheControl(CacheControl.noStore())
+                .body(new MessageResponse(identity.requestEmailVerification(request.email())));
+    }
+
     @PostMapping("/sessions")
     ResponseEntity<Void> login(@Valid @RequestBody LoginRequest request) {
         SessionTokens session = identity.login(request.email(), request.password());

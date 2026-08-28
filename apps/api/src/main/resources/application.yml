@@ -55,6 +55,16 @@ app:
   mock-integrations:
     payment-webhook-secret: ${APP_MOCK_PAYMENT_WEBHOOK_SECRET:}
     webhook-replay-tolerance: ${APP_MOCK_WEBHOOK_REPLAY_TOLERANCE:5m}
+  integrations:
+    resend:
+      enabled: ${APP_INTEGRATION_RESEND_ENABLED:false}
+      api-key: ${RESEND_API_KEY:}
+      endpoint: ${APP_RESEND_ENDPOINT:https://api.resend.com/emails}
+      from-email: ${APP_EMAIL_FROM_ADDRESS:}
+      from-name: ${APP_EMAIL_FROM_NAME:FinanceTarget}
+      frontend-base-url: ${APP_PUBLIC_WEB_URL:http://localhost:3000}
+      connect-timeout: ${APP_RESEND_CONNECT_TIMEOUT:3s}
+      read-timeout: ${APP_RESEND_READ_TIMEOUT:8s}
 
 management:
   prometheus:

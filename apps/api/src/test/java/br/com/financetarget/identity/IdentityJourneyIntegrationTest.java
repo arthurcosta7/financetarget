@@ -100,6 +100,23 @@ class IdentityJourneyIntegrationTest {
     }
 
     @Test
+    void renewsVerificationTokenForPendingAccountWithoutEnumeratingAccounts() throws Exception {
+        register("pendente@example.test", "Pendente");
+        String originalToken = messages.latestFor("pendente@example.test").token();
+
+        String existing = verificationRequest("pendente@example.test").andReturn()
+                .getResponse().getContentAsString();
+        String replacementToken = messages.latestFor("pendente@example.test").token();
+        String absent = verificationRequest("ausente@example.test").andReturn()
+                .getResponse().getContentAsString();
+
+        assertThat(replacementToken).isNotEqualTo(originalToken);
+        assertThat(absent).isEqualTo(existing);
+        verify(originalToken).andExpect(status().isBadRequest());
+        verify(replacementToken).andExpect(status().isNoContent());
+    }
+
+    @Test
     void rotatesRefreshAndRevokesFamilyWhenAnOldTokenIsReused() throws Exception {
         Cookie[] session = verifiedSession("caio@example.test", "Caio");
         Cookie oldRefresh = session[1];
@@ -211,6 +228,12 @@ class IdentityJourneyIntegrationTest {
 
     private org.springframework.test.web.servlet.ResultActions recoverRequest(String email) throws Exception {
         return mvc.perform(withCsrf(post("/api/v1/auth/password-recovery-requests")
+                .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(java.util.Map.of("email", email)))))
+                .andExpect(status().isAccepted());
+    }
+
+    private org.springframework.test.web.servlet.ResultActions verificationRequest(String email) throws Exception {
+        return mvc.perform(withCsrf(post("/api/v1/auth/verification-requests")
                 .contentType(MediaType.APPLICATION_JSON).content(json.writeValueAsString(java.util.Map.of("email", email)))))
                 .andExpect(status().isAccepted());
     }
