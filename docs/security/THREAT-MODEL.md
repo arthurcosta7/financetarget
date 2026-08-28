@@ -54,7 +54,7 @@ Toda entrada do navegador e provedor é não confiável. O frontend melhora a ex
 | T-008 | Segredo em Git/log | Alto | Média | secret scan, redaction, vault por ambiente | Baixo/médio |
 | T-009 | Manipulação de cálculo | Crítico | Média | motor no backend, snapshot com hash/versões, testes independentes | Baixo/médio |
 | T-010 | Falsa precisão induz decisão | Alto | Média | premissas visíveis, avisos, testes de compreensão | Médio |
-| T-011 | Webhook falso/replay | Alto | Média futura | assinatura, timestamp, idempotência, reconciliação | Baixo/médio |
+| T-011 | Webhook falso/replay | Alto | Média futura | HMAC antes do parsing, timestamp, idempotência e reconciliação; controles provados no mock | Baixo/médio |
 | T-012 | Exposição por analytics | Alto | Média | allowlist de propriedades e proibição de valores financeiros | Baixo |
 | T-013 | Backup acessível ou irrecuperável | Crítico | Baixa/média | criptografia, acesso mínimo, restore testado | Médio até teste |
 | T-014 | Abuso de exportação | Alto | Média | reautenticação, rate limit, link curto e auditado | Baixo/médio |

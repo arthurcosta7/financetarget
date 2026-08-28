@@ -42,7 +42,14 @@ Identidade, perfil, privacidade, metas, contribuições e comparação de cenár
 /api/v1/goal-projections/preview
 /api/v1/privacy/exports
 /api/v1/privacy/deletion-requests
+/api/v1/features
+/api/v1/subscriptions/current
+/api/v1/subscriptions/mock-checkouts
+/api/v1/notification-preferences
+/api/v1/integrations/payments/webhooks/mock
 ```
+
+O webhook mock é público apenas no transporte: exige HMAC e timestamp antes do parsing. Ele não é contrato de provedor real.
 
 `preview` calcula sem persistir uma meta, mas aplica validação, limites e autenticação apropriados. Persistir um cenário gera snapshot imutável.
 

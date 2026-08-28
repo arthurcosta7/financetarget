@@ -6,6 +6,15 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Added
 
+- Catálogo interno de planos e entitlements sem preços hardcoded.
+- PaymentsHub e NotificationHub com adaptadores exclusivamente simulados.
+- Checkout mock idempotente e webhook HMAC com janela antirreplay.
+- Preferências de comunicação e intenções de entrega sem envio real.
+- Feature flags tipadas, desligadas por padrão, e contratos dos hubs futuros.
+- Migration `V5`, OpenAPI 0.5 e exportação LGPD ampliada.
+- Tela responsiva de plano e comunicações com linha de acesso em três estados.
+- ADR 0012 e evidências técnicas e visuais da Fase 6.
+
 - Scenario Engine puro com comparação reproduzível e deltas contra o plano base.
 - Cenários imutáveis limitados a três por meta, migration `V4` e OpenAPI 0.4.
 - Dashboard responsivo de múltiplas metas com dados calculados no backend.
@@ -62,6 +71,9 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Scripts e documentação de desenvolvimento e validação da Fase 2.
 
 ### Changed
+
+- Fase 5 aprovada, ADR 0011 aceito e Fase 6 autorizada em 28/08/2026.
+- Fase 6 concluída tecnicamente em 28/08/2026 e movida para o gate de aprovação.
 
 - Fase 5 concluída tecnicamente em 28/08/2026 e movida para o gate de aprovação.
 

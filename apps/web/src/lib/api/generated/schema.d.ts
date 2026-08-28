@@ -319,6 +319,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getFeatureFlags"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscriptions/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCurrentSubscription"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscriptions/mock-checkouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["createMockCheckout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notification-preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getNotificationPreferences"];
+        put: operations["updateNotificationPreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/payments/webhooks/mock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["receiveMockPaymentWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -524,6 +604,74 @@ export interface components {
             scenarios: components["schemas"]["Scenario"][];
             scenarioEngineVersion: string;
         };
+        FeatureFlags: {
+            paymentsMock: boolean;
+            notificationsMock: boolean;
+            openFinance: boolean;
+            loyalty: boolean;
+            travel: boolean;
+            realEstateFinancing: boolean;
+            autoFinancing: boolean;
+        };
+        Entitlements: {
+            [key: string]: string;
+        };
+        Subscription: {
+            planCode: string;
+            /** @enum {string} */
+            status: "ACTIVE" | "PAST_DUE" | "CANCELED";
+            provider: string;
+            /** Format: int64 */
+            version: number;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        SubscriptionPlan: {
+            code: string;
+            displayName: string;
+            entitlements: components["schemas"]["Entitlements"];
+        };
+        SubscriptionOverview: {
+            subscription: components["schemas"]["Subscription"] | null;
+            entitlements: components["schemas"]["Entitlements"];
+            availablePlans: components["schemas"]["SubscriptionPlan"][];
+            mockCheckoutEnabled: boolean;
+        };
+        CreateMockCheckoutRequest: {
+            planCode: string;
+        };
+        MockCheckout: {
+            /** Format: uuid */
+            id: string;
+            planCode: string;
+            /** @enum {string} */
+            provider: "MOCK";
+            reference: string;
+            /** @enum {string} */
+            status: "SIMULATED";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        NotificationPreferences: {
+            /** @constant */
+            essential: true;
+            planningReminders: boolean;
+            productUpdates: boolean;
+            marketing: boolean;
+        };
+        UpdateNotificationPreferences: {
+            planningReminders: boolean;
+            productUpdates: boolean;
+            marketing: boolean;
+        };
+        MockPaymentWebhook: {
+            /** @enum {string} */
+            eventType: "subscription.activated" | "subscription.past_due" | "subscription.canceled";
+            /** Format: uuid */
+            userId: string;
+            planCode: string;
+            providerSubscriptionReference: string;
+        };
         ReauthenticationRequest: {
             password: string;
         };
@@ -550,6 +698,21 @@ export interface components {
                 /** Format: date-time */
                 recordedAt: string;
             }[];
+            subscription: components["schemas"]["ExportedSubscription"] | null;
+            notificationPreferences: components["schemas"]["ExportedNotificationPreference"][];
+        };
+        ExportedSubscription: {
+            planCode: string;
+            status: string;
+            provider: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ExportedNotificationPreference: {
+            category: string;
+            emailEnabled: boolean;
+            /** Format: date-time */
+            updatedAt: string;
         };
         ExportedAccount: {
             /** Format: uuid */
@@ -1199,6 +1362,151 @@ export interface operations {
             400: components["responses"]["Problem"];
             401: components["responses"]["Problem"];
             404: components["responses"]["Problem"];
+        };
+    };
+    getFeatureFlags: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Flags públicas para a experiência autenticada; não substituem autorização. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeatureFlags"];
+                };
+            };
+            401: components["responses"]["Problem"];
+        };
+    };
+    getCurrentSubscription: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Estado canônico, benefícios internos e catálogo do ambiente. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscriptionOverview"];
+                };
+            };
+            401: components["responses"]["Problem"];
+        };
+    };
+    createMockCheckout: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMockCheckoutRequest"];
+            };
+        };
+        responses: {
+            /** @description Sessão simulada criada sem cobrança ou redirecionamento externo. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MockCheckout"];
+                };
+            };
+            404: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            503: components["responses"]["Problem"];
+        };
+    };
+    getNotificationPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Preferências atuais; comunicações essenciais não são opcionais. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationPreferences"];
+                };
+            };
+        };
+    };
+    updateNotificationPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateNotificationPreferences"];
+            };
+        };
+        responses: {
+            /** @description Preferências atualizadas sem realizar envio. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationPreferences"];
+                };
+            };
+            400: components["responses"]["Problem"];
+        };
+    };
+    receiveMockPaymentWebhook: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Mock-Event-Id": string;
+                "X-Mock-Timestamp": string;
+                "X-Mock-Signature": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MockPaymentWebhook"];
+            };
+        };
+        responses: {
+            /** @description Evento assinado aceito ou repetição idempotente reconhecida. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Problem"];
+            409: components["responses"]["Problem"];
+            503: components["responses"]["Problem"];
         };
     };
 }

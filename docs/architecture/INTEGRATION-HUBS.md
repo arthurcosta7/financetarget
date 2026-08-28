@@ -46,6 +46,8 @@ O domínio depende de portas canônicas internas. SDK, DTO, nomenclatura, autent
 - processamento idempotente;
 - estado desconhecido leva à reconciliação, não a suposição.
 
+Na Fase 6, essas propriedades são exercitadas somente pelo adaptador `MOCK`: HMAC sobre bytes brutos, tolerância temporal configurável, hash do payload e unicidade por provedor/evento. Nenhum payload bruto é retido.
+
 ## Open Finance
 
 Não faz parte do MVP conectado. O desenho futuro exige parceiro autorizado, consentimento explícito, escopos mínimos, renovação, revogação, expiração e reconciliação. O produto não armazenará credenciais bancárias.
@@ -53,6 +55,8 @@ Não faz parte do MVP conectado. O desenho futuro exige parceiro autorizado, con
 ## Entitlements
 
 Benefícios do plano pertencem ao domínio de assinatura. `PaymentsHub` informa fatos de cobrança, mas não define sozinho se uma funcionalidade está liberada. Isso permite troca de provedor e correção de divergências por reconciliação.
+
+O catálogo interno e o mock foram implementados na Fase 6. Os demais hubs possuem somente portas canônicas e flags desligadas; não existe conexão externa.
 
 ## Evolução segura
 

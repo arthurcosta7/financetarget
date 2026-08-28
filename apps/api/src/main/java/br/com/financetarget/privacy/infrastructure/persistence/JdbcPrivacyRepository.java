@@ -82,7 +82,18 @@ public class JdbcPrivacyRepository implements PrivacyRepository {
                             rs.getString("engine_version"), rs.getString("formula_version"),
                             rs.getTimestamp("created_at").toInstant(), contributions, scenarios);
                 }).list();
-        return new ExportData(account, profile, goals, consents);
+        var subscription = jdbc.sql("""
+                        select plan_code,status,provider,updated_at from account_subscription where user_id=:userId
+                        """).param("userId", userId).query((rs, row) -> new SubscriptionData(
+                        rs.getString("plan_code"), rs.getString("status"), rs.getString("provider"),
+                        rs.getTimestamp("updated_at").toInstant())).optional();
+        var preferences = jdbc.sql("""
+                        select category,email_enabled,updated_at from notification_preference
+                        where user_id=:userId order by category
+                        """).param("userId", userId).query((rs, row) -> new NotificationPreferenceData(
+                        rs.getString("category"), rs.getBoolean("email_enabled"),
+                        rs.getTimestamp("updated_at").toInstant())).list();
+        return new ExportData(account, profile, goals, consents, subscription, preferences);
     }
 
     @Override

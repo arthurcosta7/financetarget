@@ -98,7 +98,7 @@ Prazos e exceções permanecem pendentes de validação jurídica.
 - expiração e auditoria do download;
 - geração assíncrona futura com status claro.
 
-Na implementação atual, a exportação autenticada inclui os dados da conta, perfil, consentimentos, solicitações, metas e cenários criados pelo titular, versões do motor/fórmula e contribuições de sua autoria. Ela não inclui hashes, tokens nem dados privados de outro membro. Entrega criptografada ou por link temporário continua fora do escopo local e é obrigatória antes da operação real.
+Na implementação atual, a exportação autenticada inclui os dados da conta, perfil, consentimentos, solicitações, metas e cenários criados pelo titular, versões do motor/fórmula, contribuições de sua autoria, assinatura canônica e preferências de comunicação. Ela não inclui hashes, tokens, eventos de webhook, referências de checkout nem dados privados de outro membro. Entrega criptografada ou por link temporário continua fora do escopo local e é obrigatória antes da operação real.
 
 ## Operadores e transferências
 

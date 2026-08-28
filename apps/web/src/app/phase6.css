@@ -1,0 +1,57 @@
+.subscription-heading h1 { max-width: 14ch; }
+.access-rail { min-height: 24rem; padding: 3rem 0; display: grid; grid-template-columns: minmax(18rem, .7fr) minmax(0, 1.3fr); gap: clamp(3rem, 8vw, 8rem); align-items: end; border-bottom: 1px solid var(--line); }
+.access-rail__summary h2 { max-width: 13ch; margin: 1.25rem 0; font-size: clamp(2.3rem, 5vw, 5.2rem); font-weight: 540; line-height: .98; letter-spacing: -.06em; }
+.access-rail__summary p, .section-intro { max-width: 38rem; color: var(--muted); font-size: .85rem; line-height: 1.7; }
+.access-rail__steps { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); list-style: none; }
+.access-rail__steps li { min-height: 11rem; padding: 1rem 1.25rem 1rem 0; display: flex; position: relative; flex-direction: column; border-top: 1px solid var(--line); }
+.access-rail__steps li::before { width: .65rem; height: .65rem; content: ""; position: absolute; top: -.36rem; left: 0; border: 1px solid var(--foreground); border-radius: 50%; background: var(--background); }
+.access-rail__steps li[data-state="ready"] { border-color: var(--foreground); }
+.access-rail__steps li[data-state="ready"]::before { background: var(--foreground); }
+.access-rail__steps span, .access-rail__steps small, .plan-list small { color: var(--muted); font: 500 .68rem/1.5 var(--font-plex-mono), monospace; }
+.access-rail__steps strong { margin-top: auto; font-size: .9rem; }
+
+.subscription-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(20rem, .75fr); }
+.plan-catalog, .communication-panel { padding-block: clamp(4rem, 8vw, 7rem); }
+.plan-catalog { padding-right: clamp(2rem, 6vw, 6rem); border-right: 1px solid var(--line); }
+.communication-panel { padding-left: clamp(2rem, 6vw, 6rem); }
+.plan-catalog h2, .communication-panel h2, .hub-boundary h2 { max-width: 13ch; margin: 0; font-size: clamp(2rem, 4vw, 4rem); font-weight: 540; line-height: 1; letter-spacing: -.055em; }
+.plan-list { margin-top: 3rem; }
+.plan-list article { padding: 1.5rem 0; display: grid; grid-template-columns: minmax(10rem, .55fr) minmax(14rem, 1fr) auto; gap: 2rem; align-items: center; border-top: 1px solid var(--line); }
+.plan-list h3 { margin: 0 0 .4rem; font-size: 1.15rem; }
+.plan-list ul { margin: 0; padding: 0; list-style: none; }
+.plan-list li { padding: .3rem 0; display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .75rem; }
+.plan-list li strong { color: var(--foreground); font-family: var(--font-plex-mono), monospace; font-size: .7rem; }
+.plan-list .button { min-height: 2.8rem; }
+
+.preference-form { margin-top: 3rem; display: grid; }
+.preference-row { min-height: 5.5rem; padding: 1rem 0; display: grid; grid-template-columns: 1.2rem 1fr; gap: 1rem; align-items: start; border-top: 1px solid var(--line); cursor: pointer; }
+.preference-row input { width: 1.15rem; height: 1.15rem; margin: .15rem 0 0; accent-color: var(--foreground); }
+.preference-row span { display: grid; gap: .4rem; }
+.preference-row strong { font-size: .82rem; }
+.preference-row small { color: var(--muted); font-size: .75rem; line-height: 1.5; }
+.preference-row:has(input:disabled) { cursor: default; }
+.preference-form .button { margin-top: 1.5rem; }
+
+.hub-boundary { padding: clamp(4rem, 8vw, 7rem) 0; display: grid; grid-template-columns: .7fr 1.3fr; gap: clamp(3rem, 8vw, 8rem); border-top: 1px solid var(--foreground); }
+.hub-boundary dl { margin: 0; }
+.hub-boundary dl div { min-height: 3.5rem; display: grid; grid-template-columns: 1fr auto; align-items: center; border-bottom: 1px solid var(--line); }
+.hub-boundary dt { font-size: .8rem; }
+.hub-boundary dd { margin: 0; color: var(--muted); font: 500 .68rem/1 var(--font-plex-mono), monospace; text-transform: uppercase; }
+
+@media (max-width: 58rem) {
+  .access-rail, .subscription-layout, .hub-boundary { grid-template-columns: 1fr; }
+  .access-rail__steps { margin-top: 1rem; }
+  .plan-catalog { padding-right: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .communication-panel { padding-left: 0; }
+  .plan-list article { grid-template-columns: 1fr auto; }
+  .plan-list ul { grid-column: 1 / -1; }
+}
+
+@media (max-width: 36rem) {
+  .access-rail__steps { grid-template-columns: 1fr; }
+  .access-rail__steps li { min-height: 7rem; }
+  .plan-list article { grid-template-columns: 1fr; }
+  .plan-list ul { grid-column: 1; }
+  .plan-list .button { width: 100%; }
+  .hub-boundary dl div { gap: 1rem; }
+}

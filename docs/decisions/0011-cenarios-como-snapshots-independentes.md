@@ -1,6 +1,6 @@
 # ADR 0011 — Cenários como snapshots independentes
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 28/08/2026
 
 ## Contexto
@@ -42,4 +42,4 @@ Reavaliar ao permitir edição do plano base, arquivamento, cenários compartilh
 
 ## Aprovação
 
-Aguardando aprovação explícita da Fase 5.
+Aceito com a aprovação da Fase 5 e autorização da Fase 6 em 28/08/2026.

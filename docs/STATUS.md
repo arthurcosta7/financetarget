@@ -2,9 +2,9 @@
 
 ## Resumo
 
-- Fase atual: **Fase 5 — cenários e dashboard**.
+- Fase atual: **Fase 6 — assinaturas, notificações e hubs simulados**.
 - Estado: **concluída tecnicamente em 28/08/2026; aguardando aprovação**.
-- Aplicação implementada: identidade, sessões, onboarding financeiro, privacidade, metas, Goal Engine, Scenario Engine, dashboard e comparação acessível.
+- Aplicação implementada: identidade, sessões, onboarding, privacidade, metas, motores, dashboard, assinatura canônica, preferências e hubs simulados.
 - Integrações reais: não.
 - Dados reais: não.
 - Deploy: não.
@@ -90,7 +90,7 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 5 concluiu Scenario Engine, comparação, histórico, dashboard e múltiplas metas progressivas. O gate exige aprovação explícita; a Fase 6 não está autorizada. Colaboração operacional, integrações reais, pagamentos, notificações reais e deploy continuam fora do escopo.
+A Fase 6 concluiu catálogo e entitlements internos, checkout e webhook mock, preferências, flags e contratos dos hubs. O gate exige aprovação explícita; a Fase 7 não está autorizada. Integrações, pagamentos, notificações reais e deploy continuam fora do escopo.
 
 ## Entregáveis da Fase 3
 
@@ -151,7 +151,9 @@ Evidências detalhadas estão em `docs/testing/PHASE-4-RESULTS.md`.
 | Dashboard | Concluído | `Dashboard.tsx`, `/app/inicio` |
 | Comparação e histórico | Concluído | `ScenarioPlanner.tsx`, rota de cenários |
 | Contrato e privacidade | Concluído | OpenAPI 0.4, exportação LGPD |
-| Evidências e decisão | Concluído | `docs/testing/PHASE-5-RESULTS.md`, ADR 0011 proposto |
+| Evidências e decisão | Concluído | `docs/testing/PHASE-5-RESULTS.md`, ADR 0011 aceito |
+
+Fase 5 aprovada pelo usuário em 28/08/2026. O ADR 0011 foi aceito e a Fase 6 foi autorizada.
 
 ## Validações da Fase 5
 
@@ -168,6 +170,36 @@ Executadas em 28/08/2026:
 - ausência de overflow global e erros de console.
 
 Evidências detalhadas estão em `docs/testing/PHASE-5-RESULTS.md`.
+
+## Entregáveis da Fase 6
+
+| Entregável | Estado | Fonte |
+|---|---|---|
+| Catálogo e entitlements internos | Concluído | `subscriptions/`, migration `V5` |
+| PaymentsHub e checkout mock | Concluído | `PaymentsHub`, `MockPaymentsAdapter` |
+| Webhook assinado e idempotente | Concluído | `MockPaymentWebhookController`, testes |
+| Preferências e NotificationHub mock | Concluído | `notifications/` |
+| Feature flags tipadas | Concluído | `FeatureFlagProperties`, `.env.example` |
+| Contratos dos hubs futuros | Concluído | `integrations/application/` |
+| Jornada web de plano e comunicações | Concluído | `SubscriptionCenter`, `/app/plano` |
+| Contrato e privacidade | Concluído | OpenAPI 0.5, exportação LGPD |
+| Evidências e decisão | Concluído | `docs/testing/PHASE-6-RESULTS.md`, ADR 0012 proposto |
+
+## Validações da Fase 6
+
+Executadas em 28/08/2026:
+
+- 24 testes backend pelo Maven em PostgreSQL 17.11 efêmero;
+- 12 testes frontend, lint, TypeScript estrito e build de produção;
+- migrations `V1` a `V5` e empacotamento do JAR;
+- HMAC antes do parsing, janela antirreplay e idempotência por evento;
+- catálogo interno como fonte dos entitlements;
+- nenhuma cobrança, entrega ou biblioteca de provedor;
+- exportação LGPD com assinatura e preferências;
+- inspeção em 1440 × 900 e 320 × 800, nos dois temas;
+- ausência de overflow horizontal e erros de console.
+
+Evidências detalhadas estão em `docs/testing/PHASE-6-RESULTS.md`.
 
 ## Validações da Fase 3
 

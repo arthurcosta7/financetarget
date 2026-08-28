@@ -46,13 +46,15 @@ Criar e acompanhar uma meta inicial, implementar Goal Engine, snapshots, explica
 
 Scenario Engine, comparação, gráficos acessíveis, histórico, múltiplas metas progressivas e revisão visual responsiva.
 
-**Estado:** concluída tecnicamente em 28/08/2026; aguardando aprovação.
+**Estado:** aprovada em 28/08/2026.
 
 **Gate:** compreensão de projeção testada e cenários reproduzíveis.
 
 ## Fase 6 — Assinaturas, notificações e hubs simulados
 
 Entitlements, PaymentsHub mock, NotificationHub mock, webhooks idempotentes, preferências, feature flags e contratos dos demais hubs.
+
+**Estado:** concluída tecnicamente em 28/08/2026; aguardando aprovação.
 
 **Gate:** nenhum provedor real no domínio e falhas simuláveis.
 

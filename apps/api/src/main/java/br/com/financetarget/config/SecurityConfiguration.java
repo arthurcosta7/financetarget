@@ -24,7 +24,7 @@ import java.time.Clock;
 
 @Configuration
 @EnableConfigurationProperties({CorsProperties.class, AuthProperties.class, LegalDocumentProperties.class,
-        ProductProperties.class})
+        ProductProperties.class, FeatureFlagProperties.class, MockIntegrationProperties.class})
 public class SecurityConfiguration {
 
     @Bean
@@ -40,7 +40,8 @@ public class SecurityConfiguration {
                 .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(csrf -> csrf.csrfTokenRepository(csrfRepository)
-                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                        .ignoringRequestMatchers("/api/v1/integrations/payments/webhooks/mock"))
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, exception) -> writeProblem(response, 401,
                                 "AUTHENTICATION_REQUIRED", "Autenticação necessária."))
@@ -52,7 +53,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/registrations", "/api/v1/auth/verifications",
                                 "/api/v1/auth/sessions", "/api/v1/auth/sessions/refresh",
-                                "/api/v1/auth/password-recovery-requests", "/api/v1/auth/password-recoveries")
+                                "/api/v1/auth/password-recovery-requests", "/api/v1/auth/password-recoveries",
+                                "/api/v1/integrations/payments/webhooks/mock")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health/**", "/openapi.yaml").permitAll()
                         .anyRequest().authenticated())

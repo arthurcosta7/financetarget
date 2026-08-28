@@ -32,6 +32,8 @@ O profile `dev` acrescenta o seed sintético e uma caixa efêmera de mensagens d
 
 Moeda inicial, fuso de negócio, origem CORS/API, nomes e durações dos cookies e versões dos documentos são configuração de ambiente. `APP_AUTH_SECURE_COOKIES` só pode ser `false` no desenvolvimento HTTP local. Staging e produção não foram provisionados.
 
+Os hubs simulados da Fase 6 permanecem desligados por padrão. No profile `dev`, habilite somente `APP_FEATURE_PAYMENTS_MOCK` e `APP_FEATURE_NOTIFICATIONS_MOCK` quando precisar testar a jornada local. O segredo `APP_MOCK_PAYMENT_WEBHOOK_SECRET` deve ser longo, sintético e exclusivo do ambiente; o mock não cobra, não envia mensagens e não é um adaptador de produção. As flags de Open Finance, fidelidade, viagens e financiamentos apenas expõem disponibilidade planejada e não habilitam integrações.
+
 Testes usam PostgreSQL efêmero e mensagens capturadas em memória. Tokens e senhas não são registrados em logs.
 
 ## Encerramento local

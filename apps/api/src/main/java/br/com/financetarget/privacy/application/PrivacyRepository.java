@@ -21,8 +21,12 @@ public interface PrivacyRepository {
                     String annualInflationRate, String annualReturnRate, String contributionTiming,
                     String plannedMonthlyContribution, String status, String engineVersion, String formulaVersion,
                     Instant createdAt, List<ContributionData> contributions, List<ScenarioData> scenarios) {}
+    record SubscriptionData(String planCode, String status, String provider, Instant updatedAt) {}
+    record NotificationPreferenceData(String category, boolean emailEnabled, Instant updatedAt) {}
     record ExportData(AccountData account, Optional<FinancialData> financialProfile,
-                      List<GoalData> goals, List<ConsentData> consents) {}
+                      List<GoalData> goals, List<ConsentData> consents,
+                      Optional<SubscriptionData> subscription,
+                      List<NotificationPreferenceData> notificationPreferences) {}
     record SubjectRequest(UUID id, String type, String status, Instant createdAt, Instant completedAt) {}
 
     ExportData exportOwnData(UUID userId);

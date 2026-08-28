@@ -62,6 +62,18 @@ Nunca copiar produção integralmente para dev ou staging.
 
 Flags possuem proprietário, finalidade, valor padrão seguro, ambientes, data de revisão e plano de remoção. Flags de segurança falham fechadas quando aplicável. Flags não substituem autorização.
 
+| Flag | Proprietário | Padrão | Finalidade | Revisão |
+|---|---|---:|---|---|
+| `payments-mock` | Produto + plataforma | `false` | Exercitar checkout e webhook sem cobrança | antes da Fase 7 |
+| `notifications-mock` | Produto + privacidade | `false` | Registrar intenção sem envio | antes da Fase 7 |
+| `open-finance` | Produto + segurança | `false` | Reservada para futuro ADR | antes de sandbox |
+| `loyalty` | Produto | `false` | Reservada para futuro ADR | antes de sandbox |
+| `travel` | Produto | `false` | Reservada para futuro ADR | antes de sandbox |
+| `real-estate-financing` | Produto + jurídico | `false` | Reservada para futuro ADR | antes de sandbox |
+| `auto-financing` | Produto + jurídico | `false` | Reservada para futuro ADR | antes de sandbox |
+
+As flags de integração futura devem ser removidas caso a hipótese seja descartada; habilitá-las sem adaptador não produz conexão nem acesso.
+
 ## Presets de cenário
 
 Rótulos como conservador ou otimista não carregam taxas fixas no código. Um conjunto versionado e visível define os valores; o usuário confirma ou ajusta. A origem e a data do preset são registradas.

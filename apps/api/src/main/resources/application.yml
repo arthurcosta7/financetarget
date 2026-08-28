@@ -43,6 +43,17 @@ app:
   legal-documents:
     terms-version: ${APP_TERMS_VERSION}
     privacy-notice-version: ${APP_PRIVACY_NOTICE_VERSION}
+  features:
+    payments-mock: ${APP_FEATURE_PAYMENTS_MOCK:false}
+    notifications-mock: ${APP_FEATURE_NOTIFICATIONS_MOCK:false}
+    open-finance: ${APP_FEATURE_OPEN_FINANCE:false}
+    loyalty: ${APP_FEATURE_LOYALTY:false}
+    travel: ${APP_FEATURE_TRAVEL:false}
+    real-estate-financing: ${APP_FEATURE_REAL_ESTATE_FINANCING:false}
+    auto-financing: ${APP_FEATURE_AUTO_FINANCING:false}
+  mock-integrations:
+    payment-webhook-secret: ${APP_MOCK_PAYMENT_WEBHOOK_SECRET:}
+    webhook-replay-tolerance: ${APP_MOCK_WEBHOOK_REPLAY_TOLERANCE:5m}
 
 management:
   endpoints:

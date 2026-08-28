@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: FinanceTarget API
-  version: 0.4.0
-  description: Contrato da identidade, onboarding e primeira fatia vertical de metas.
+  version: 0.5.0
+  description: Contrato do MVP manual, cenários, assinaturas e hubs simulados.
 servers:
   - url: /api/v1
 paths:
@@ -329,6 +329,91 @@ paths:
         "400": { $ref: "#/components/responses/Problem" }
         "401": { $ref: "#/components/responses/Problem" }
         "404": { $ref: "#/components/responses/Problem" }
+  /features:
+    get:
+      operationId: getFeatureFlags
+      tags: [System]
+      responses:
+        "200":
+          description: Flags públicas para a experiência autenticada; não substituem autorização.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FeatureFlags" }
+        "401": { $ref: "#/components/responses/Problem" }
+  /subscriptions/current:
+    get:
+      operationId: getCurrentSubscription
+      tags: [Subscriptions]
+      responses:
+        "200":
+          description: Estado canônico, benefícios internos e catálogo do ambiente.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SubscriptionOverview" }
+        "401": { $ref: "#/components/responses/Problem" }
+  /subscriptions/mock-checkouts:
+    post:
+      operationId: createMockCheckout
+      tags: [Subscriptions]
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateMockCheckoutRequest" }
+      responses:
+        "201":
+          description: Sessão simulada criada sem cobrança ou redirecionamento externo.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MockCheckout" }
+        "404": { $ref: "#/components/responses/Problem" }
+        "409": { $ref: "#/components/responses/Problem" }
+        "503": { $ref: "#/components/responses/Problem" }
+  /notification-preferences:
+    get:
+      operationId: getNotificationPreferences
+      tags: [Notifications]
+      responses:
+        "200":
+          description: Preferências atuais; comunicações essenciais não são opcionais.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NotificationPreferences" }
+    put:
+      operationId: updateNotificationPreferences
+      tags: [Notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateNotificationPreferences" }
+      responses:
+        "200":
+          description: Preferências atualizadas sem realizar envio.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NotificationPreferences" }
+        "400": { $ref: "#/components/responses/Problem" }
+  /integrations/payments/webhooks/mock:
+    post:
+      operationId: receiveMockPaymentWebhook
+      tags: [Integrations]
+      parameters:
+        - { name: X-Mock-Event-Id, in: header, required: true, schema: { type: string, maxLength: 160 } }
+        - { name: X-Mock-Timestamp, in: header, required: true, schema: { type: string, format: date-time } }
+        - { name: X-Mock-Signature, in: header, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MockPaymentWebhook" }
+      responses:
+        "202": { description: Evento assinado aceito ou repetição idempotente reconhecida. }
+        "401": { $ref: "#/components/responses/Problem" }
+        "409": { $ref: "#/components/responses/Problem" }
+        "503": { $ref: "#/components/responses/Problem" }
 components:
   parameters:
     IdempotencyKey:
@@ -578,6 +663,87 @@ components:
         base: { $ref: "#/components/schemas/ScenarioProjection" }
         scenarios: { type: array, maxItems: 3, items: { $ref: "#/components/schemas/Scenario" } }
         scenarioEngineVersion: { type: string }
+    FeatureFlags:
+      type: object
+      required: [paymentsMock, notificationsMock, openFinance, loyalty, travel, realEstateFinancing, autoFinancing]
+      properties:
+        paymentsMock: { type: boolean }
+        notificationsMock: { type: boolean }
+        openFinance: { type: boolean }
+        loyalty: { type: boolean }
+        travel: { type: boolean }
+        realEstateFinancing: { type: boolean }
+        autoFinancing: { type: boolean }
+    Entitlements:
+      type: object
+      additionalProperties: { type: string }
+    Subscription:
+      type: object
+      required: [planCode, status, provider, version, updatedAt]
+      properties:
+        planCode: { type: string }
+        status: { type: string, enum: [ACTIVE, PAST_DUE, CANCELED] }
+        provider: { type: string }
+        version: { type: integer, format: int64 }
+        updatedAt: { type: string, format: date-time }
+    SubscriptionPlan:
+      type: object
+      required: [code, displayName, entitlements]
+      properties:
+        code: { type: string }
+        displayName: { type: string }
+        entitlements: { $ref: "#/components/schemas/Entitlements" }
+    SubscriptionOverview:
+      type: object
+      required: [subscription, entitlements, availablePlans, mockCheckoutEnabled]
+      properties:
+        subscription:
+          oneOf:
+            - { $ref: "#/components/schemas/Subscription" }
+            - { type: "null" }
+        entitlements: { $ref: "#/components/schemas/Entitlements" }
+        availablePlans:
+          type: array
+          items: { $ref: "#/components/schemas/SubscriptionPlan" }
+        mockCheckoutEnabled: { type: boolean }
+    CreateMockCheckoutRequest:
+      type: object
+      required: [planCode]
+      properties:
+        planCode: { type: string, maxLength: 64 }
+    MockCheckout:
+      type: object
+      required: [id, planCode, provider, reference, status, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        planCode: { type: string }
+        provider: { type: string, enum: [MOCK] }
+        reference: { type: string }
+        status: { type: string, enum: [SIMULATED] }
+        createdAt: { type: string, format: date-time }
+    NotificationPreferences:
+      type: object
+      required: [essential, planningReminders, productUpdates, marketing]
+      properties:
+        essential: { type: boolean, const: true }
+        planningReminders: { type: boolean }
+        productUpdates: { type: boolean }
+        marketing: { type: boolean }
+    UpdateNotificationPreferences:
+      type: object
+      required: [planningReminders, productUpdates, marketing]
+      properties:
+        planningReminders: { type: boolean }
+        productUpdates: { type: boolean }
+        marketing: { type: boolean }
+    MockPaymentWebhook:
+      type: object
+      required: [eventType, userId, planCode, providerSubscriptionReference]
+      properties:
+        eventType: { type: string, enum: [subscription.activated, subscription.past_due, subscription.canceled] }
+        userId: { type: string, format: uuid }
+        planCode: { type: string }
+        providerSubscriptionReference: { type: string, maxLength: 160 }
     ReauthenticationRequest:
       type: object
       required: [password]
@@ -594,7 +760,7 @@ components:
         completedAt: { type: [string, "null"], format: date-time }
     PersonalDataExport:
       type: object
-      required: [account, financialProfile, goals, consents]
+      required: [account, financialProfile, goals, consents, subscription, notificationPreferences]
       properties:
         account: { $ref: "#/components/schemas/ExportedAccount" }
         financialProfile:
@@ -614,6 +780,28 @@ components:
               documentVersion: { type: string }
               decision: { type: string }
               recordedAt: { type: string, format: date-time }
+        subscription:
+          oneOf:
+            - { $ref: "#/components/schemas/ExportedSubscription" }
+            - { type: "null" }
+        notificationPreferences:
+          type: array
+          items: { $ref: "#/components/schemas/ExportedNotificationPreference" }
+    ExportedSubscription:
+      type: object
+      required: [planCode, status, provider, updatedAt]
+      properties:
+        planCode: { type: string }
+        status: { type: string }
+        provider: { type: string }
+        updatedAt: { type: string, format: date-time }
+    ExportedNotificationPreference:
+      type: object
+      required: [category, emailEnabled, updatedAt]
+      properties:
+        category: { type: string }
+        emailEnabled: { type: boolean }
+        updatedAt: { type: string, format: date-time }
     ExportedAccount:
       type: object
       required: [id, email, displayName, createdAt, emailVerifiedAt]
