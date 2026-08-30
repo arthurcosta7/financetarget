@@ -44,6 +44,12 @@ app:
   legal-documents:
     terms-version: ${APP_TERMS_VERSION}
     privacy-notice-version: ${APP_PRIVACY_NOTICE_VERSION}
+  beta:
+    enabled: ${APP_BETA_ENABLED:false}
+    invitation-ttl: ${APP_BETA_INVITATION_TTL:7d}
+    invitation-daily-limit: ${APP_BETA_INVITATION_DAILY_LIMIT:5}
+    maximum-shared-members: ${APP_BETA_MAXIMUM_SHARED_MEMBERS:2}
+    feedback-comment-maximum-length: ${APP_BETA_FEEDBACK_COMMENT_MAX_LENGTH:500}
   features:
     payments-mock: ${APP_FEATURE_PAYMENTS_MOCK:false}
     notifications-mock: ${APP_FEATURE_NOTIFICATIONS_MOCK:false}

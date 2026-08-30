@@ -9,6 +9,7 @@ const push = vi.fn();
 vi.mock("next/navigation", () => ({ usePathname: () => "/app/inicio", useRouter: () => ({ push }) }));
 
 const profile = { spaceId: "11111111-1111-1111-1111-111111111111", initialGoalBalance: "10000.00", confirmedMonthlyCapacity: "2000.00", currency: "BRL" };
+const spaces = [{ id: profile.spaceId, type: "PERSONAL", name: "Meu planejamento", baseCurrency: "BRL", role: "OWNER", memberCount: 1, profileConfigured: true }];
 const goal: Goal = {
   id: "22222222-2222-2222-2222-222222222222", spaceId: profile.spaceId, goalType: "TRAVEL", title: "Viagem longa",
   targetAmount: { amount: "60000.00", currency: "BRL" }, targetValueBasis: "FIXED_NOMINAL", targetDate: "2029-08-28",
@@ -31,7 +32,7 @@ describe("dashboard e cenários", () => {
   afterEach(() => { vi.restoreAllMocks(); push.mockReset(); document.cookie = "XSRF-TOKEN=; Max-Age=0; path=/"; });
 
   it("mostra múltiplas metas usando o progresso calculado pelo backend", async () => {
-    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(jsonResponse(profile)).mockResolvedValueOnce(jsonResponse([goal]));
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(jsonResponse(spaces)).mockResolvedValueOnce(jsonResponse([goal]));
     render(<Dashboard />);
     expect(await screen.findByRole("heading", { name: "Progresso por meta" })).toBeInTheDocument();
     expect(screen.getByLabelText("Comparação do percentual concluído de cada meta")).toBeInTheDocument();
@@ -44,11 +45,12 @@ describe("dashboard e cenários", () => {
     document.cookie = "XSRF-TOKEN=csrf-scenario; path=/";
     const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
       const url = String(input);
-      if (url.endsWith("/onboarding/financial-profile")) return jsonResponse(profile);
+      if (url.endsWith("/planning-spaces")) return jsonResponse(spaces);
       if (url.endsWith(`/goals/${goal.id}`)) return jsonResponse(goal);
       if (url.endsWith(`/goals/${goal.id}/scenarios`) && init?.method === "POST") return jsonResponse(comparison, 201);
       if (url.endsWith(`/goals/${goal.id}/scenarios`)) return jsonResponse(comparison);
       if (url.endsWith("/auth/csrf")) return new Response(null, { status: 200 });
+      if (url.endsWith("/beta/events")) return new Response(null, { status: 202 });
       throw new Error(`URL inesperada: ${url}`);
     });
     render(<ScenarioPlanner goalId={goal.id} />);

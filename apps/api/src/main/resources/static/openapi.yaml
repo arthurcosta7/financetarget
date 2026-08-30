@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: FinanceTarget API
-  version: 0.6.0
-  description: Contrato do MVP manual, cenários, assinaturas, hubs simulados e mensagens de identidade.
+  version: 0.7.0
+  description: Contrato do MVP manual, colaboração, aprendizado de beta, assinaturas e hubs isolados.
 servers:
   - url: /api/v1
 paths:
@@ -241,6 +241,171 @@ paths:
               schema: { $ref: "#/components/schemas/DataSubjectRequest" }
         "401": { $ref: "#/components/responses/Problem" }
         "404": { $ref: "#/components/responses/Problem" }
+  /planning-spaces:
+    get:
+      operationId: listPlanningSpaces
+      tags: [Planning spaces]
+      responses:
+        "200":
+          description: Espaços em que a conta possui associação ativa.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/PlanningSpace" } }
+    post:
+      operationId: createSharedPlanningSpace
+      tags: [Planning spaces]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreatePlanningSpace" }
+      responses:
+        "201":
+          description: Espaço compartilhado criado com o solicitante como proprietário.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PlanningSpace" }
+        "400": { $ref: "#/components/responses/Problem" }
+  /planning-spaces/{spaceId}/invitations:
+    parameters: [{ $ref: "#/components/parameters/SpaceId" }]
+    post:
+      operationId: invitePlanningSpaceMember
+      tags: [Planning spaces]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateSpaceInvitation" }
+      responses:
+        "202":
+          description: Convite autenticado criado sem revelar existência da conta destinatária.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SpaceInvitation" }
+        "404": { $ref: "#/components/responses/Problem" }
+        "429": { $ref: "#/components/responses/Problem" }
+  /planning-space-invitations:
+    get:
+      operationId: listReceivedSpaceInvitations
+      tags: [Planning spaces]
+      responses:
+        "200":
+          description: Convites pendentes vinculados ao e-mail autenticado.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/SpaceInvitation" } }
+  /planning-space-invitations/{invitationId}/responses:
+    parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      operationId: respondToSpaceInvitation
+      tags: [Planning spaces]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/InvitationDecision" }
+      responses:
+        "204": { description: Convite aceito ou recusado. }
+        "404": { $ref: "#/components/responses/Problem" }
+  /planning-spaces/{spaceId}/members:
+    parameters: [{ $ref: "#/components/parameters/SpaceId" }]
+    get:
+      operationId: listPlanningSpaceMembers
+      tags: [Planning spaces]
+      responses:
+        "200":
+          description: Participantes ativos sem exposição de e-mail.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/SpaceMember" } }
+        "404": { $ref: "#/components/responses/Problem" }
+  /planning-spaces/{spaceId}/members/{memberId}:
+    parameters:
+      - $ref: "#/components/parameters/SpaceId"
+      - name: memberId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    patch:
+      operationId: changePlanningSpaceMemberRole
+      tags: [Planning spaces]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ChangeSpaceRole" }
+      responses:
+        "204": { description: Papel alterado por um proprietário. }
+        "404": { $ref: "#/components/responses/Problem" }
+  /planning-spaces/{spaceId}/financial-profile:
+    parameters: [{ $ref: "#/components/parameters/SpaceId" }]
+    get:
+      operationId: getPlanningSpaceFinancialProfile
+      tags: [Planning spaces]
+      responses:
+        "200":
+          description: Perfil agregado explicitamente informado no espaço.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FinancialProfile" }
+        "404": { $ref: "#/components/responses/Problem" }
+    put:
+      operationId: savePlanningSpaceFinancialProfile
+      tags: [Planning spaces]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/SaveSharedFinancialProfile" }
+      responses:
+        "200":
+          description: Perfil agregado atualizado por proprietário ou editor.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FinancialProfile" }
+        "404": { $ref: "#/components/responses/Problem" }
+  /beta/config:
+    get:
+      operationId: getClosedBetaConfig
+      tags: [Beta]
+      responses:
+        "200":
+          description: Estado técnico; não equivale a autorização de entrada de pessoas reais.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BetaConfig" }
+  /beta/events:
+    post:
+      operationId: recordAllowlistedBetaEvent
+      tags: [Beta]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BetaEvent" }
+      responses:
+        "202": { description: Evento aceito ou descartado quando o beta está desligado. }
+        "400": { $ref: "#/components/responses/Problem" }
+  /beta/feedback:
+    post:
+      operationId: submitClosedBetaFeedback
+      tags: [Beta]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/BetaFeedbackRequest" }
+      responses:
+        "201":
+          description: Feedback estruturado registrado.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BetaFeedback" }
+        "404": { $ref: "#/components/responses/Problem" }
   /planning-spaces/{spaceId}/goals:
     parameters:
       - $ref: "#/components/parameters/SpaceId"
@@ -454,6 +619,107 @@ components:
         application/problem+json:
           schema: { $ref: "#/components/schemas/Problem" }
   schemas:
+    PlanningSpace:
+      type: object
+      required: [id, type, name, baseCurrency, role, memberCount, profileConfigured]
+      properties:
+        id: { type: string, format: uuid }
+        type: { type: string, enum: [PERSONAL, SHARED] }
+        name: { type: string }
+        baseCurrency: { type: string, pattern: "^[A-Z]{3}$" }
+        role: { $ref: "#/components/schemas/SpaceRole" }
+        memberCount: { type: integer, minimum: 1 }
+        profileConfigured: { type: boolean }
+    SpaceRole:
+      type: string
+      enum: [OWNER, EDITOR, VIEWER]
+    CreatePlanningSpace:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 80 }
+    CreateSpaceInvitation:
+      type: object
+      additionalProperties: false
+      required: [email, role]
+      properties:
+        email: { type: string, format: email, maxLength: 320 }
+        role: { $ref: "#/components/schemas/SpaceRole" }
+    SpaceInvitation:
+      type: object
+      required: [id, spaceId, role, status, expiresAt, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        spaceId: { type: string, format: uuid }
+        spaceName: { type: [string, "null"] }
+        inviterName: { type: [string, "null"] }
+        role: { $ref: "#/components/schemas/SpaceRole" }
+        status: { type: string, enum: [PENDING, ACCEPTED, REJECTED, EXPIRED] }
+        expiresAt: { type: string, format: date-time }
+        createdAt: { type: string, format: date-time }
+    InvitationDecision:
+      type: object
+      additionalProperties: false
+      required: [accept]
+      properties:
+        accept: { type: boolean }
+    SpaceMember:
+      type: object
+      required: [userId, displayName, role, joinedAt]
+      properties:
+        userId: { type: string, format: uuid }
+        displayName: { type: string }
+        role: { $ref: "#/components/schemas/SpaceRole" }
+        joinedAt: { type: string, format: date-time }
+    ChangeSpaceRole:
+      type: object
+      additionalProperties: false
+      required: [role]
+      properties:
+        role: { $ref: "#/components/schemas/SpaceRole" }
+    SaveSharedFinancialProfile:
+      type: object
+      additionalProperties: false
+      required: [recurringIncome, essentialExpenses, initialGoalBalance, confirmedMonthlyCapacity]
+      properties:
+        recurringIncome: { type: string, pattern: "^[0-9]{1,17}(\\.[0-9]{1,2})?$" }
+        essentialExpenses: { type: string, pattern: "^[0-9]{1,17}(\\.[0-9]{1,2})?$" }
+        initialGoalBalance: { type: string, pattern: "^[0-9]{1,17}(\\.[0-9]{1,2})?$" }
+        confirmedMonthlyCapacity: { type: string, pattern: "^[0-9]{1,17}(\\.[0-9]{1,2})?$" }
+    BetaConfig:
+      type: object
+      required: [enabled, feedbackEnabled, maximumSharedMembers]
+      properties:
+        enabled: { type: boolean }
+        feedbackEnabled: { type: boolean }
+        maximumSharedMembers: { type: integer, minimum: 2, maximum: 10 }
+    BetaEvent:
+      type: object
+      additionalProperties: false
+      required: [eventName, journeyStage, outcome, deviceClass]
+      properties:
+        eventName: { type: string, enum: [DASHBOARD_VIEWED, GOAL_CREATED, SCENARIO_CREATED, SPACE_CREATED, INVITATION_ACCEPTED, FEEDBACK_SUBMITTED] }
+        journeyStage: { type: string, enum: [ACTIVATION, PLANNING, COLLABORATION, RETENTION, TRUST] }
+        outcome: { type: string, enum: [STARTED, COMPLETED, ABANDONED, FAILED] }
+        deviceClass: { type: string, enum: [MOBILE, TABLET, DESKTOP, UNKNOWN] }
+    BetaFeedbackRequest:
+      type: object
+      additionalProperties: false
+      required: [category]
+      properties:
+        category: { type: string, enum: [COMPREHENSION, USABILITY, TRUST, COLLABORATION, PROBLEM] }
+        rating: { type: [integer, "null"], minimum: 1, maximum: 5 }
+        comment: { type: [string, "null"], maxLength: 500 }
+    BetaFeedback:
+      type: object
+      required: [id, category, status, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        category: { type: string }
+        rating: { type: [integer, "null"] }
+        status: { type: string, enum: [OPEN, REVIEWED] }
+        createdAt: { type: string, format: date-time }
     Problem:
       type: object
       required: [title, status, detail]
@@ -776,7 +1042,7 @@ components:
         completedAt: { type: [string, "null"], format: date-time }
     PersonalDataExport:
       type: object
-      required: [account, financialProfile, goals, consents, subscription, notificationPreferences]
+      required: [account, financialProfile, goals, consents, subscription, notificationPreferences, spaceMemberships, spaceInvitations, betaEvents, betaFeedback]
       properties:
         account: { $ref: "#/components/schemas/ExportedAccount" }
         financialProfile:
@@ -803,6 +1069,56 @@ components:
         notificationPreferences:
           type: array
           items: { $ref: "#/components/schemas/ExportedNotificationPreference" }
+        spaceMemberships:
+          type: array
+          items: { $ref: "#/components/schemas/ExportedSpaceMembership" }
+        spaceInvitations:
+          type: array
+          items: { $ref: "#/components/schemas/ExportedSpaceInvitation" }
+        betaEvents:
+          type: array
+          items: { $ref: "#/components/schemas/ExportedBetaEvent" }
+        betaFeedback:
+          type: array
+          items: { $ref: "#/components/schemas/ExportedBetaFeedback" }
+    ExportedSpaceMembership:
+      type: object
+      required: [spaceId, type, name, role, joinedAt]
+      properties:
+        spaceId: { type: string, format: uuid }
+        type: { type: string }
+        name: { type: string }
+        role: { $ref: "#/components/schemas/SpaceRole" }
+        joinedAt: { type: string, format: date-time }
+    ExportedSpaceInvitation:
+      type: object
+      required: [id, spaceId, direction, role, status, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        spaceId: { type: string, format: uuid }
+        direction: { type: string, enum: [SENT, RECEIVED] }
+        role: { $ref: "#/components/schemas/SpaceRole" }
+        status: { type: string }
+        createdAt: { type: string, format: date-time }
+    ExportedBetaEvent:
+      type: object
+      required: [eventName, journeyStage, outcome, deviceClass, occurredAt]
+      properties:
+        eventName: { type: string }
+        journeyStage: { type: string }
+        outcome: { type: string }
+        deviceClass: { type: string }
+        occurredAt: { type: string, format: date-time }
+    ExportedBetaFeedback:
+      type: object
+      required: [id, category, status, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        category: { type: string }
+        rating: { type: [integer, "null"] }
+        comment: { type: [string, "null"] }
+        status: { type: string }
+        createdAt: { type: string, format: date-time }
     ExportedSubscription:
       type: object
       required: [planCode, status, provider, updatedAt]

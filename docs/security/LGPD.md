@@ -28,6 +28,7 @@ Este documento traduz requisitos de produto e engenharia. Não é parecer juríd
 | Consentimentos | versão e decisão | demonstrar escolha | prazo jurídico aprovado | Alta |
 | Auditoria | ator, ação, resultado | segurança e responsabilização | proporcional ao risco | Alta |
 | Suporte | mensagens e anexos futuros | atendimento | política específica | Variável |
+| Aprendizado do beta | evento allowlisted, categoria, nota e comentário opcional | avaliar compreensão e usabilidade | prazo curto a aprovar | Alta |
 
 Não coletar CPF, conta bancária, endereço residencial ou transações no MVP manual sem necessidade aprovada.
 
@@ -98,7 +99,7 @@ Prazos e exceções permanecem pendentes de validação jurídica.
 - expiração e auditoria do download;
 - geração assíncrona futura com status claro.
 
-Na implementação atual, a exportação autenticada inclui os dados da conta, perfil, consentimentos, solicitações, metas e cenários criados pelo titular, versões do motor/fórmula, contribuições de sua autoria, assinatura canônica e preferências de comunicação. Ela não inclui hashes, tokens, eventos de webhook, referências de checkout nem dados privados de outro membro. Entrega criptografada ou por link temporário continua fora do escopo local e é obrigatória antes da operação real.
+Na implementação atual, a exportação autenticada inclui os dados da conta, perfil, consentimentos, solicitações, metas e cenários criados pelo titular, versões do motor/fórmula, contribuições de sua autoria, assinatura canônica, preferências de comunicação, associações e convites de espaço, eventos allowlisted e feedback do próprio titular. Ela não inclui hashes, tokens, eventos de webhook, referências de checkout, e-mail de outro convidado nem dados privados de outro membro. Entrega criptografada ou por link temporário continua fora do escopo local e é obrigatória antes da operação real.
 
 ## Operadores e transferências
 
@@ -141,6 +142,15 @@ Avaliar formalmente a necessidade antes do beta, considerando perfil financeiro,
 - nenhuma plataforma externa, analytics, canal de mensagem ou operador novo foi contratado.
 
 Essa revisão reduz risco técnico, mas não define bases legais, prazos ou RIPD. A revisão jurídica qualificada continua como gate do beta.
+
+## Revisão técnica da Fase 8
+
+- o perfil pessoal não é copiado para o espaço compartilhado;
+- a aceitação explica o escopo e exige ação explícita da conta destinatária;
+- eventos de produto possuem allowlist sem valores, títulos, renda, e-mail ou payload;
+- comentário de feedback é opcional, limitado e faz parte da exportação do titular;
+- nenhum operador externo de analytics ou suporte foi adicionado;
+- retenção, base legal, moderação e acesso operacional ao feedback continuam pendentes de revisão qualificada.
 
 ## Operador de e-mail transacional
 

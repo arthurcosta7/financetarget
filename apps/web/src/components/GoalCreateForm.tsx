@@ -7,22 +7,25 @@ import { AppShell } from "@/components/AppShell";
 import { FormMessage } from "@/components/FormMessage";
 import { ApiError, apiFetch } from "@/lib/api/client";
 import type { FinancialProfile, Goal } from "@/lib/goals";
+import { recordBetaEvent, usePlanningSpaces } from "@/lib/spaces";
 
 export function GoalCreateForm() {
   const router = useRouter();
   const [profile, setProfile] = useState<FinancialProfile>();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string>();
+  const { spaces, activeSpace, error: spacesError, selectSpace } = usePlanningSpaces();
 
   useEffect(() => {
-    apiFetch<FinancialProfile>("/onboarding/financial-profile")
+    if (!activeSpace) return;
+    apiFetch<FinancialProfile>(`/planning-spaces/${activeSpace.id}/financial-profile`)
       .then(setProfile)
       .catch((error) => {
         if (error instanceof ApiError && error.status === 401) router.push("/entrar");
-        else if (error instanceof ApiError && error.status === 404) router.push("/app/onboarding");
+        else if (error instanceof ApiError && error.status === 404 && activeSpace.type === "PERSONAL") router.push("/app/onboarding");
         else setMessage(error instanceof Error ? error.message : "Não foi possível carregar o ponto de partida.");
       });
-  }, [router]);
+  }, [activeSpace, router]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,6 +49,7 @@ export function GoalCreateForm() {
           contributionTiming: data.get("contributionTiming"),
         }),
       });
+      void recordBetaEvent("GOAL_CREATED", "PLANNING");
       router.push(`/app/metas/${goal.id}`);
     } catch (error) {
       setMessage(error instanceof ApiError ? error.message : "Não foi possível criar a meta.");
@@ -55,7 +59,7 @@ export function GoalCreateForm() {
   }
 
   return (
-    <AppShell section="Metas · nova">
+    <AppShell activeSpace={activeSpace} onSpaceChange={selectSpace} section="Metas · nova" spaces={spaces}>
       <header className="app-heading goal-heading">
         <p className="eyebrow">Nova direção</p>
         <h1>Qual meta você quer alcançar?</h1>
@@ -105,7 +109,7 @@ export function GoalCreateForm() {
               </select>
             </label>
           </fieldset>
-          {message && <FormMessage kind="error">{message}</FormMessage>}
+          {(message || spacesError) && <FormMessage kind="error">{message ?? spacesError?.message}</FormMessage>}
           <button className="button button--primary" disabled={pending || !profile} type="submit">
             {pending ? "Calculando…" : "Calcular e criar meta"}
           </button>

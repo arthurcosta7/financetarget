@@ -80,6 +80,8 @@ export type ScenarioComparison = {
 
 export type FinancialProfile = {
   spaceId: string;
+  recurringIncome?: string;
+  essentialExpenses?: string;
   initialGoalBalance: string;
   confirmedMonthlyCapacity: string;
   currency: string;

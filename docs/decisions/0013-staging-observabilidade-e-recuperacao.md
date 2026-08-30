@@ -1,6 +1,6 @@
 # ADR 0013 — Staging fail-closed, observabilidade e recuperação
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 28/08/2026
 
 ## Contexto
@@ -48,4 +48,4 @@ Revisar ao adotar múltiplos bancos/regiões, collector/Alertmanager, cofre, pla
 
 ## Aprovação
 
-Aguardando aprovação explícita da Fase 7.
+Aceito com a aprovação explícita da Fase 7 e autorização da Fase 8 em 28/08/2026.

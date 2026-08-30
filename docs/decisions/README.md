@@ -16,8 +16,9 @@ Este diretório registra decisões relevantes e suas consequências. Decisões a
 | [0010](0010-fatia-vertical-de-metas.md) | Fatia vertical de metas e snapshot inicial | Aceito | 28/08/2026 |
 | [0011](0011-cenarios-como-snapshots-independentes.md) | Cenários como snapshots independentes | Aceito | 28/08/2026 |
 | [0012](0012-catalogo-interno-e-webhook-mock-assinado.md) | Catálogo interno e webhook mock assinado | Aceito | 28/08/2026 |
-| [0013](0013-staging-observabilidade-e-recuperacao.md) | Staging fail-closed, observabilidade e recuperação | Proposto | 28/08/2026 |
+| [0013](0013-staging-observabilidade-e-recuperacao.md) | Staging fail-closed, observabilidade e recuperação | Aceito | 28/08/2026 |
 | [0014](0014-resend-para-mensagens-de-identidade.md) | Resend para mensagens transacionais de identidade | Aceito | 28/08/2026 |
+| [0015](0015-beta-fechado-com-telemetria-minimizada.md) | Beta fechado com telemetria minimizada e gate humano | Proposto | 28/08/2026 |
 
 ## Formato
 

@@ -62,13 +62,15 @@ Entitlements, PaymentsHub mock, NotificationHub mock, webhooks idempotentes, pre
 
 Staging, testes de carga, observabilidade, alertas, backups, restauração, rollback, auditoria de segurança, runbooks e revisão LGPD.
 
-**Estado:** concluída tecnicamente em 28/08/2026; aguardando aprovação.
+**Estado:** aprovada em 28/08/2026.
 
 **Gate:** vulnerabilidades críticas resolvidas e operação recuperável demonstrada.
 
 ## Fase 8 — Beta fechado
 
 Grupo controlado, analytics sem dados financeiros sensíveis, suporte, feedback, monitoramento, termos revisados e critérios de aprendizagem.
+
+**Estado:** preparação técnica concluída em 30/08/2026 e aguardando aprovação. A entrada de usuários reais depende dos gates humano, jurídico, operacional e matemático documentados.
 
 **Gate:** decisão documentada de prosseguir, ajustar ou interromper.
 

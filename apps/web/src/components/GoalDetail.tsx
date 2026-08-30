@@ -7,23 +7,25 @@ import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { FormMessage } from "@/components/FormMessage";
 import { ApiError, apiFetch, idempotencyKey } from "@/lib/api/client";
-import { formatDate, formatMoney, goalTypeCopy, warningCopy, type FinancialProfile, type Goal } from "@/lib/goals";
+import { formatDate, formatMoney, goalTypeCopy, warningCopy, type Goal } from "@/lib/goals";
+import { usePlanningSpaces } from "@/lib/spaces";
 
 export function GoalDetail({ goalId }: { goalId: string }) {
   const router = useRouter();
   const [goal, setGoal] = useState<Goal>();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ kind: "error" | "success"; text: string }>();
+  const { spaces, activeSpace, selectSpace } = usePlanningSpaces();
 
   useEffect(() => {
-    apiFetch<FinancialProfile>("/onboarding/financial-profile")
-      .then((profile) => apiFetch<Goal>(`/planning-spaces/${profile.spaceId}/goals/${goalId}`))
+    if (!activeSpace) return;
+    apiFetch<Goal>(`/planning-spaces/${activeSpace.id}/goals/${goalId}`)
       .then(setGoal)
       .catch((error) => {
         if (error instanceof ApiError && error.status === 401) router.push("/entrar");
         else setMessage({ kind: "error", text: error instanceof Error ? error.message : "Não foi possível carregar a meta." });
       });
-  }, [goalId, router]);
+  }, [activeSpace, goalId, router]);
 
   async function contribute(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -53,12 +55,12 @@ export function GoalDetail({ goalId }: { goalId: string }) {
   }
 
   if (!goal) {
-    return <AppShell section="Metas"><p className="goal-empty" aria-live="polite">{message?.text ?? "Carregando plano…"}</p></AppShell>;
+    return <AppShell activeSpace={activeSpace} onSpaceChange={selectSpace} section="Metas" spaces={spaces}><p className="goal-empty" aria-live="polite">{message?.text ?? "Carregando plano…"}</p></AppShell>;
   }
 
   const progressStyle = { "--goal-progress": `${goal.progressPercentage}%` } as React.CSSProperties;
   return (
-    <AppShell section="Metas · plano">
+    <AppShell activeSpace={activeSpace} onSpaceChange={selectSpace} section="Metas · plano" spaces={spaces}>
       <header className="goal-detail-heading">
         <div><p className="eyebrow">{goalTypeCopy[goal.goalType]}</p><h1>{goal.title}</h1><p>Plano calculado para {formatDate(goal.targetDate)}.</p><Link className="text-link" href={`/app/metas/${goal.id}/cenarios`}>Comparar cenários</Link></div>
         <div className="goal-primary-number"><span>Estimativa mensal</span><strong>{formatMoney(goal.projection.requiredMonthlyContribution)}</strong><small>aporte no {goal.contributionTiming === "END_OF_MONTH" ? "fim" : "início"} do mês</small></div>

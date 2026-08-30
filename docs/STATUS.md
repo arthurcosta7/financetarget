@@ -2,8 +2,8 @@
 
 ## Resumo
 
-- Fase atual: **Fase 7 — hardening e staging**.
-- Estado: **concluída tecnicamente em 28/08/2026; aguardando aprovação**.
+- Fase atual: **Fase 8 — beta fechado**.
+- Estado: **preparação técnica concluída em 30/08/2026; aguardando aprovação, sem usuários reais**.
 - Aplicação implementada: identidade, sessões, onboarding, privacidade, metas, motores, dashboard, assinatura canônica, preferências e hubs simulados.
 - Integrações reais: Resend opcional e limitado a mensagens de identidade, autorizado em 28/08/2026; demais integrações, não.
 - Dados reais: não.
@@ -91,7 +91,7 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 7 concluiu hardening, staging sintético, observabilidade, carga, auditoria, backup/restauração e rollback compatível. O gate exige aprovação explícita; a Fase 8 não está autorizada. O usuário autorizou exclusivamente o adaptador Resend para verificação e recuperação de identidade. Beta, dados financeiros reais, outras integrações, pagamentos e deploy continuam fora do escopo.
+A Fase 7 foi aprovada em 28/08/2026 e o ADR 0013 foi aceito. A preparação técnica da Fase 8 terminou em 30/08/2026 e aguarda aprovação; o ADR 0015 permanece proposto. Entrada de usuários reais, dados financeiros reais, deploy e Fase 9 permanecem bloqueados até revisão jurídica, RIPD, validação matemática independente, definição de responsáveis operacionais e aprovação específica do checklist de entrada.
 
 ## Integração Resend autorizada
 
@@ -258,6 +258,33 @@ Executadas em 28/08/2026:
 
 Evidências detalhadas estão em `docs/testing/PHASE-7-RESULTS.md`.
 
+## Entregáveis da Fase 8
+
+| Entregável | Estado | Fonte |
+|---|---|---|
+| Espaços compartilhados e papéis | Concluído tecnicamente | `planningspace/`, migration `V7` |
+| Convites vinculados ao destinatário | Concluído tecnicamente | API, persistência e testes negativos |
+| Perfil financeiro agregado | Concluído tecnicamente | `PlanningSpaceService`, `/app/espacos` |
+| Telemetria minimizada | Concluído tecnicamente | `beta/`, allowlists e rejeição de propriedades extras |
+| Feedback estruturado | Concluído tecnicamente | `/api/v1/beta/feedback`, `/app/beta` |
+| Contrato e exportação LGPD | Concluído tecnicamente | OpenAPI 0.7, `privacy/`, `docs/security/` |
+| Operação e gates | Preparado; aprovações humanas pendentes | `docs/operations/CLOSED-BETA.md` |
+| Evidência e decisão | Concluído tecnicamente; ADR proposto | `docs/testing/PHASE-8-RESULTS.md`, ADR 0015 |
+
+## Validações da Fase 8
+
+Executadas em 30/08/2026 com dados exclusivamente sintéticos:
+
+- 36 testes backend em PostgreSQL 17.11 efêmero e 17 testes frontend sem falhas;
+- migrations V1 a V7, schema de status V7 e guard fail-closed validados;
+- TypeScript, lint, OpenAPI gerado e build Next.js de produção sem falhas;
+- IDOR, papéis, último proprietário, convite vinculado e propriedade extra em telemetria testados;
+- telas de espaços e beta inspecionadas em desktop e 320 × 800, claro e escuro;
+- ausência de overflow horizontal e erros de console, com foco e `Escape` da sidebar móvel validados;
+- criação de espaço e feedback exercitados somente com conta e conteúdo sintéticos.
+
+Evidências detalhadas estão em `docs/testing/PHASE-8-RESULTS.md`.
+
 ## Validações da Fase 3
 
 Executadas em 27/08/2026:
@@ -316,3 +343,5 @@ Evidências detalhadas estão em `docs/testing/PHASE-2-RESULTS.md`.
 4. A validação matemática independente por especialista financeiro permanece obrigatória antes do beta.
 5. Plataforma de staging externa, cofre, collector/Alertmanager e agenda de backup exigem escolha e autorização.
 6. Revisão jurídica, RIPD e responsáveis operacionais precisam estar definidos antes do beta.
+7. Retenção e acesso operacional a eventos e feedback precisam de política aprovada e automação antes do beta.
+8. O guard do beta bloqueia staging/produção por desenho e só poderá ser revisado após aprovação explícita dos gates humanos.

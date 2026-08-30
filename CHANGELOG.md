@@ -6,6 +6,12 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Added
 
+- Espaços compartilhados para casal com convite vinculado ao e-mail autenticado e papéis `OWNER`, `EDITOR` e `VIEWER`.
+- Perfil financeiro agregado por espaço, seleção de contexto e autorização testada contra IDOR.
+- Telemetria interna allowlisted, feedback estruturado e feature flag fail-closed para preparação do beta.
+- Migration `V7`, OpenAPI 0.7, exportação LGPD ampliada e telas de espaços e feedback.
+- ADR 0015, plano e evidências da Fase 8.
+
 - Sidebar autenticada responsiva e recolhível, com rota ativa, contexto do espaço, tema e saída.
 - Gráficos acessíveis de progresso e esforço mensal, além de linha do tempo ordenada no dashboard.
 - Ícones Lucide usados como apoio semântico nas ações e na navegação.
@@ -88,6 +94,8 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Scripts e documentação de desenvolvimento e validação da Fase 2.
 
 ### Changed
+
+- Fase 7 aprovada, ADR 0013 aceito e Fase 8 autorizada para preparação técnica com dados sintéticos.
 
 - Dashboard reorganizado para expor ação principal, comparações e próximos marcos na primeira dobra.
 - Hierarquia tipográfica e espaçamento das telas autenticadas reduzidos para melhorar densidade e distribuição de ações.

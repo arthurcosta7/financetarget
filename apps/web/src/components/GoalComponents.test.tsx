@@ -9,6 +9,7 @@ const push = vi.fn();
 vi.mock("next/navigation", () => ({ usePathname: () => "/app/metas", useRouter: () => ({ push }) }));
 
 const profile = { spaceId: "11111111-1111-1111-1111-111111111111", initialGoalBalance: "24000.00", confirmedMonthlyCapacity: "2500.00", currency: "BRL" };
+const spaces = [{ id: profile.spaceId, type: "PERSONAL", name: "Meu planejamento", baseCurrency: "BRL", role: "OWNER", memberCount: 1, profileConfigured: true }];
 const goal: Goal = {
   id: "22222222-2222-2222-2222-222222222222", spaceId: profile.spaceId, goalType: "HOME_DOWN_PAYMENT",
   title: "Entrada do imóvel", targetAmount: { amount: "120000.00", currency: "BRL" },
@@ -36,7 +37,7 @@ describe("jornada de metas", () => {
 
   it("mostra projeção, premissas e limitações recebidas do backend", async () => {
     vi.spyOn(globalThis, "fetch")
-      .mockResolvedValueOnce(jsonResponse(profile))
+      .mockResolvedValueOnce(jsonResponse(spaces))
       .mockResolvedValueOnce(jsonResponse(goal));
 
     render(<GoalDetail goalId={goal.id} />);
@@ -52,8 +53,10 @@ describe("jornada de metas", () => {
     document.cookie = "XSRF-TOKEN=csrf-goal; path=/";
     const fetchMock = vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
       const url = String(input);
-      if (url.endsWith("/onboarding/financial-profile")) return jsonResponse(profile);
+      if (url.endsWith("/planning-spaces")) return jsonResponse(spaces);
+      if (url.endsWith(`/planning-spaces/${profile.spaceId}/financial-profile`)) return jsonResponse(profile);
       if (url.endsWith("/auth/csrf")) return new Response(null, { status: 200 });
+      if (url.endsWith("/beta/events")) return new Response(null, { status: 202 });
       if (url.includes("/planning-spaces/")) return jsonResponse(goal, 201);
       throw new Error(`URL inesperada no teste: ${url}`);
     });
@@ -67,7 +70,7 @@ describe("jornada de metas", () => {
     fireEvent.click(screen.getByRole("button", { name: "Calcular e criar meta" }));
 
     await waitFor(() => expect(push).toHaveBeenCalledWith(`/app/metas/${goal.id}`));
-    const request = fetchMock.mock.calls.find(([url]) => String(url).includes("/planning-spaces/"))?.[1];
+    const request = fetchMock.mock.calls.find(([url, init]) => String(url).endsWith("/goals") && init?.method === "POST")?.[1];
     expect(JSON.parse(String(request?.body))).toEqual(expect.objectContaining({
       targetAmount: "120000.00", annualInflationRate: "0.04", annualReturnRate: "0.06",
     }));

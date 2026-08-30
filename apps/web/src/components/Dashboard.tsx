@@ -7,29 +7,31 @@ import { useRouter } from "next/navigation";
 
 import { AppShell } from "@/components/AppShell";
 import { ApiError, apiFetch } from "@/lib/api/client";
-import { formatDate, formatMoney, goalTypeCopy, type FinancialProfile, type Goal } from "@/lib/goals";
+import { formatDate, formatMoney, goalTypeCopy, type Goal } from "@/lib/goals";
+import { recordBetaEvent, usePlanningSpaces } from "@/lib/spaces";
 
 export function Dashboard() {
   const router = useRouter();
   const [goals, setGoals] = useState<Goal[]>();
   const [message, setMessage] = useState<string>();
+  const { spaces, activeSpace, error: spacesError, selectSpace } = usePlanningSpaces();
 
   useEffect(() => {
-    apiFetch<FinancialProfile>("/onboarding/financial-profile")
-      .then((profile) => apiFetch<Goal[]>(`/planning-spaces/${profile.spaceId}/goals`))
-      .then(setGoals)
+    if (!activeSpace) return;
+    apiFetch<Goal[]>(`/planning-spaces/${activeSpace.id}/goals`)
+      .then((loaded) => { setGoals(loaded); void recordBetaEvent("DASHBOARD_VIEWED", "ACTIVATION"); })
       .catch((error) => {
         if (error instanceof ApiError && error.status === 401) router.push("/entrar");
         else if (error instanceof ApiError && error.status === 404) router.push("/app/onboarding");
         else setMessage(error instanceof Error ? error.message : "Não foi possível carregar a visão geral.");
       });
-  }, [router]);
+  }, [activeSpace, router]);
 
   const orderedGoals = goals ? [...goals].sort((a, b) => a.targetDate.localeCompare(b.targetDate)) : undefined;
   const contributionMaximum = Math.max(1, ...(goals ?? []).map((goal) => Number(goal.projection.requiredMonthlyContribution.amount)));
 
   return (
-    <AppShell section="Visão geral">
+    <AppShell activeSpace={activeSpace} onSpaceChange={selectSpace} section="Visão geral" spaces={spaces}>
       <header className="dashboard-header">
         <div>
           <p className="eyebrow">Horizonte atual</p>
@@ -41,7 +43,7 @@ export function Dashboard() {
         </Link>
       </header>
 
-      {message && <p className="goal-empty">{message}</p>}
+      {(message || spacesError) && <p className="goal-empty">{message ?? spacesError?.message}</p>}
       {!goals && !message && <p className="goal-empty" aria-live="polite">Organizando o horizonte…</p>}
 
       {goals && goals.length > 0 && <>

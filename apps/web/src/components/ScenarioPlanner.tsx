@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { FormMessage } from "@/components/FormMessage";
 import { ApiError, apiFetch } from "@/lib/api/client";
-import { formatDate, formatMoney, type FinancialProfile, type Goal, type ScenarioComparison } from "@/lib/goals";
+import { formatDate, formatMoney, type Goal, type ScenarioComparison } from "@/lib/goals";
+import { recordBetaEvent, usePlanningSpaces } from "@/lib/spaces";
 
 export function ScenarioPlanner({ goalId }: { goalId: string }) {
   const router = useRouter();
@@ -14,12 +15,14 @@ export function ScenarioPlanner({ goalId }: { goalId: string }) {
   const [comparison, setComparison] = useState<ScenarioComparison>();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ kind: "error" | "success"; text: string }>();
+  const { spaces, activeSpace, selectSpace } = usePlanningSpaces();
 
   useEffect(() => {
-    apiFetch<FinancialProfile>("/onboarding/financial-profile").then(async (profile) => {
+    if (!activeSpace) return;
+    Promise.resolve().then(async () => {
       const [loadedGoal, loadedComparison] = await Promise.all([
-        apiFetch<Goal>(`/planning-spaces/${profile.spaceId}/goals/${goalId}`),
-        apiFetch<ScenarioComparison>(`/planning-spaces/${profile.spaceId}/goals/${goalId}/scenarios`),
+        apiFetch<Goal>(`/planning-spaces/${activeSpace.id}/goals/${goalId}`),
+        apiFetch<ScenarioComparison>(`/planning-spaces/${activeSpace.id}/goals/${goalId}/scenarios`),
       ]);
       setGoal(loadedGoal);
       setComparison(loadedComparison);
@@ -27,7 +30,7 @@ export function ScenarioPlanner({ goalId }: { goalId: string }) {
       if (error instanceof ApiError && error.status === 401) router.push("/entrar");
       else setMessage({ kind: "error", text: error instanceof Error ? error.message : "Não foi possível carregar os cenários." });
     });
-  }, [goalId, router]);
+  }, [activeSpace, goalId, router]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,6 +48,7 @@ export function ScenarioPlanner({ goalId }: { goalId: string }) {
           contributionTiming: data.get("contributionTiming") }),
       });
       setComparison(result);
+      void recordBetaEvent("SCENARIO_CREATED", "PLANNING");
       form.reset();
       setMessage({ kind: "success", text: "Cenário salvo como um novo snapshot. A base não foi alterada." });
     } catch (error) {
@@ -52,13 +56,13 @@ export function ScenarioPlanner({ goalId }: { goalId: string }) {
     } finally { setPending(false); }
   }
 
-  if (!goal || !comparison) return <AppShell section="Cenários"><p className="goal-empty" aria-live="polite">{message?.text ?? "Carregando comparação…"}</p></AppShell>;
+  if (!goal || !comparison) return <AppShell activeSpace={activeSpace} onSpaceChange={selectSpace} section="Cenários" spaces={spaces}><p className="goal-empty" aria-live="polite">{message?.text ?? "Carregando comparação…"}</p></AppShell>;
   const rows = [{ id: "base", title: "Plano atual", projection: comparison.base, delta: null },
     ...comparison.scenarios.map((scenario) => ({ id: scenario.id, title: scenario.title, projection: scenario.projection, delta: scenario.requiredContributionDelta }))];
   const maxMonths = Math.max(...rows.map((row) => row.projection.projectionMonths));
 
   return (
-    <AppShell section="Metas · cenários">
+    <AppShell activeSpace={activeSpace} onSpaceChange={selectSpace} section="Metas · cenários" spaces={spaces}>
       <header className="app-heading scenario-heading"><p className="eyebrow">{goal.title}</p><h1>Mude uma hipótese. Veja o impacto.</h1><p>Os cenários não escolhem um caminho por você. Eles mostram diferenças contra o snapshot atual.</p></header>
       <section className="scenario-chart" aria-labelledby="scenario-chart-title">
         <div className="scenario-chart__intro"><p className="eyebrow" id="scenario-chart-title">Prazo comparado</p><small>Quanto mais à direita, maior o prazo calculado.</small></div>

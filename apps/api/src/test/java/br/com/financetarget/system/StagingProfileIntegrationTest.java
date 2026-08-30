@@ -42,7 +42,7 @@ class StagingProfileIntegrationTest {
     @Test
     void startsFailClosedWithoutDevelopmentSeeds() {
         assertThat(jdbc.sql("select metadata_value from app_metadata where metadata_key='schema_version'")
-                .query(String.class).single()).isEqualTo("6");
+                .query(String.class).single()).isEqualTo("7");
         assertThat(jdbc.sql("select count(*) from subscription_plan").query(Integer.class).single()).isZero();
     }
 }

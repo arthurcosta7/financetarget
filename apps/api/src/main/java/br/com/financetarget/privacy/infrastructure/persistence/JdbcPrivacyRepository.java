@@ -93,7 +93,37 @@ public class JdbcPrivacyRepository implements PrivacyRepository {
                         """).param("userId", userId).query((rs, row) -> new NotificationPreferenceData(
                         rs.getString("category"), rs.getBoolean("email_enabled"),
                         rs.getTimestamp("updated_at").toInstant())).list();
-        return new ExportData(account, profile, goals, consents, subscription, preferences);
+        var memberships = jdbc.sql("""
+                        select s.id,s.type,s.name,m.role,m.joined_at from space_member m
+                        join planning_space s on s.id=m.space_id where m.user_id=:userId and m.status='ACTIVE'
+                        order by m.joined_at,s.id
+                        """).param("userId", userId).query((rs, row) -> new SpaceMembershipData(
+                        rs.getObject("id", UUID.class), rs.getString("type"), rs.getString("name"),
+                        rs.getString("role"), rs.getTimestamp("joined_at").toInstant())).list();
+        var invitations = jdbc.sql("""
+                        select i.id,i.space_id,case when i.invited_by=:userId then 'SENT' else 'RECEIVED' end direction,
+                               i.role,i.status,i.created_at from space_invitation i
+                        join app_user u on u.id=:userId
+                        where i.invited_by=:userId or i.email_normalized=u.email_normalized
+                        order by i.created_at,i.id
+                        """).param("userId", userId).query((rs, row) -> new SpaceInvitationData(
+                        rs.getObject("id", UUID.class), rs.getObject("space_id", UUID.class),
+                        rs.getString("direction"), rs.getString("role"), rs.getString("status"),
+                        rs.getTimestamp("created_at").toInstant())).list();
+        var events = jdbc.sql("""
+                        select event_name,journey_stage,outcome,device_class,occurred_at from beta_product_event
+                        where user_id=:userId order by occurred_at,id
+                        """).param("userId", userId).query((rs, row) -> new BetaEventData(
+                        rs.getString("event_name"), rs.getString("journey_stage"), rs.getString("outcome"),
+                        rs.getString("device_class"), rs.getTimestamp("occurred_at").toInstant())).list();
+        var feedback = jdbc.sql("""
+                        select id,category,rating,comment,status,created_at from beta_feedback
+                        where user_id=:userId order by created_at,id
+                        """).param("userId", userId).query((rs, row) -> new BetaFeedbackData(
+                        rs.getObject("id", UUID.class), rs.getString("category"), rs.getObject("rating", Integer.class),
+                        rs.getString("comment"), rs.getString("status"), rs.getTimestamp("created_at").toInstant())).list();
+        return new ExportData(account, profile, goals, consents, subscription, preferences,
+                memberships, invitations, events, feedback);
     }
 
     @Override

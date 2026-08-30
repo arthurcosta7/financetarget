@@ -16,23 +16,26 @@ public class EnvironmentSafetyGuard {
     private final AuthProperties auth;
     private final FeatureFlagProperties features;
     private final ResendProperties resend;
+    private final BetaProperties beta;
 
     public EnvironmentSafetyGuard(@Value("${app.environment}") String environment, CorsProperties cors,
-                                  AuthProperties auth, FeatureFlagProperties features, ResendProperties resend) {
+                                  AuthProperties auth, FeatureFlagProperties features, ResendProperties resend,
+                                  BetaProperties beta) {
         this.environment = environment;
         this.cors = cors;
         this.auth = auth;
         this.features = features;
         this.resend = resend;
+        this.beta = beta;
     }
 
     @PostConstruct
     void validate() {
-        validate(environment, cors, auth, features, resend);
+        validate(environment, cors, auth, features, resend, beta);
     }
 
     static void validate(String environment, CorsProperties cors, AuthProperties auth,
-                         FeatureFlagProperties features, ResendProperties resend) {
+                         FeatureFlagProperties features, ResendProperties resend, BetaProperties beta) {
         if (!SUPPORTED.contains(environment)) {
             throw new IllegalStateException("APP_ENV deve identificar um ambiente suportado.");
         }
@@ -44,6 +47,9 @@ public class EnvironmentSafetyGuard {
         }
         validateResend(environment, resend);
         if (!Set.of("staging", "production").contains(environment)) return;
+        if (beta.enabled()) {
+            throw new IllegalStateException("O beta exige aprovação manual antes de ser habilitado fora de dev e test.");
+        }
         if (!auth.secureCookies()) {
             throw new IllegalStateException("Cookies seguros são obrigatórios fora de dev e test.");
         }

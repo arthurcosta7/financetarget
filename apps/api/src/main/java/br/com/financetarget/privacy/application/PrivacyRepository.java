@@ -23,10 +23,16 @@ public interface PrivacyRepository {
                     Instant createdAt, List<ContributionData> contributions, List<ScenarioData> scenarios) {}
     record SubscriptionData(String planCode, String status, String provider, Instant updatedAt) {}
     record NotificationPreferenceData(String category, boolean emailEnabled, Instant updatedAt) {}
+    record SpaceMembershipData(UUID spaceId, String type, String name, String role, Instant joinedAt) {}
+    record SpaceInvitationData(UUID id, UUID spaceId, String direction, String role, String status, Instant createdAt) {}
+    record BetaEventData(String eventName, String journeyStage, String outcome, String deviceClass, Instant occurredAt) {}
+    record BetaFeedbackData(UUID id, String category, Integer rating, String comment, String status, Instant createdAt) {}
     record ExportData(AccountData account, Optional<FinancialData> financialProfile,
                       List<GoalData> goals, List<ConsentData> consents,
                       Optional<SubscriptionData> subscription,
-                      List<NotificationPreferenceData> notificationPreferences) {}
+                      List<NotificationPreferenceData> notificationPreferences,
+                      List<SpaceMembershipData> spaceMemberships, List<SpaceInvitationData> spaceInvitations,
+                      List<BetaEventData> betaEvents, List<BetaFeedbackData> betaFeedback) {}
     record SubjectRequest(UUID id, String type, String status, Instant createdAt, Instant completedAt) {}
 
     ExportData exportOwnData(UUID userId);

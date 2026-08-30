@@ -260,6 +260,177 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/planning-spaces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listPlanningSpaces"];
+        put?: never;
+        post: operations["createSharedPlanningSpace"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/planning-spaces/{spaceId}/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["invitePlanningSpaceMember"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/planning-space-invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listReceivedSpaceInvitations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/planning-space-invitations/{invitationId}/responses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["respondToSpaceInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/planning-spaces/{spaceId}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        get: operations["listPlanningSpaceMembers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/planning-spaces/{spaceId}/members/{memberId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+                memberId: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["changePlanningSpaceMemberRole"];
+        trace?: never;
+    };
+    "/planning-spaces/{spaceId}/financial-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        get: operations["getPlanningSpaceFinancialProfile"];
+        put: operations["savePlanningSpaceFinancialProfile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/beta/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getClosedBetaConfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/beta/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["recordAllowlistedBetaEvent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/beta/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["submitClosedBetaFeedback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/planning-spaces/{spaceId}/goals": {
         parameters: {
             query?: never;
@@ -419,6 +590,93 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        PlanningSpace: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            type: "PERSONAL" | "SHARED";
+            name: string;
+            baseCurrency: string;
+            role: components["schemas"]["SpaceRole"];
+            memberCount: number;
+            profileConfigured: boolean;
+        };
+        /** @enum {string} */
+        SpaceRole: "OWNER" | "EDITOR" | "VIEWER";
+        CreatePlanningSpace: {
+            name: string;
+        };
+        CreateSpaceInvitation: {
+            /** Format: email */
+            email: string;
+            role: components["schemas"]["SpaceRole"];
+        };
+        SpaceInvitation: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            spaceId: string;
+            spaceName?: string | null;
+            inviterName?: string | null;
+            role: components["schemas"]["SpaceRole"];
+            /** @enum {string} */
+            status: "PENDING" | "ACCEPTED" | "REJECTED" | "EXPIRED";
+            /** Format: date-time */
+            expiresAt: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InvitationDecision: {
+            accept: boolean;
+        };
+        SpaceMember: {
+            /** Format: uuid */
+            userId: string;
+            displayName: string;
+            role: components["schemas"]["SpaceRole"];
+            /** Format: date-time */
+            joinedAt: string;
+        };
+        ChangeSpaceRole: {
+            role: components["schemas"]["SpaceRole"];
+        };
+        SaveSharedFinancialProfile: {
+            recurringIncome: string;
+            essentialExpenses: string;
+            initialGoalBalance: string;
+            confirmedMonthlyCapacity: string;
+        };
+        BetaConfig: {
+            enabled: boolean;
+            feedbackEnabled: boolean;
+            maximumSharedMembers: number;
+        };
+        BetaEvent: {
+            /** @enum {string} */
+            eventName: "DASHBOARD_VIEWED" | "GOAL_CREATED" | "SCENARIO_CREATED" | "SPACE_CREATED" | "INVITATION_ACCEPTED" | "FEEDBACK_SUBMITTED";
+            /** @enum {string} */
+            journeyStage: "ACTIVATION" | "PLANNING" | "COLLABORATION" | "RETENTION" | "TRUST";
+            /** @enum {string} */
+            outcome: "STARTED" | "COMPLETED" | "ABANDONED" | "FAILED";
+            /** @enum {string} */
+            deviceClass: "MOBILE" | "TABLET" | "DESKTOP" | "UNKNOWN";
+        };
+        BetaFeedbackRequest: {
+            /** @enum {string} */
+            category: "COMPREHENSION" | "USABILITY" | "TRUST" | "COLLABORATION" | "PROBLEM";
+            rating?: number | null;
+            comment?: string | null;
+        };
+        BetaFeedback: {
+            /** Format: uuid */
+            id: string;
+            category: string;
+            rating?: number | null;
+            /** @enum {string} */
+            status: "OPEN" | "REVIEWED";
+            /** Format: date-time */
+            createdAt: string;
+        };
         Problem: {
             title: string;
             status: number;
@@ -716,6 +974,49 @@ export interface components {
             }[];
             subscription: components["schemas"]["ExportedSubscription"] | null;
             notificationPreferences: components["schemas"]["ExportedNotificationPreference"][];
+            spaceMemberships: components["schemas"]["ExportedSpaceMembership"][];
+            spaceInvitations: components["schemas"]["ExportedSpaceInvitation"][];
+            betaEvents: components["schemas"]["ExportedBetaEvent"][];
+            betaFeedback: components["schemas"]["ExportedBetaFeedback"][];
+        };
+        ExportedSpaceMembership: {
+            /** Format: uuid */
+            spaceId: string;
+            type: string;
+            name: string;
+            role: components["schemas"]["SpaceRole"];
+            /** Format: date-time */
+            joinedAt: string;
+        };
+        ExportedSpaceInvitation: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            spaceId: string;
+            /** @enum {string} */
+            direction: "SENT" | "RECEIVED";
+            role: components["schemas"]["SpaceRole"];
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ExportedBetaEvent: {
+            eventName: string;
+            journeyStage: string;
+            outcome: string;
+            deviceClass: string;
+            /** Format: date-time */
+            occurredAt: string;
+        };
+        ExportedBetaFeedback: {
+            /** Format: uuid */
+            id: string;
+            category: string;
+            rating?: number | null;
+            comment?: string | null;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
         };
         ExportedSubscription: {
             planCode: string;
@@ -1236,6 +1537,291 @@ export interface operations {
                 };
             };
             401: components["responses"]["Problem"];
+            404: components["responses"]["Problem"];
+        };
+    };
+    listPlanningSpaces: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Espaços em que a conta possui associação ativa. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanningSpace"][];
+                };
+            };
+        };
+    };
+    createSharedPlanningSpace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePlanningSpace"];
+            };
+        };
+        responses: {
+            /** @description Espaço compartilhado criado com o solicitante como proprietário. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanningSpace"];
+                };
+            };
+            400: components["responses"]["Problem"];
+        };
+    };
+    invitePlanningSpaceMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSpaceInvitation"];
+            };
+        };
+        responses: {
+            /** @description Convite autenticado criado sem revelar existência da conta destinatária. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpaceInvitation"];
+                };
+            };
+            404: components["responses"]["Problem"];
+            429: components["responses"]["Problem"];
+        };
+    };
+    listReceivedSpaceInvitations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Convites pendentes vinculados ao e-mail autenticado. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpaceInvitation"][];
+                };
+            };
+        };
+    };
+    respondToSpaceInvitation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitationDecision"];
+            };
+        };
+        responses: {
+            /** @description Convite aceito ou recusado. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["Problem"];
+        };
+    };
+    listPlanningSpaceMembers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Participantes ativos sem exposição de e-mail. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpaceMember"][];
+                };
+            };
+            404: components["responses"]["Problem"];
+        };
+    };
+    changePlanningSpaceMemberRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+                memberId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeSpaceRole"];
+            };
+        };
+        responses: {
+            /** @description Papel alterado por um proprietário. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: components["responses"]["Problem"];
+        };
+    };
+    getPlanningSpaceFinancialProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Perfil agregado explicitamente informado no espaço. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FinancialProfile"];
+                };
+            };
+            404: components["responses"]["Problem"];
+        };
+    };
+    savePlanningSpaceFinancialProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spaceId: components["parameters"]["SpaceId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveSharedFinancialProfile"];
+            };
+        };
+        responses: {
+            /** @description Perfil agregado atualizado por proprietário ou editor. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FinancialProfile"];
+                };
+            };
+            404: components["responses"]["Problem"];
+        };
+    };
+    getClosedBetaConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Estado técnico; não equivale a autorização de entrada de pessoas reais. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BetaConfig"];
+                };
+            };
+        };
+    };
+    recordAllowlistedBetaEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BetaEvent"];
+            };
+        };
+        responses: {
+            /** @description Evento aceito ou descartado quando o beta está desligado. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["Problem"];
+        };
+    };
+    submitClosedBetaFeedback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BetaFeedbackRequest"];
+            };
+        };
+        responses: {
+            /** @description Feedback estruturado registrado. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BetaFeedback"];
+                };
+            };
             404: components["responses"]["Problem"];
         };
     };

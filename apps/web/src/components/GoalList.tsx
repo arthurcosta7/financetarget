@@ -6,31 +6,32 @@ import { useRouter } from "next/navigation";
 
 import { AppShell } from "@/components/AppShell";
 import { ApiError, apiFetch } from "@/lib/api/client";
-import { formatDate, formatMoney, goalTypeCopy, type FinancialProfile, type Goal } from "@/lib/goals";
+import { formatDate, formatMoney, goalTypeCopy, type Goal } from "@/lib/goals";
+import { usePlanningSpaces } from "@/lib/spaces";
 
 export function GoalList() {
   const router = useRouter();
   const [goals, setGoals] = useState<Goal[]>();
   const [message, setMessage] = useState<string>();
+  const { spaces, activeSpace, error: spacesError, selectSpace } = usePlanningSpaces();
 
   useEffect(() => {
-    apiFetch<FinancialProfile>("/onboarding/financial-profile")
-      .then((profile) => apiFetch<Goal[]>(`/planning-spaces/${profile.spaceId}/goals`))
-      .then(setGoals)
+    if (!activeSpace) return;
+    apiFetch<Goal[]>(`/planning-spaces/${activeSpace.id}/goals`).then(setGoals)
       .catch((error) => {
         if (error instanceof ApiError && error.status === 401) router.push("/entrar");
         else if (error instanceof ApiError && error.status === 404) router.push("/app/onboarding");
         else setMessage(error instanceof Error ? error.message : "Não foi possível carregar as metas.");
       });
-  }, [router]);
+  }, [activeSpace, router]);
 
   return (
-    <AppShell section="Metas">
+    <AppShell activeSpace={activeSpace} onSpaceChange={selectSpace} section="Metas" spaces={spaces}>
       <header className="app-heading goal-list-heading">
         <div><p className="eyebrow">Planos ativos</p><h1>Uma direção de cada vez.</h1></div>
         <Link className="button button--primary" href="/app/metas/nova">Criar meta</Link>
       </header>
-      {message && <p className="goal-empty">{message}</p>}
+      {(message || spacesError) && <p className="goal-empty">{message ?? spacesError?.message}</p>}
       {goals?.length === 0 && <section className="goal-empty"><p>Comece pela meta que mais ocupa sua cabeça hoje.</p><Link className="text-link" href="/app/metas/nova">Criar a primeira meta</Link></section>}
       {goals?.map((goal) => (
         <article className="goal-row" key={goal.id}>

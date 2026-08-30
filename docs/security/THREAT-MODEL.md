@@ -47,7 +47,7 @@ Toda entrada do navegador e provedor é não confiável. O frontend melhora a ex
 | T-001 | Account takeover | Crítico | Média | Argon2id, rate limit distribuído, rotação, alertas, MFA futuro | Médio |
 | T-002 | IDOR entre espaços | Crítico | Média | autorização por espaço/recurso, queries escopadas, testes negativos | Baixo/médio |
 | T-003 | Parceiro mantém acesso após remoção | Alto | Média | revogação de associação, invalidação de cache e teste de sessão | Baixo |
-| T-004 | Convite roubado ou encaminhado | Alto | Média | token em hash, expiração, destinatário vinculado e uso único | Baixo/médio |
+| T-004 | Identificador de convite observado ou encaminhado | Alto | Média | resposta apenas autenticada, e-mail verificado vinculado, UUID não secreto, bloqueio transacional, expiração e uso único | Baixo/médio |
 | T-005 | CSRF altera meta compartilhada | Alto | Média | SameSite, token CSRF, validação de origem | Baixo |
 | T-006 | XSS rouba dados exibidos | Alto | Média | encoding, CSP, sanitização, sem tokens no JS | Baixo/médio |
 | T-007 | Injeção em banco | Crítico | Baixa/média | ORM parametrizado, validação e testes | Baixo |
@@ -126,3 +126,14 @@ Persistem: fonte de senhas comprometidas, MFA, infraestrutura externa de alertas
 - Entrega síncrona possui timeouts e falha de forma explícita, sem retry cego.
 
 Persistem antes do beta: domínio definitivo com SPF/DKIM/DMARC, monitoramento de bounce/complaint, rotação em cofre, análise contratual do operador e decisão sobre outbox/retry.
+
+## Revisão técnica da Fase 8
+
+- Convites são listados e respondidos somente pela conta autenticada vinculada ao e-mail verificado; o UUID não concede acesso.
+- Associação e papel são verificados no backend em cada recurso, com testes negativos de IDOR e escrita por leitor.
+- Perfil compartilhado precisa ser criado explicitamente e não copia o perfil pessoal.
+- Telemetria usa enums fechados, rejeita propriedades desconhecidas e não aceita valores financeiros ou payload arbitrário.
+- A flag do beta é desligada por padrão e o guard atual impede ativação acidental em staging/produção.
+- Feedback livre é opcional, curto e acompanhado de aviso, mas ainda demanda retenção, acesso restrito e resposta a incidente.
+
+Persistem: remoção/saída de membro, reautenticação para mudanças críticas de papel, MFA, assédio por múltiplos espaços, revisão jurídica, RIPD, responsáveis, retenção automatizada e validação matemática independente antes de participantes reais.
