@@ -12,6 +12,11 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Pipeline de CI para construir e provar os artefatos antes de qualquer publicação.
 - ADR 0016, contrato de gateway same-origin, runbook, checklist e registro de release da Fase 9.
 
+### Fixed
+
+- Maven Wrapper marcado como executável no Git para os runners Linux da CI.
+- Actions de checkout, Java, Node e pnpm atualizadas e fixadas por SHA imutável, removendo runtimes depreciados do pipeline.
+
 - Espaços compartilhados para casal com convite vinculado ao e-mail autenticado e papéis `OWNER`, `EDITOR` e `VIEWER`.
 - Perfil financeiro agregado por espaço, seleção de contexto e autorização testada contra IDOR.
 - Telemetria interna allowlisted, feedback estruturado e feature flag fail-closed para preparação do beta.

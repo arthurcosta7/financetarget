@@ -3,7 +3,7 @@
 ## Resumo
 
 - Fase atual: **Fase 9 — produção**.
-- Estado: **preparação técnica local concluída em 31/08/2026; aguardando revisão e gates externos, sem deploy ou usuários reais**.
+- Estado: **preparação técnica local concluída e publicada no GitHub em 31/08/2026; correção da CI remota em validação e gates externos pendentes, sem deploy ou usuários reais**.
 - Aplicação implementada: identidade, sessões, onboarding, privacidade, metas, motores, dashboard, assinatura canônica, preferências e hubs simulados.
 - Integrações reais: Resend opcional e limitado a mensagens de identidade, autorizado em 28/08/2026; demais integrações, não.
 - Dados reais: não.
