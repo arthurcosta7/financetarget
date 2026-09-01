@@ -1,6 +1,6 @@
 # ADR 0015 — Beta fechado com telemetria minimizada e gate humano
 
-- Estado: Proposto
+- Estado: Aceito
 - Data: 28/08/2026
 
 ## Contexto
@@ -45,4 +45,4 @@ Revisar antes de contratar analytics/help desk, adicionar session replay, anexos
 
 ## Aprovação
 
-Conclusão técnica registrada em 30/08/2026. Aguardando aprovação explícita da Fase 8; o ADR permanece proposto até essa decisão.
+Aceito com a aprovação explícita da Fase 8 e autorização da Fase 9 em 31/08/2026. Os gates humanos anteriores ao primeiro participante permanecem obrigatórios.

@@ -158,6 +158,16 @@ Quando o Resend está habilitado, endereço de e-mail, conteúdo estritamente ne
 
 Antes de usuários reais, registrar contrato, região de processamento, retenção, suboperadores, exclusão, resposta a incidente e mecanismo aplicável de transferência internacional. Marketing não pode reutilizar esse canal ou essa finalidade sem decisão separada.
 
+## Revisão técnica da Fase 9
+
+- as imagens não contêm segredos, documentos jurídicos finais nem dados de ambiente;
+- o status público expõe somente saúde, schema e SHA técnico, sem identificador de pessoa ou valor financeiro;
+- a prova local usa banco efêmero, credenciais sintéticas e endereços `.test`;
+- backup de produção, telemetria, suporte, CDN/gateway, banco, registry e cofre futuros devem entrar no inventário de operadores e acessos antes da contratação;
+- escolher infraestrutura e criar artefatos técnicos não define base legal, retenção, RIPD ou autorização de tratamento.
+
+Nenhum operador novo ou dado real foi introduzido na preparação técnica. O deploy permanece bloqueado até a revisão qualificada e o inventário operacional estarem aprovados.
+
 ## Questões para revisão qualificada
 
 1. papel exato da empresa como agente de tratamento;

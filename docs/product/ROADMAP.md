@@ -70,13 +70,15 @@ Staging, testes de carga, observabilidade, alertas, backups, restauração, roll
 
 Grupo controlado, analytics sem dados financeiros sensíveis, suporte, feedback, monitoramento, termos revisados e critérios de aprendizagem.
 
-**Estado:** preparação técnica concluída em 30/08/2026 e aguardando aprovação. A entrada de usuários reais depende dos gates humano, jurídico, operacional e matemático documentados.
+**Estado:** aprovada em 31/08/2026. A entrada de usuários reais continua dependente dos gates humano, jurídico, operacional e matemático documentados.
 
 **Gate:** decisão documentada de prosseguir, ajustar ou interromper.
 
 ## Fase 9 — Produção
 
 Ambiente isolado, secrets, domínio, TLS, backups, observabilidade, deploy gradual, smoke tests, rollback e lançamento aprovado.
+
+**Estado:** preparação técnica iniciada em 31/08/2026. Nenhum ambiente externo, deploy ou tráfego foi autorizado.
 
 **Gate:** checklist manual de produção e responsabilidades operacionais definidas.
 

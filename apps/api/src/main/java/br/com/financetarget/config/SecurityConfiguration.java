@@ -25,7 +25,7 @@ import java.time.Clock;
 @Configuration
 @EnableConfigurationProperties({CorsProperties.class, AuthProperties.class, LegalDocumentProperties.class,
         ProductProperties.class, FeatureFlagProperties.class, MockIntegrationProperties.class,
-        ResendProperties.class, BetaProperties.class})
+        ResendProperties.class, BetaProperties.class, DeploymentProperties.class})
 public class SecurityConfiguration {
 
     @Bean

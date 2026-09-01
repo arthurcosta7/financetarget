@@ -70,3 +70,17 @@ jobs:
       - name: Testar, migrar banco efêmero e empacotar
         working-directory: apps/api
         run: ./mvnw --batch-mode verify
+
+  release-artifacts:
+    name: Artefatos de release
+    needs: [security, web, api]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construir imagens OCI rastreáveis e sem root
+        shell: pwsh
+        run: ./scripts/build-release.ps1 -Revision '${{ github.sha }}'
+      - name: Validar perfil de produção, migrations e smoke local
+        shell: pwsh
+        run: ./scripts/validate-release.ps1 -Revision '${{ github.sha }}'

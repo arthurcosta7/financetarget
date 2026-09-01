@@ -24,6 +24,8 @@ server:
 
 app:
   environment: ${APP_ENV}
+  deployment:
+    expected-release-id: ${APP_EXPECTED_RELEASE_ID:local}
   product:
     default-currency: ${APP_DEFAULT_CURRENCY}
     business-time-zone: ${APP_BUSINESS_TIME_ZONE}

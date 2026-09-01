@@ -28,7 +28,7 @@ $env:BACKUP_ENCRYPTION_KEY_BASE64='<mesma-chave>'
 ./scripts/verify-db-restore.ps1 `
   -EnvironmentFile .env.staging `
   -BackupPath D:\backups\financetarget-AAAA-MM-DD.ftb `
-  -ExpectedSchemaVersion 6
+  -ExpectedSchemaVersion 7
 ```
 
 Para containers sintéticos fora do Compose, os dois scripts aceitam `ContainerName`, `DatabaseName` e/ou `DatabaseUser`. Esses identificadores passam por allowlist antes de qualquer comando.

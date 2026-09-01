@@ -56,13 +56,14 @@ Toda entrada do navegador e provedor é não confiável. O frontend melhora a ex
 | T-010 | Falsa precisão induz decisão | Alto | Média | premissas visíveis, avisos, testes de compreensão | Médio |
 | T-011 | Webhook falso/replay | Alto | Média futura | HMAC antes do parsing, timestamp, idempotência e reconciliação; controles provados no mock | Baixo/médio |
 | T-012 | Exposição por analytics | Alto | Média | allowlist de propriedades e proibição de valores financeiros | Baixo |
-| T-013 | Backup acessível ou irrecuperável | Crítico | Baixa/média | AES-256-GCM, chave separada, restore V6 isolado testado | Baixo/médio |
+| T-013 | Backup acessível ou irrecuperável | Crítico | Baixa/média | AES-256-GCM, chave separada, restore V7 isolado testado | Baixo/médio |
 | T-014 | Abuso de exportação | Alto | Média | reautenticação, rate limit, link curto e auditado | Baixo/médio |
 | T-015 | Exclusão apaga dados do parceiro | Alto | Média | separação por espaço, workflow e revisão de impacto | Médio |
 | T-016 | SSRF em integração futura | Alto | Baixa/média | destinos allowlisted, egress e validação de URL | Baixo |
 | T-017 | Dependência comprometida | Alto | Média | lockfiles, SBOM Maven, pnpm/OSV na CI e atualização controlada | Baixo/médio |
 | T-018 | Operador interno consulta dados | Alto | Baixa/média | privilégio mínimo, acesso just-in-time e auditoria | Médio |
 | T-019 | Mensagem de identidade vaza token, destinatário ou permite phishing | Crítico | Média | token opaco de uso único, hash no banco, TLS, origem configurada, remetente validado, sem logs e timeout | Baixo/médio |
+| T-020 | Artefato trocado, reconstruído ou gateway aponta para versão incorreta | Crítico | Baixa/média | base por digest, imagem sem root, SHA em label/status, promoção por digest e smoke pelo gateway | Baixo/médio |
 
 ## Abuso específico de colaboração
 
@@ -137,3 +138,13 @@ Persistem antes do beta: domínio definitivo com SPF/DKIM/DMARC, monitoramento d
 - Feedback livre é opcional, curto e acompanhado de aviso, mas ainda demanda retenção, acesso restrito e resposta a incidente.
 
 Persistem: remoção/saída de membro, reautenticação para mudanças críticas de papel, MFA, assédio por múltiplos espaços, revisão jurídica, RIPD, responsáveis, retenção automatizada e validação matemática independente antes de participantes reais.
+
+## Revisão técnica da Fase 9
+
+- imagens web/API usam bases fixadas por digest, processo sem root e SHA Git em label OCI;
+- produção rejeita release não rastreável, documento provisório, identidade transacional ausente, beta, mocks, cookie ou origem insegura;
+- smoke compara release e schema ativos antes do rollout e valida atributos de cookie e headers web;
+- a topologia local usa filesystem read-only, capabilities removidas, rede de dados interna e PostgreSQL efêmero;
+- frontend usa mesma origem e deixa TLS/roteamento a um gateway externo com contrato explícito.
+
+Persistem: scan/assinatura no registry, confiança dos headers do proxy, egress, DNS/TLS, cofre, acesso de operador, alerta/collector e backup externo precisam ser provados na plataforma autorizada antes de tráfego real.

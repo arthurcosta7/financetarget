@@ -21,6 +21,7 @@ Nenhuma premissa abaixo deve ser apresentada como dado de mercado ou comportamen
 | A-015 | Um monólito modular é suficiente para o lançamento inicial. | Alta | Média | Revisão arquitetural e requisitos de escala |
 | A-016 | Planejamento compartilhado aumenta o valor para casais sem tornar o fluxo pessoal confuso. | Alta | Baixa | Teste de fluxo com casais e pessoas solo |
 | A-017 | A identidade monocromática transmite confiança e diferenciação sem prejudicar compreensão dos cenários. | Média | Baixa | Protótipo claro/escuro e teste de compreensão |
+| A-018 | Um único domínio com gateway same-origin atende a primeira operação sem exigir URL pública embutida no frontend. | Alta | Média | Provar roteamento, cookies e observabilidade no ambiente externo escolhido |
 
 ## Prioridade de validação
 
@@ -37,3 +38,4 @@ As premissas A-001, A-003, A-005, A-006, A-008, A-011, A-014 e A-016 combinam al
 - Necessidade e formato de revisão jurídica especializada.
 - Regra de exclusão, saída e atribuição histórica em espaços compartilhados.
 - Limite de membros e necessidade de confirmação conjunta para ações destrutivas.
+- Plataforma, registry, banco, cofre, DNS/TLS, observabilidade e armazenamento de backup de produção.

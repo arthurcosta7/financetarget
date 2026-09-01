@@ -4,6 +4,8 @@
 
 Promover o mesmo artefato imutável entre ambientes. Banco usa mudanças expand/contract: uma versão anterior precisa continuar funcionando durante a janela de rollback. Migrations aplicadas não são desfeitas automaticamente.
 
+Na Fase 9, web e API são imagens OCI sem root, identificadas pelo SHA Git completo. A promoção futura usa os digests do registry e o registro em `RELEASE-RECORD-TEMPLATE.md`; tags servem apenas como referência humana.
+
 ## Pré-release
 
 1. CI verde, SBOM gerado e auditoria sem achado bloqueante.
@@ -16,6 +18,8 @@ Promover o mesmo artefato imutável entre ambientes. Banco usa mudanças expand/
 ## Liberação futura
 
 Quando existir plataforma autorizada, usar rollout gradual. Readiness deve impedir tráfego antes da migration concluída. Comparar erros, latência e saturação com a versão anterior antes de ampliar.
+
+O smoke de produção compara o `releaseId` exposto pela API com o SHA aprovado. O gateway público também deve provar o encaminhamento same-origin de `/api/v1` antes de receber tráfego.
 
 ## Decisão de rollback
 

@@ -2,6 +2,7 @@ package br.com.financetarget.config;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -17,25 +18,35 @@ public class EnvironmentSafetyGuard {
     private final FeatureFlagProperties features;
     private final ResendProperties resend;
     private final BetaProperties beta;
+    private final LegalDocumentProperties legalDocuments;
+    private final DeploymentProperties deployment;
+    private final BuildProperties buildProperties;
 
     public EnvironmentSafetyGuard(@Value("${app.environment}") String environment, CorsProperties cors,
                                   AuthProperties auth, FeatureFlagProperties features, ResendProperties resend,
-                                  BetaProperties beta) {
+                                  BetaProperties beta, LegalDocumentProperties legalDocuments,
+                                  DeploymentProperties deployment, BuildProperties buildProperties) {
         this.environment = environment;
         this.cors = cors;
         this.auth = auth;
         this.features = features;
         this.resend = resend;
         this.beta = beta;
+        this.legalDocuments = legalDocuments;
+        this.deployment = deployment;
+        this.buildProperties = buildProperties;
     }
 
     @PostConstruct
     void validate() {
-        validate(environment, cors, auth, features, resend, beta);
+        validate(environment, cors, auth, features, resend, beta, legalDocuments, deployment,
+                buildProperties.get("revision"));
     }
 
     static void validate(String environment, CorsProperties cors, AuthProperties auth,
-                         FeatureFlagProperties features, ResendProperties resend, BetaProperties beta) {
+                         FeatureFlagProperties features, ResendProperties resend, BetaProperties beta,
+                         LegalDocumentProperties legalDocuments, DeploymentProperties deployment,
+                         String builtReleaseId) {
         if (!SUPPORTED.contains(environment)) {
             throw new IllegalStateException("APP_ENV deve identificar um ambiente suportado.");
         }
@@ -61,6 +72,34 @@ public class EnvironmentSafetyGuard {
                 || features.autoFinancing()) {
             throw new IllegalStateException("Integrações não aprovadas devem permanecer desligadas neste ambiente.");
         }
+        if ("production".equals(environment)) {
+            validateProduction(resend, legalDocuments, deployment, builtReleaseId);
+        }
+    }
+
+    private static void validateProduction(ResendProperties resend, LegalDocumentProperties legalDocuments,
+                                           DeploymentProperties deployment, String builtReleaseId) {
+        if (deployment.expectedReleaseId() == null
+                || !deployment.expectedReleaseId().matches("^[a-f0-9]{40}$")) {
+            throw new IllegalStateException("Produção exige APP_EXPECTED_RELEASE_ID com o SHA completo aprovado.");
+        }
+        if (!deployment.expectedReleaseId().equals(builtReleaseId)) {
+            throw new IllegalStateException("O artefato iniciado não corresponde ao release aprovado.");
+        }
+        if (isProvisionalLegalVersion(legalDocuments.termsVersion())
+                || isProvisionalLegalVersion(legalDocuments.privacyNoticeVersion())) {
+            throw new IllegalStateException("Produção exige versões jurídicas aprovadas e não provisórias.");
+        }
+        if (!resend.enabled()) {
+            throw new IllegalStateException("Produção exige entrega transacional de identidade habilitada.");
+        }
+    }
+
+    private static boolean isProvisionalLegalVersion(String value) {
+        if (value == null || value.isBlank()) return true;
+        String normalized = value.toLowerCase(java.util.Locale.ROOT);
+        return normalized.contains("draft") || normalized.contains("review")
+                || normalized.contains("test") || normalized.contains("local");
     }
 
     private static void validateResend(String environment, ResendProperties resend) {

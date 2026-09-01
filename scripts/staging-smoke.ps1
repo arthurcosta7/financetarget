@@ -1,7 +1,7 @@
 param(
     [string]$ApiBaseUrl = 'http://127.0.0.1:8080',
     [string]$WebBaseUrl = 'http://127.0.0.1:3000',
-    [string]$ExpectedSchemaVersion = '6'
+    [string]$ExpectedSchemaVersion = '7'
 )
 
 $ErrorActionPreference = 'Stop'

@@ -53,6 +53,10 @@ Nunca copiar produção integralmente para dev ou staging.
 
 `EnvironmentSafetyGuard` aceita somente `dev`, `test`, `staging` ou `production`. Em staging/produção, o processo não inicia com cookies inseguros, origem local/não HTTPS ou qualquer flag de integração ativa. O profile `staging` carrega apenas migrations base, graceful shutdown, logs ECS e sampling configurável. `.env.staging.example` contém marcadores, nunca credenciais funcionais.
 
+### Endurecimento da Fase 9
+
+Produção também exige `APP_EXPECTED_RELEASE_ID` no formato de SHA Git completo e igual à revisão imutável gravada no JAR, versões jurídicas não provisórias e o adaptador transacional de identidade configurado. O perfil `production` mantém shutdown gracioso, logs ECS e histogramas HTTP. `.env.production.example` é somente um contrato com marcadores; nenhum valor pode ser promovido diretamente dele.
+
 ## Segredos
 
 - nunca versionados;

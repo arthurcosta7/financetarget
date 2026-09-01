@@ -1,0 +1,73 @@
+name: financetarget-release-validation
+
+services:
+  postgres:
+    image: postgres:17.11-alpine@sha256:18cfe3ef5e6815560c98237d6216d1e5119702fb0f3894c8785dd58b8bbe5d73
+    environment:
+      POSTGRES_DB: financetarget_release_validation
+      POSTGRES_USER: financetarget_validation
+      POSTGRES_PASSWORD: ${RELEASE_DB_PASSWORD:?RELEASE_DB_PASSWORD deve ser injetada}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U financetarget_validation -d financetarget_release_validation"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    networks: [data]
+    tmpfs:
+      - /var/lib/postgresql/data
+      - /tmp
+
+  api:
+    image: ${RELEASE_API_IMAGE:?RELEASE_API_IMAGE deve ser definida}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: production
+      APP_ENV: production
+      APP_EXPECTED_RELEASE_ID: ${RELEASE_REVISION:?RELEASE_REVISION deve ser definida}
+      DB_URL: jdbc:postgresql://postgres:5432/financetarget_release_validation
+      DB_USER: financetarget_validation
+      DB_PASSWORD: ${RELEASE_DB_PASSWORD}
+      APP_DEFAULT_CURRENCY: BRL
+      APP_BUSINESS_TIME_ZONE: America/Sao_Paulo
+      APP_CORS_ALLOWED_ORIGINS: https://app.example.test
+      APP_AUTH_SECURE_COOKIES: "true"
+      APP_TERMS_VERSION: terms-v1
+      APP_PRIVACY_NOTICE_VERSION: privacy-v1
+      APP_BETA_ENABLED: "false"
+      APP_FEATURE_PAYMENTS_MOCK: "false"
+      APP_FEATURE_NOTIFICATIONS_MOCK: "false"
+      APP_FEATURE_OPEN_FINANCE: "false"
+      APP_FEATURE_LOYALTY: "false"
+      APP_FEATURE_TRAVEL: "false"
+      APP_FEATURE_REAL_ESTATE_FINANCING: "false"
+      APP_FEATURE_AUTO_FINANCING: "false"
+      APP_INTEGRATION_RESEND_ENABLED: "true"
+      RESEND_API_KEY: re_synthetic_release_validation
+      APP_RESEND_ENDPOINT: https://api.resend.test/emails
+      APP_EMAIL_FROM_ADDRESS: noreply@example.test
+      APP_EMAIL_FROM_NAME: FinanceTarget
+      APP_PUBLIC_WEB_URL: https://app.example.test
+    ports:
+      - "127.0.0.1:18080:8080"
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    networks: [data, edge]
+
+  web:
+    image: ${RELEASE_WEB_IMAGE:?RELEASE_WEB_IMAGE deve ser definida}
+    ports:
+      - "127.0.0.1:13000:3000"
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    networks: [edge]
+
+networks:
+  data:
+    internal: true
+  edge:

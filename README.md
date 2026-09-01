@@ -4,7 +4,7 @@ SaaS brasileiro de planejamento financeiro orientado a metas. O produto transfor
 
 ## Estado atual
 
-A Fase 7 está tecnicamente concluída e aguarda aprovação. O projeto já possui identidade, onboarding financeiro, privacidade inicial, metas, Goal Engine e Scenario Engine, dashboard, assinaturas e notificações simuladas, staging fail-closed, observabilidade, auditoria de dependências e recuperação testada. O Resend está disponível como integração real e opcional apenas para mensagens de identidade. Colaboração operacional, pagamentos reais, beta e deploy externo ainda não foram implementados.
+A Fase 8 foi aprovada e a preparação técnica da Fase 9 está em revisão. O projeto já possui a jornada manual e compartilhada do MVP, staging/produção fail-closed, observabilidade, recuperação e imagens OCI rastreáveis. Nenhum ambiente externo, deploy, beta com participantes ou dado real foi autorizado; os gates jurídico, matemático, operacional e de infraestrutura continuam pendentes.
 
 ## Stack
 
@@ -139,6 +139,16 @@ Para os gates de segurança e observabilidade da Fase 7:
 
 Ambos usam Docker para ferramentas fixadas por digest. O primeiro também gera o SBOM Maven.
 
+Para construir e provar localmente os artefatos de release, sem publicar imagens ou enviar mensagens:
+
+```powershell
+$Revision = (git rev-parse HEAD).Trim()
+.\scripts\build-release.ps1 -Revision $Revision
+.\scripts\validate-release.ps1 -Revision $Revision
+```
+
+A validação sobe API, web e PostgreSQL efêmeros com o perfil `production`, executa migrations e smoke e remove a topologia ao final. Ela não substitui DNS, TLS, cofre, backup, alertas ou autorização de lançamento. Consulte [Operação de produção](docs/operations/PRODUCTION.md).
+
 Se um banco `dev` muito antigo acusar checksum de migration, não execute `flyway repair` automaticamente. Preserve o volume e consulte [Operação de staging](docs/operations/STAGING.md) e [Backup e restauração](docs/operations/BACKUP-RESTORE.md); ambientes sintéticos descartáveis devem ser recriados a partir das migrations versionadas.
 
 ## Encerramento
@@ -174,11 +184,14 @@ compose.yaml  PostgreSQL local
 - [Registro de decisões](docs/decisions/README.md)
 - [Escopo da Fase 7](docs/implementation/PHASE-7.md)
 - [Resultados da Fase 7](docs/testing/PHASE-7-RESULTS.md)
+- [Escopo da Fase 9](docs/implementation/PHASE-9.md)
+- [Resultados da Fase 9](docs/testing/PHASE-9-RESULTS.md)
 - [Operação de staging](docs/operations/STAGING.md)
 - [Resposta a incidentes](docs/operations/INCIDENT-RESPONSE.md)
 - [Backup e restauração](docs/operations/BACKUP-RESTORE.md)
 - [Release e rollback](docs/operations/RELEASE-ROLLBACK.md)
+- [Operação de produção](docs/operations/PRODUCTION.md)
 
 ## Regra de evolução
 
-O desenvolvimento é conduzido por fases. Uma fase só avança após revisão dos entregáveis, validações aplicáveis, atualização da documentação e aprovação explícita. A Fase 8 ainda não está autorizada.
+O desenvolvimento é conduzido por fases. Uma fase só avança após revisão dos entregáveis, validações aplicáveis, atualização da documentação e aprovação explícita. A Fase 9 está no gate de revisão; lançamento real permanece bloqueado.

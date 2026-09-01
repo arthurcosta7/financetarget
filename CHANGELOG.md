@@ -6,6 +6,12 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 
 ### Added
 
+- Imagens OCI de web e API sem root, construídas sobre bases fixadas por digest e identificadas pelo SHA Git completo.
+- Perfil de produção fail-closed, status de release, OpenAPI 0.8 e smoke read-only de produção.
+- Topologia efêmera para validar containers, migrations V1–V7, filesystem read-only e configuração de produção.
+- Pipeline de CI para construir e provar os artefatos antes de qualquer publicação.
+- ADR 0016, contrato de gateway same-origin, runbook, checklist e registro de release da Fase 9.
+
 - Espaços compartilhados para casal com convite vinculado ao e-mail autenticado e papéis `OWNER`, `EDITOR` e `VIEWER`.
 - Perfil financeiro agregado por espaço, seleção de contexto e autorização testada contra IDOR.
 - Telemetria interna allowlisted, feedback estruturado e feature flag fail-closed para preparação do beta.
@@ -94,6 +100,9 @@ Todas as mudanças relevantes deste projeto serão registradas aqui.
 - Scripts e documentação de desenvolvimento e validação da Fase 2.
 
 ### Changed
+
+- Fase 8 aprovada, ADR 0015 aceito e Fase 9 autorizada em 31/08/2026.
+- Smoke e documentação de backup passaram a esperar o schema V7.
 
 - Fase 7 aprovada, ADR 0013 aceito e Fase 8 autorizada para preparação técnica com dados sintéticos.
 

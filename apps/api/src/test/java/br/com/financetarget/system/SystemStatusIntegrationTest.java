@@ -52,6 +52,7 @@ class SystemStatusIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string("Cache-Control", "no-store"))
                 .andExpect(jsonPath("$.status").value("UP"))
+                .andExpect(jsonPath("$.releaseId").value("local"))
                 .andExpect(jsonPath("$.database.status").value("UP"))
                 .andExpect(jsonPath("$.database.schemaVersion").value("7"));
     }

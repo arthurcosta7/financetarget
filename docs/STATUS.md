@@ -2,8 +2,8 @@
 
 ## Resumo
 
-- Fase atual: **Fase 8 — beta fechado**.
-- Estado: **preparação técnica concluída em 30/08/2026; aguardando aprovação, sem usuários reais**.
+- Fase atual: **Fase 9 — produção**.
+- Estado: **preparação técnica local concluída em 31/08/2026; aguardando revisão e gates externos, sem deploy ou usuários reais**.
 - Aplicação implementada: identidade, sessões, onboarding, privacidade, metas, motores, dashboard, assinatura canônica, preferências e hubs simulados.
 - Integrações reais: Resend opcional e limitado a mensagens de identidade, autorizado em 28/08/2026; demais integrações, não.
 - Dados reais: não.
@@ -91,7 +91,7 @@ Não existiam validações de build ou testes de aplicação na Fase 0 porque ne
 
 ## Gate atual
 
-A Fase 7 foi aprovada em 28/08/2026 e o ADR 0013 foi aceito. A preparação técnica da Fase 8 terminou em 30/08/2026 e aguarda aprovação; o ADR 0015 permanece proposto. Entrada de usuários reais, dados financeiros reais, deploy e Fase 9 permanecem bloqueados até revisão jurídica, RIPD, validação matemática independente, definição de responsáveis operacionais e aprovação específica do checklist de entrada.
+A Fase 8 foi aprovada e o ADR 0015 foi aceito em 31/08/2026. A preparação técnica local da Fase 9 está concluída e o ADR 0016 permanece proposto. Deploy, tráfego e dados reais continuam bloqueados até escolha/autorização da infraestrutura, revisão jurídica e RIPD, validação matemática independente, definição de responsáveis, restauração e alertas externos exercitados e aprovação manual do registro de release.
 
 ## Integração Resend autorizada
 
@@ -271,6 +271,8 @@ Evidências detalhadas estão em `docs/testing/PHASE-7-RESULTS.md`.
 | Operação e gates | Preparado; aprovações humanas pendentes | `docs/operations/CLOSED-BETA.md` |
 | Evidência e decisão | Concluído tecnicamente; ADR proposto | `docs/testing/PHASE-8-RESULTS.md`, ADR 0015 |
 
+Fase 8 aprovada pelo usuário em 31/08/2026. O ADR 0015 foi aceito e a Fase 9 foi autorizada, sem liberar participantes ou dados reais.
+
 ## Validações da Fase 8
 
 Executadas em 30/08/2026 com dados exclusivamente sintéticos:
@@ -284,6 +286,32 @@ Executadas em 30/08/2026 com dados exclusivamente sintéticos:
 - criação de espaço e feedback exercitados somente com conta e conteúdo sintéticos.
 
 Evidências detalhadas estão em `docs/testing/PHASE-8-RESULTS.md`.
+
+## Entregáveis da Fase 9
+
+| Entregável | Estado | Fonte |
+|---|---|---|
+| Imagens OCI rastreáveis e sem root | Concluído tecnicamente | `apps/api/Dockerfile`, `apps/web/Dockerfile` |
+| Perfil e guard de produção | Concluído tecnicamente | `application-production.yml`, `EnvironmentSafetyGuard` |
+| Identidade de release no status | Concluído tecnicamente | `DeploymentProperties`, OpenAPI 0.8 |
+| Build e smoke de artefatos | Concluído tecnicamente | `build-release.ps1`, `validate-release.ps1`, CI |
+| Contrato same-origin e topologia | Documentado; gateway externo pendente | ADR 0016, `docs/operations/PRODUCTION.md` |
+| Secrets, TLS, observabilidade e backup reais | Bloqueado por escolha/autorização externa | checklist e registro de release |
+| Evidência e decisão | Concluído tecnicamente; ADR proposto | `docs/testing/PHASE-9-RESULTS.md`, ADR 0016 |
+
+## Validações da Fase 9
+
+Executadas em 31/08/2026 com dados exclusivamente sintéticos:
+
+- 38 testes backend e 17 frontend, lint, TypeScript e builds sem falha;
+- OpenAPI 0.8 e tipos gerados consistentes;
+- auditoria de 82 componentes Maven e 545 pacotes do lockfile sem achados conhecidos;
+- duas imagens OCI com bases por digest, usuário não root e SHA de release coerente;
+- perfil `production` iniciado em filesystem read-only com as migrations V1–V7;
+- readiness, schema V7, identidade de release, CSRF seguro e headers web aprovados;
+- topologia efêmera e volume sintético removidos após o teste.
+
+Evidências detalhadas estão em `docs/testing/PHASE-9-RESULTS.md`.
 
 ## Validações da Fase 3
 
@@ -341,7 +369,8 @@ Evidências detalhadas estão em `docs/testing/PHASE-2-RESULTS.md`.
 2. ESLint 9 é uma exceção temporária de compatibilidade; migrar quando os plugins usados pelo Next.js declararem suporte ao ESLint 10.
 3. Exclusão e saída de um dos membros de espaço compartilhado continuam aguardando validação antes da remoção física.
 4. A validação matemática independente por especialista financeiro permanece obrigatória antes do beta.
-5. Plataforma de staging externa, cofre, collector/Alertmanager e agenda de backup exigem escolha e autorização.
+5. Plataforma/registry, banco, cofre, DNS/TLS, collector/Alertmanager e armazenamento/agenda de backup exigem escolha e autorização.
 6. Revisão jurídica, RIPD e responsáveis operacionais precisam estar definidos antes do beta.
 7. Retenção e acesso operacional a eventos e feedback precisam de política aprovada e automação antes do beta.
 8. O guard do beta bloqueia staging/produção por desenho e só poderá ser revisado após aprovação explícita dos gates humanos.
+9. O gateway same-origin, os digests/assinaturas no registry e o smoke por TLS precisam ser provados no ambiente externo escolhido.

@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: FinanceTarget API
-  version: 0.7.0
-  description: Contrato do MVP manual, colaboração, aprendizado de beta, assinaturas e hubs isolados.
+  version: 0.8.0
+  description: Contrato do MVP manual, colaboração, aprendizado de beta, rastreabilidade de release, assinaturas e hubs isolados.
 servers:
   - url: /api/v1
 paths:
@@ -729,9 +729,10 @@ components:
         detail: { type: string }
     SystemStatus:
       type: object
-      required: [status, database]
+      required: [status, releaseId, database]
       properties:
         status: { type: string, enum: [UP] }
+        releaseId: { type: string, description: Identificador imutável do commit promovido. }
         database:
           type: object
           required: [status, schemaVersion]

@@ -685,6 +685,8 @@ export interface components {
         SystemStatus: {
             /** @enum {string} */
             status: "UP";
+            /** @description Identificador imutável do commit promovido. */
+            releaseId: string;
             database: {
                 /** @enum {string} */
                 status: "UP";
