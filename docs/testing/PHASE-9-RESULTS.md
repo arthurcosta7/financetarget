@@ -31,6 +31,12 @@ Executadas em 31/08/2026:
 - CSP, HSTS e `X-Content-Type-Options` no frontend;
 - teardown automático da topologia e do volume sintético.
 
+## Validação remota
+
+O commit `fc7082625fc7fac88d43a5eb2ec5cafae145cf2f` foi publicado em `main` e validado pela [execução 33462061462 do GitHub Actions](https://github.com/arthurcosta7/financetarget/actions/runs/33462061462) em 31/08/2026. Os quatro jobs — Dependências, API, Web e Artefatos de release — foram concluídos com sucesso, incluindo build e smoke do perfil de produção em runner Linux.
+
+A primeira execução revelou que `apps/api/mvnw` estava versionado sem o bit executável. A correção preservou o conteúdo do wrapper, alterou apenas seu modo para `100755` e atualizou as Actions oficiais para versões sem runtime depreciado, fixadas por SHA imutável.
+
 ## Limites da evidência
 
 - a rota same-origin `/api/v1` foi especificada, mas não pode ser provada sem o gateway externo escolhido;

@@ -3,7 +3,7 @@
 ## Resumo
 
 - Fase atual: **Fase 9 — produção**.
-- Estado: **preparação técnica local concluída e publicada no GitHub em 31/08/2026; correção da CI remota em validação e gates externos pendentes, sem deploy ou usuários reais**.
+- Estado: **preparação técnica local publicada e CI remota aprovada em 31/08/2026; gates externos pendentes, sem deploy ou usuários reais**.
 - Aplicação implementada: identidade, sessões, onboarding, privacidade, metas, motores, dashboard, assinatura canônica, preferências e hubs simulados.
 - Integrações reais: Resend opcional e limitado a mensagens de identidade, autorizado em 28/08/2026; demais integrações, não.
 - Dados reais: não.
@@ -310,6 +310,7 @@ Executadas em 31/08/2026 com dados exclusivamente sintéticos:
 - perfil `production` iniciado em filesystem read-only com as migrations V1–V7;
 - readiness, schema V7, identidade de release, CSRF seguro e headers web aprovados;
 - topologia efêmera e volume sintético removidos após o teste.
+- CI remota do commit `fc70826` aprovada nos jobs Dependências, API, Web e Artefatos de release após corrigir a permissão Linux do Maven Wrapper.
 
 Evidências detalhadas estão em `docs/testing/PHASE-9-RESULTS.md`.
 
